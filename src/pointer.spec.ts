@@ -1,30 +1,31 @@
-import { setPointerMultiple, convertToPointer, DEFAULT_CHANCE } from './set-pointer-multiple'
-import { pickPointer } from './utils'
+import { setPointerMultiple, convertToPointer, stabilizeChance, DEFAULT_CHANCE } from './set-pointer-multiple'
+import { pickPointer } from './set-pointer-multiple'
 
-test('correctly convert string to pointer', () => {
-  const s: string = 'myaddress'
+describe('pointers having correct payment address', () => {
+  test('correctly convert string to pointer', () => {
+    const s: string = 'myaddress'
 
-  expect(convertToPointer(s)).toStrictEqual({
-    address: 'myaddress',
-    chance: DEFAULT_CHANCE
+    expect(convertToPointer(s)).toStrictEqual({
+      address: 'myaddress',
+      chance: DEFAULT_CHANCE
+    })
   })
-})
 
-test('throw pointer without an address', () => {
-  const pointers = [
-    'myaddress',
+  test('throw pointer without an address', () => {
+    const pointers = [
+      'myaddress',
+      // @ts-ignore
+      {
+        chance: 5
+      },
+      {
+        address: 'myaddress2',
+        chance: 11
+      }
+    ]
     // @ts-ignore
-    {
-      chance: 5
-    },
-    {
-      address: 'myaddress2',
-      chance: 11
-    }
-  ]
-
-  // @ts-ignore
-  expect(() => setPointerMultiple(pointers)).toThrow()
+    expect(() => setPointerMultiple(pointers)).toThrow()
+  })
 })
 
 describe('pointers from chance pool', () => {
@@ -62,5 +63,14 @@ describe('pointers from chance pool', () => {
     ]
 
     expect(pickPointer(pointers2).address).not.toBe('nochance')
+  })
+
+  test('correct empty chance on WMPointer', () => {
+    const pointer = {
+      address: 'my.address/'
+    }
+
+    // @ts-ignore
+    expect(stabilizeChance(pointer)).toStrictEqual({ address: 'my.address/', chance: DEFAULT_CHANCE })
   })
 })

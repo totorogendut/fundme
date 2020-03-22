@@ -1,7 +1,13 @@
-import { isMultiplePointer, stabilizeChance } from './utils'
-import { DEFAULT_CHANCE } from './set-pointer-multiple'
+import { isMultiplePointer, setWebMonetizationPointer, getPoolChanceSum } from './utils'
+// import { DEFAULT_CHANCE } from './set-pointer-multiple'
+import {
+  toBeInTheDocument,
+  toHaveAttribute,
+} from '@testing-library/jest-dom/matchers'
 
-// TODO breakdown these test with describe() and test each separately
+expect.extend({ toBeInTheDocument, toHaveAttribute })
+
+
 describe('check multiple pointers correctly', () => {
   test('if pointer is array', () => {
     const arr = []
@@ -30,11 +36,35 @@ describe('check multiple pointers correctly', () => {
   })
 })
 
-test('correct empty chance on WMPointer', () => {
-  const pointer = {
-    address: 'my.address/'
-  }
+describe('interacting with meta web monetization tag', () => {
+  const pointer = setWebMonetizationPointer('test')
+  test('web monetization api meta tag is in the document', () => {
+    expect(pointer).toBeInTheDocument()
+  })
+  test('does have correct monetization tag', () => {
+    expect(pointer).toHaveAttribute('name', 'monetization')
+  })
+  test('having same pointer as declared', () => {
+    expect(pointer).toHaveAttribute('content', 'test')
+  })
+})
 
-  // @ts-ignore
-  expect(stabilizeChance(pointer)).toStrictEqual({ address: 'my.address/', chance: DEFAULT_CHANCE })
+describe('ensure pickPointer() is robust', () => {
+  const myPointer = [
+    {
+      address: 'coolguy',
+      chance: 33
+    },
+    {
+      address: 'someother guy',
+      chance: 22
+    },
+    {
+      address: 'is doesn\'t matter',
+      chance: 45
+    }
+  ]
+  test('get correct sum for pool chance', () => {
+    expect(getPoolChanceSum(myPointer)).toBe(100)
+  })
 })
