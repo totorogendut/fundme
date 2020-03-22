@@ -1,0 +1,39 @@
+{
+  "name": "fundme",
+  "version": "0.0.1",
+  "description": "Simple but powerful tool to get started with Web Monetization API.",
+  "main": "./dist/fundme-cjs.js",
+  "module": "./dist/fundme.mjs",
+  "dependencies": {},
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.1.1",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.2",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "del-cli": "^3.0.0",
+    "jest": "^25.1.0",
+    "rollup": "^2.1.0",
+    "rollup-plugin-typescript2": "^0.26.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3",
+    "uglify-es": "^3.3.9"
+  },
+  "scripts": {
+    "build": "del dist /Q && rollup -c && npm run compress-iife && npm run create-compat && npm run create-cjs-compat && npm run compress-amd",
+    "compress-amd": "uglifyjs --compress --mangle -o dist/fundme-amd.min.js dist/fundme-amd.js",
+    "compress-iife": "uglifyjs --compress --mangle -o dist/fundme-iife.min.js dist/fundme-iife.js",
+    "create-cjs-compat": "babel dist/fundme-cjs.js | uglifyjs --compress --mangle > dist/fundme-cjs-compat.min.js",
+    "create-compat": "babel dist/fundme-iife.js | uglifyjs --compress --mangle > dist/fundme-iife-compat.min.js",
+    "test": "jest --coverage --verbose"
+  },
+  "keywords": [
+    "Web Monetization API",
+    "Donation",
+    "Ads",
+    "Revenue",
+    "Coil"
+  ],
+  "author": "ProgNovel",
+  "license": "Apache-2.0"
+}
