@@ -13,7 +13,7 @@ fund('wm-pointer-address')
 
 or you can split revenue using [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
 
-`fund()` must take an array containing strings or our own opiniated Web Monetization pointer object. Pointer objects must have `address` and `chance` in it.
+To split revenue, `fund()` must take an array containing strings or our own opiniated Web Monetization pointer object. Pointer address objects must have `address` and `chance` in it.
 
 ```js
 import fund from 'fundme'
