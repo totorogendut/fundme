@@ -7,7 +7,7 @@ interface WMPointer {
 
 interface fundOptions {
   maxPool?: number;
-  setDefault?: boolean;
+  default?: boolean;
 }
 
 // declare var document: any;

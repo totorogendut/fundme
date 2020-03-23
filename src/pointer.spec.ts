@@ -1,5 +1,11 @@
-import { setPointerMultiple, convertToPointer, stabilizeChance, DEFAULT_CHANCE } from './set-pointer-multiple'
-import { pickPointer } from './set-pointer-multiple'
+import { pickPointer, getPointerAddress, getChoice, setPointerMultiple, convertToPointer, stabilizeChance, createPool, DEFAULT_CHANCE } from './set-pointer-multiple'
+import { setWebMonetizationPointer } from './utils'
+import {
+  toBeInTheDocument,
+  toHaveAttribute,
+} from '@testing-library/jest-dom/matchers'
+
+expect.extend({ toBeInTheDocument, toHaveAttribute })
 
 describe('pointers having correct payment address', () => {
   test('correctly convert string to pointer', () => {
@@ -9,6 +15,15 @@ describe('pointers having correct payment address', () => {
       address: 'myaddress',
       chance: DEFAULT_CHANCE
     })
+  })
+
+  test('correcting get address (string) from pointer', () => {
+    const pointer = {
+      address: 'my address is cool',
+      chance: 55
+    }
+
+    expect(getPointerAddress(pointer)).toBe('my address is cool')
   })
 
   test('throw pointer without an address', () => {
@@ -25,6 +40,25 @@ describe('pointers having correct payment address', () => {
     ]
     // @ts-ignore
     expect(() => setPointerMultiple(pointers)).toThrow()
+  })
+})
+
+describe('creating chance pool', () => {
+  const rawPointers = [
+    'my address',
+    {
+      address: 'address with chance',
+      chance: 10
+    },
+    'my other address'
+  ]
+  const pool = createPool(rawPointers)
+  test('convert all string to legal pointers', () => {
+    let noString = pool.every(pointer => {
+      return ('address' in pointer) && ('chance' in pointer)
+    });
+
+    expect(noString).toBeTruthy()
   })
 })
 
@@ -72,5 +106,26 @@ describe('pointers from chance pool', () => {
 
     // @ts-ignore
     expect(stabilizeChance(pointer)).toStrictEqual({ address: 'my.address/', chance: DEFAULT_CHANCE })
+  })
+
+  test('get choice from random chance sum', () => {
+    const choice = getChoice(55)
+
+    expect(choice).toBeGreaterThan(0)
+    expect(choice).toBeLessThanOrEqual(55)
+  })
+})
+
+describe('interacting with meta web monetization tag', () => {
+  const pointer = setWebMonetizationPointer('test')
+  const metaTags = document.querySelectorAll('meta[name="monetization"]')
+  test('web monetization api meta tag is in the document', () => {
+    expect(metaTags[0]).toBeInTheDocument()
+  })
+  test('does have correct monetization tag', () => {
+    expect(pointer).toHaveAttribute('name', 'monetization')
+  })
+  test('having same pointer as declared', () => {
+    expect(pointer).toHaveAttribute('content', 'test')
   })
 })

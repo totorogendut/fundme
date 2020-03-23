@@ -1,10 +1,25 @@
-import { setWebMonetizationPointer, getPoolChanceSum } from './utils'
+import { getWinningPointer, setWebMonetizationPointer, getPoolChanceSum } from './utils'
 
 export const DEFAULT_CHANCE: number = 5;
 
 // TODO check pointer.address with RegEx
 export function setPointerMultiple(pointers: Array<string | WMPointer>, maxPool?: number): void {
-  const pool = pointers.map(pointer => {
+  const pool = createPool(pointers)
+  const pickedPointer = pickPointer(pool)
+  setWebMonetizationPointer(getPointerAddress(pickedPointer));
+}
+
+export function getPointerAddress(pointer: WMPointer): string {
+  const address = pointer.address
+
+  if (!address) {
+    throw new Error(errors.addressNotFound)
+  }
+  return address
+}
+
+export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
+  return pointers.map(pointer => {
     let wmPointer: WMPointer;
     if (typeof pointer === "string") pointer = convertToPointer(pointer)
     if (!('address' in pointer)) throw new Error(errors.addressNotFound)
@@ -12,9 +27,6 @@ export function setPointerMultiple(pointers: Array<string | WMPointer>, maxPool?
 
     return wmPointer;
   })
-
-  const selectedPointer: string = pickPointer(pool).address;
-  setWebMonetizationPointer(selectedPointer);
 }
 
 export function stabilizeChance(pointer: WMPointer): WMPointer {
@@ -29,19 +41,20 @@ export function stabilizeChance(pointer: WMPointer): WMPointer {
 // TODO getting pointer from pool
 export function pickPointer(pointers: WMPointer[]): WMPointer {
   const sum = getPoolChanceSum(pointers)
-  let choice = Math.random() * sum
+  let choice: number = getChoice(sum)
 
-  for (const pointer in pointers) {
-    const weight: number = pointers[pointer].chance
-    if ((choice -= weight) <= 0) {
-      return pointers[pointer]
-    }
-  }
+  return getWinningPointer(pointers, choice)
 }
 
-export function convertToPointer(s: string): WMPointer {
+export function getChoice(sum: number): number {
+  const choice: number = Math.random() * sum
+
+  return choice
+}
+
+export function convertToPointer(str: string): WMPointer {
   const pointer = {
-    address: s,
+    address: str,
     chance: DEFAULT_CHANCE
   }
   return pointer

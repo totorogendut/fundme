@@ -1,4 +1,10 @@
-import { isMultiplePointer, setWebMonetizationPointer, getPoolChanceSum } from './utils'
+import {
+  isMultiplePointer,
+  getPoolChanceSum,
+  getWinningPointer,
+  createWebMonetizationTag,
+  setWebMonetizationTag
+} from './utils'
 // import { DEFAULT_CHANCE } from './set-pointer-multiple'
 import {
   toBeInTheDocument,
@@ -36,21 +42,24 @@ describe('check multiple pointers correctly', () => {
   })
 })
 
-describe('interacting with meta web monetization tag', () => {
-  const pointer = setWebMonetizationPointer('test')
-  test('web monetization api meta tag is in the document', () => {
-    expect(pointer).toBeInTheDocument()
+describe('creating web monetization tag', () => {
+  const pointer = createWebMonetizationTag('test')
+  const metaTags = document.querySelectorAll('meta[name="monetization"]')
+  test('web monetization meta tag is appended on the document', () => {
+    expect(metaTags[0]).toBeInTheDocument()
   })
-  test('does have correct monetization tag', () => {
-    expect(pointer).toHaveAttribute('name', 'monetization')
+
+  setWebMonetizationTag(pointer, 'new address')
+  test('don\'t append monetization tag if there\'s already one', () => {
+    expect(metaTags.length).toBe(1)
   })
-  test('having same pointer as declared', () => {
-    expect(pointer).toHaveAttribute('content', 'test')
+  test('and now monetization tag has new address', () => {
+    expect(metaTags[0]).toHaveAttribute('content', 'new address')
   })
 })
 
 describe('ensure pickPointer() is robust', () => {
-  const myPointer = [
+  const myPointers = [
     {
       address: 'coolguy',
       chance: 33
@@ -64,7 +73,12 @@ describe('ensure pickPointer() is robust', () => {
       chance: 45
     }
   ]
+  const choice = 50
   test('get correct sum for pool chance', () => {
-    expect(getPoolChanceSum(myPointer)).toBe(100)
+    expect(getPoolChanceSum(myPointers)).toBe(100)
+  })
+
+  test('pick correct winning pointer from pool', () => {
+    expect(getWinningPointer(myPointers, choice).address).toBe('someother guy')
   })
 })

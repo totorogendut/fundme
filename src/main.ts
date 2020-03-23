@@ -2,23 +2,45 @@ import { isMultiplePointer } from './utils'
 import { setPointerSingle } from './set-pointer-single'
 import { setPointerMultiple } from './set-pointer-multiple'
 
-let defaultAddress: WMAddress;
+export let defaultAddress: WMAddress;
 
-export default function fund(pointer: WMAddress, options?: fundOptions): void {
-  if (options.setDefault) defaultAddress = pointer;
+export enum FundType {
+  isSingle = 'single',
+  isMultiple = 'multiple',
+  isDefault = 'default',
+  isUndefined = 'undefined'
+}
 
+export default function fund(pointer?: WMAddress, options?: fundOptions): FundType {
+  const setDefault = options && options.default
   if (typeof pointer === "string") {
+    if (setDefault) {
+      setDefaultAddress(pointer)
+    }
     setPointerSingle(pointer);
-  } else if (isMultiplePointer(pointer)) {
+    return FundType.isSingle
+  } else {
+    if (setDefault) {
+      throw new Error("Fundme.js: default pointer can only accept a single string. Please remove option default if you wish to continue.")
+    }
+  }
+
+  if (isMultiplePointer(pointer)) {
     setPointerMultiple(pointer);
+    return FundType.isMultiple
   } else if (pointer === undefined) {
     if (defaultAddress !== undefined) {
-      fund(defaultAddress);
+      setPointerSingle(defaultAddress.toString())
+      return FundType.isDefault
     } else {
       throw new Error("Fundme.js: Web Monetization is not set, default default pointer as a fallback is not found.")
     }
   } else {
-    throw new Error("Fundme.js: Invalid Web Monetization API address given.");
+    // TODO somewhoe make this part gives error
+    return FundType.isUndefined
   }
 }
 
+export function setDefaultAddress(str: string): void {
+  defaultAddress = str
+}
