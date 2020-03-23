@@ -1,6 +1,7 @@
 # Fundme.js
 
 A simple but powerful library to manage monetization on the web.
+
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)[![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master)
 
 ## Dig in (WIP)
@@ -12,7 +13,7 @@ fund('wm-pointer-address')
 
 or you can split revenue using [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
 
-`fund()` must take an array containing strings or our own opiniated Web Monetization pointer object.
+`fund()` must take an array containing strings or our own opiniated Web Monetization pointer object. Pointer objects must have `address` and `chance` in it.
 
 ```js
 import fund from 'fundme'
@@ -33,6 +34,6 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ## Short-term goal
 
-[ ] Make a JAMstack website to host documentation
-[ ] Early and basic asynchronous ads support (like amp-ads)
-[ ] More robust API!
+- [ ] Make a JAMstack website to host documentation
+- [ ] Early and basic asynchronous ads support (like amp-ads)
+- [ ] More robust API!
