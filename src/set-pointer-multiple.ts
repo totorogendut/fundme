@@ -14,6 +14,8 @@ export function getPointerAddress(pointer: WMPointer): string {
 
   if (!address) {
     throw new Error(errors.addressNotFound)
+  } else if (typeof address !== 'string') {
+    throw new Error(errors.addressIsNotAString)
   }
   return address
 }
@@ -61,6 +63,7 @@ export function convertToPointer(str: string): WMPointer {
 }
 
 const errors: any = {
-  addressNotFound: "Fundme.js: address not found not found.",
+  addressNotFound: "Fundme.js: address not found.",
+  addressIsNotAString: "Fundme.js: address must be a string.",
   chanceNotFound: "Fundme.js: entries .chance not found.",
 }

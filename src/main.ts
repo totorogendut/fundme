@@ -33,11 +33,10 @@ export default function fund(pointer?: WMAddress, options?: fundOptions): FundTy
       setPointerSingle(defaultAddress.toString())
       return FundType.isDefault
     } else {
-      throw new Error("Fundme.js: Web Monetization is not set, default default pointer as a fallback is not found.")
+      throw new Error("Fundme.js: Web Monetization is not set, default pointer as a fallback is not found.")
     }
   } else {
-    // TODO somewhoe make this part gives error
-    return FundType.isUndefined
+    throw new Error("Fundme.js: Invalid Web Monetization API address given.");
   }
 }
 

@@ -17,7 +17,11 @@ describe('get correct fund() argument', () => {
   })
 
   test('throw if fund() has no argument and default address hasn\'t been set', () => {
-    expect(() => fund()).toThrow()
+    expect(() => fund()).toThrowError(/fallback is not found/)
+  })
+  test('throw if fund() argument is not valid', () => {
+    // @ts-ignore
+    expect(() => fund({})).toThrowError(/Invalid Web Monetization/)
   })
   test('fund() will use default address if possible', () => {
     setDefaultAddress('my default address')

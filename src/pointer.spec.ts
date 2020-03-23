@@ -26,6 +26,22 @@ describe('pointers having correct payment address', () => {
     expect(getPointerAddress(pointer)).toBe('my address is cool')
   })
 
+  test('pointer.address must not undefined', () => {
+    const pointer = {
+      chance: 11
+    }
+    // @ts-ignore
+    expect(() => getPointerAddress(pointer)).toThrowError(/not found/)
+  })
+  test('pointer.address must not undefined', () => {
+    const pointer = {
+      address: 222,
+      chance: 11
+    }
+    // @ts-ignore
+    expect(() => getPointerAddress(pointer)).toThrowError(/must be a string/)
+  })
+
   test('throw pointer without an address', () => {
     const pointers = [
       'myaddress',
