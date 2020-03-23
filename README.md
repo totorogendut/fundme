@@ -2,7 +2,8 @@
 
 A simple but powerful library to manage monetization on the web.
 
-![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)[![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master)
+![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master)
 
 ## Dig in (WIP)
 ```js
@@ -37,3 +38,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 - [ ] Make a JAMstack website to host documentation
 - [ ] Early and basic asynchronous ads support (like amp-ads)
 - [ ] More robust API!
+
+## Disclaimer
+
+Fundme.js is still in early phase development and thus API might change a lot! Not ready for production.
