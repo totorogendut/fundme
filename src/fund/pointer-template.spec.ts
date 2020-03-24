@@ -1,5 +1,5 @@
-import { fund } from './main'
-import { getCurrentPointerPool } from './utils'
+import { fund, getCurrentPointerPool } from './main'
+
 import {
   toBeInTheDocument,
   toHaveAttribute,

@@ -3,9 +3,9 @@ import {
   getPoolWeightSum,
   getWinningPointer,
   createWebMonetizationTag,
-  setWebMonetizationTag,
-  getCurrentPointerAddress
+  setWebMonetizationTag
 } from './utils'
+import { getCurrentPointerAddress } from './main'
 import { metaTagNotFound } from './errors'
 
 import {
@@ -92,8 +92,14 @@ describe('testing getCurrentPointer()', () => {
   test('get pointer address', () => {
     expect(getCurrentPointerAddress()).toBe(pointerAddress)
   })
+
   test('throw not found', () => {
     document.querySelector('meta[name="monetization"]').remove()
+    expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
+  })
+})
+describe('test getCurrentPointerAddress() when there\'s no meta tag', () => {
+  test('throw not found', () => {
     expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
   })
 })

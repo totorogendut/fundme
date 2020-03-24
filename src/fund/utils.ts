@@ -1,5 +1,4 @@
 import { currentPointer } from './main'
-import { metaTagNotFound } from './errors'
 
 export function isMultiplePointer(s: any): boolean {
   return Array.isArray(s)
@@ -43,22 +42,4 @@ export function getWinningPointer(pointers: WMPointer[], choice: number): WMPoin
       return pointers[pointer]
     }
   }
-}
-
-export function getCurrentPointerAddress(): WMAddress {
-  const metaTag: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
-  if (metaTag) {
-    return metaTag.content
-  } else {
-    throw new Error(metaTagNotFound)
-  }
-}
-export function getCurrentPointerPool(): Array<string | WMPointer> {
-  let pointer = currentPointer
-
-  if (!Array.isArray(pointer)) {
-    pointer = [pointer]
-  }
-
-  return pointer
 }
