@@ -1,4 +1,5 @@
 import { getWinningPointer, setWebMonetizationPointer, getPoolWeightSum } from './utils'
+import { addressNotFound, addressIsNotAString, weightIsNotANumber } from './errors'
 
 export const DEFAULT_WEIGHT: number = 5;
 
@@ -13,9 +14,9 @@ export function getPointerAddress(pointer: WMPointer): string {
   const address = pointer.address
 
   if (!address) {
-    throw new Error(errors.addressNotFound)
+    throw new Error(addressNotFound)
   } else if (typeof address !== 'string') {
-    throw new Error(errors.addressIsNotAString)
+    throw new Error(addressIsNotAString)
   }
   return address
 }
@@ -24,7 +25,7 @@ export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
   return pointers.map(pointer => {
     let wmPointer: WMPointer;
     if (typeof pointer === "string") pointer = convertToPointer(pointer)
-    if (!('address' in pointer)) throw new Error(errors.addressNotFound)
+    if (!('address' in pointer)) throw new Error(addressNotFound)
     wmPointer = checkWeight(pointer);
 
     return wmPointer;
@@ -33,7 +34,7 @@ export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
 
 export function checkWeight(pointer: WMPointer): WMPointer {
   if (pointer.weight === undefined || pointer.weight === NaN) {
-    console.warn(errors.weightIsNotANumber(pointer.address));
+    console.warn(weightIsNotANumber(pointer.address));
     pointer.weight = DEFAULT_WEIGHT;
   }
 
@@ -60,13 +61,4 @@ export function convertToPointer(str: string): WMPointer {
     weight: DEFAULT_WEIGHT
   }
   return pointer
-}
-
-const errors: any = {
-  addressNotFound: "Fundme.js: address not found.",
-  addressIsNotAString: "Fundme.js: address must be a string.",
-  weightNotFound: "Fundme.js: entries .weight not found.",
-  weightIsNotANumber(str) {
-    return `Fundme.js: ${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`
-  }
 }

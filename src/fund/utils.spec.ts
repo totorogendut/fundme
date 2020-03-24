@@ -3,8 +3,10 @@ import {
   getPoolWeightSum,
   getWinningPointer,
   createWebMonetizationTag,
-  setWebMonetizationTag
+  setWebMonetizationTag,
+  getCurrentPointerAddress
 } from './utils'
+import { metaTagNotFound } from './errors'
 
 import {
   toBeInTheDocument,
@@ -80,5 +82,18 @@ describe('ensure pickPointer() is robust', () => {
 
   test('pick correct winning pointer from pool', () => {
     expect(getWinningPointer(myPointers, choice).address).toBe('someother guy')
+  })
+})
+
+describe('testing getCurrentPointer()', () => {
+  const pointerAddress = '$coil.com/testing'
+  document.body.innerHTML = `<meta name="monetization" content=${pointerAddress} />`
+
+  test('get pointer address', () => {
+    expect(getCurrentPointerAddress()).toBe(pointerAddress)
+  })
+  test('throw not found', () => {
+    document.querySelector('meta[name="monetization"]').remove()
+    expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
   })
 })

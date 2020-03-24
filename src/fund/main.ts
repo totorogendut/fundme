@@ -2,8 +2,10 @@ import { isMultiplePointer } from './utils'
 import { setPointerSingle } from './set-pointer-single'
 import { setPointerMultiple } from './set-pointer-multiple'
 import { setPointerFromTemplates } from './set-pointer-template'
+import { defaultAddressNotFound, invalidAddress } from './errors'
 
 export let defaultAddress: WMAddress;
+export let currentPointer: WMAddress;
 
 export enum FundType {
   isSingle = 'single',
@@ -25,7 +27,7 @@ export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
         }
         return FundType.isDefault
       } else {
-        throw new Error(errors.defaultAddressNotFound)
+        throw new Error(defaultAddressNotFound)
       }
     }
     setPointerSingle(pointer);
@@ -41,14 +43,9 @@ export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
     setPointerFromTemplates()
     return FundType.isFromTemplate
   }
-  throw new Error(errors.invalidAddress);
+  throw new Error(invalidAddress);
 }
 
 export function setDefaultAddress(address: WMAddress): void {
   defaultAddress = address
-}
-
-export const errors = {
-  defaultAddressNotFound: 'Fundme.js: default address not found. Use setDefaultAddress(str: string) to set it first.',
-  invalidAddress: 'Fundme.js: Invalid Web Monetization pointer address is given.'
 }

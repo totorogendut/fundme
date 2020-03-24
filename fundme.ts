@@ -1,3 +1,3 @@
-import { fund, setDefaultAddress } from './src/main'
+import { fund, setDefaultAddress } from './src/fund/main'
 
 export { fund, setDefaultAddress }

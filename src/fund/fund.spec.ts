@@ -1,4 +1,5 @@
-import { fund, setDefaultAddress, FundType, defaultAddress, errors } from './main'
+import { fund, setDefaultAddress, FundType, defaultAddress, } from './main'
+import { defaultAddressNotFound, invalidAddress } from './errors'
 
 describe('correctly fund() argument', () => {
   test('get single pointer if parameter is a string', () => {
@@ -24,7 +25,7 @@ describe('correctly fund() argument', () => {
 
   test('throw if fund() argument is not valid', () => {
     // @ts-ignore
-    expect(() => fund({})).toThrowError(errors.invalidAddress)
+    expect(() => fund({})).toThrowError(invalidAddress)
   })
 })
 
@@ -36,6 +37,6 @@ describe('default pointer', () => {
 
   test('throw if using default but default address hasn\'t been set', () => {
     setDefaultAddress(undefined)
-    expect(() => fund('default')).toThrowError(errors.defaultAddressNotFound)
+    expect(() => fund('default')).toThrowError(defaultAddressNotFound)
   })
 })
