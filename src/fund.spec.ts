@@ -1,31 +1,30 @@
-import fund, { setDefaultAddress, FundType, defaultAddress } from './main'
+import { fund, setDefaultAddress, FundType, defaultAddress, errors } from './main'
 
-describe('get correct fund() argument', () => {
-  test('get single pointer if argument is a string', () => {
+describe('correctly fund() argument', () => {
+  test('get single pointer if parameter is a string', () => {
     const myFundingType = fund('test')
 
     expect(myFundingType).toBe(FundType.isSingle)
   })
 
-  test('get multiple pointer if argument is an array', () => {
+  test('get multiple pointer if parameter is an array', () => {
     const myFundingType = fund(['test', 'address2', {
       address: 'Wooooww',
-      chance: 4
+      weight: 4
     }])
 
     expect(myFundingType).toBe(FundType.isMultiple)
   })
+  test('get from templates if parameter is empty', () => {
+    const myFundingType = fund()
 
-  test('throw if fund() has no argument and default address hasn\'t been set', () => {
-    expect(() => fund()).toThrowError(/fallback is not found/)
+    expect(myFundingType).toBe(FundType.isFromTemplate)
   })
+
+
   test('throw if fund() argument is not valid', () => {
     // @ts-ignore
-    expect(() => fund({})).toThrowError(/Invalid Web Monetization/)
-  })
-  test('fund() will use default address if possible', () => {
-    setDefaultAddress('my default address')
-    expect(fund()).toBe(FundType.isDefault)
+    expect(() => fund({})).toThrowError(errors.invalidAddress)
   })
 })
 
@@ -35,14 +34,8 @@ describe('default pointer', () => {
     expect(defaultAddress).toBe('default 1')
   })
 
-  test('fund() with options.default will set default address', () => {
-    fund('default 2', { default: true })
-    expect(defaultAddress).toBe('default 2')
-  })
-
-  test('fund() with options.default only accept single string', () => {
-
-    expect(() => fund(['string 1', { address: 'testing', chance: 22 }], { default: true }))
-      .toThrow()
+  test('throw if using default but default address hasn\'t been set', () => {
+    setDefaultAddress(undefined)
+    expect(() => fund('default')).toThrowError(errors.defaultAddressNotFound)
   })
 })

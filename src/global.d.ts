@@ -2,7 +2,7 @@ type WMAddress = string | Array<string | WMPointer> | undefined;
 
 interface WMPointer {
   address: string;
-  chance: number;
+  weight: number;
 }
 
 interface fundOptions {

@@ -1,11 +1,11 @@
 import {
   isMultiplePointer,
-  getPoolChanceSum,
+  getPoolWeightSum,
   getWinningPointer,
   createWebMonetizationTag,
   setWebMonetizationTag
 } from './utils'
-// import { DEFAULT_CHANCE } from './set-pointer-multiple'
+
 import {
   toBeInTheDocument,
   toHaveAttribute,
@@ -25,7 +25,7 @@ describe('check multiple pointers correctly', () => {
   test('if pointer is object', () => {
     const obj = {
       address: "myaddress",
-      chance: 10
+      weight: 10
     }
 
     expect(isMultiplePointer(obj)).toBeFalsy()
@@ -62,20 +62,20 @@ describe('ensure pickPointer() is robust', () => {
   const myPointers = [
     {
       address: 'coolguy',
-      chance: 33
+      weight: 33
     },
     {
       address: 'someother guy',
-      chance: 22
+      weight: 22
     },
     {
       address: 'is doesn\'t matter',
-      chance: 45
+      weight: 45
     }
   ]
   const choice = 50
-  test('get correct sum for pool chance', () => {
-    expect(getPoolChanceSum(myPointers)).toBe(100)
+  test('get correct sum for pool weight', () => {
+    expect(getPoolWeightSum(myPointers)).toBe(100)
   })
 
   test('pick correct winning pointer from pool', () => {

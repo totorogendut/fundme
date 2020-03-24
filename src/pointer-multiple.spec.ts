@@ -1,4 +1,4 @@
-import { pickPointer, getPointerAddress, getChoice, setPointerMultiple, convertToPointer, stabilizeChance, createPool, DEFAULT_CHANCE } from './set-pointer-multiple'
+import { pickPointer, getPointerAddress, getChoice, setPointerMultiple, convertToPointer, createPool, DEFAULT_WEIGHT, checkWeight } from './set-pointer-multiple'
 import { setWebMonetizationPointer } from './utils'
 import {
   toBeInTheDocument,
@@ -13,14 +13,14 @@ describe('pointers having correct payment address', () => {
 
     expect(convertToPointer(s)).toStrictEqual({
       address: 'myaddress',
-      chance: DEFAULT_CHANCE
+      weight: DEFAULT_WEIGHT
     })
   })
 
   test('correcting get address (string) from pointer', () => {
     const pointer = {
       address: 'my address is cool',
-      chance: 55
+      weight: 55
     }
 
     expect(getPointerAddress(pointer)).toBe('my address is cool')
@@ -28,7 +28,7 @@ describe('pointers having correct payment address', () => {
 
   test('pointer.address must not undefined', () => {
     const pointer = {
-      chance: 11
+      weight: 11
     }
     // @ts-ignore
     expect(() => getPointerAddress(pointer)).toThrowError(/not found/)
@@ -36,7 +36,7 @@ describe('pointers having correct payment address', () => {
   test('pointer.address must not undefined', () => {
     const pointer = {
       address: 222,
-      chance: 11
+      weight: 11
     }
     // @ts-ignore
     expect(() => getPointerAddress(pointer)).toThrowError(/must be a string/)
@@ -47,11 +47,11 @@ describe('pointers having correct payment address', () => {
       'myaddress',
       // @ts-ignore
       {
-        chance: 5
+        weight: 5
       },
       {
         address: 'myaddress2',
-        chance: 11
+        weight: 11
       }
     ]
     // @ts-ignore
@@ -59,72 +59,72 @@ describe('pointers having correct payment address', () => {
   })
 })
 
-describe('creating chance pool', () => {
+describe('creating weight pool', () => {
   const rawPointers = [
     'my address',
     {
-      address: 'address with chance',
-      chance: 10
+      address: 'address with weight',
+      weight: 10
     },
     'my other address'
   ]
   const pool = createPool(rawPointers)
   test('convert all string to legal pointers', () => {
     let noString = pool.every(pointer => {
-      return ('address' in pointer) && ('chance' in pointer)
+      return ('address' in pointer) && ('weight' in pointer)
     });
 
     expect(noString).toBeTruthy()
   })
 })
 
-describe('pointers from chance pool', () => {
-  test('can pick if has chance', () => {
+describe('pointers from weight pool', () => {
+  test('can pick if has weight', () => {
     const pointers1 = [
       {
-        address: 'with chance',
-        chance: 11
+        address: 'with weight',
+        weight: 11
       },
       {
-        address: 'another chance',
-        chance: 5
+        address: 'another weight',
+        weight: 5
       },
       {
         address: 'doge',
-        chance: 0,
+        weight: 0,
       },
       {
         address: 'pussycat',
-        chance: 0
+        weight: 0
       },
     ]
-    expect(pickPointer(pointers1).address).toContain('chance')
+    expect(pickPointer(pointers1).address).toContain('weight')
   })
-  test('avoid if has no chance', () => {
+  test('avoid if has no weight', () => {
     const pointers2 = [
       {
-        address: 'has chance',
-        chance: 5,
+        address: 'has weight',
+        weight: 5,
       },
       {
-        address: 'nochance',
-        chance: 0
+        address: 'noweight',
+        weight: 0
       },
     ]
 
-    expect(pickPointer(pointers2).address).not.toBe('nochance')
+    expect(pickPointer(pointers2).address).not.toBe('noweight')
   })
 
-  test('correct empty chance on WMPointer', () => {
+  test('correct empty weight on WMPointer', () => {
     const pointer = {
       address: 'my.address/'
     }
 
     // @ts-ignore
-    expect(stabilizeChance(pointer)).toStrictEqual({ address: 'my.address/', chance: DEFAULT_CHANCE })
+    expect(checkWeight(pointer)).toStrictEqual({ address: 'my.address/', weight: DEFAULT_WEIGHT })
   })
 
-  test('get choice from random chance sum', () => {
+  test('get choice from random weight sum', () => {
     const choice = getChoice(55)
 
     expect(choice).toBeGreaterThan(0)

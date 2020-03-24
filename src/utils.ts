@@ -1,4 +1,4 @@
-import { DEFAULT_CHANCE } from './set-pointer-multiple'
+import { DEFAULT_WEIGHT } from './set-pointer-multiple'
 
 export function isMultiplePointer(s: any): boolean {
   return Array.isArray(s)
@@ -29,15 +29,15 @@ export function createWebMonetizationTag(address: string): HTMLMetaElement {
   return wmAddress
 }
 
-export function getPoolChanceSum(pointers: WMPointer[]): number {
-  const chances: number[] = pointers.map(pointer => pointer.chance)
-  return Object.values(chances)
+export function getPoolWeightSum(pointers: WMPointer[]): number {
+  const weights: number[] = pointers.map(pointer => pointer.weight)
+  return Object.values(weights)
     .reduce((sum: number, weight: number): number => sum + weight, 0)
 }
 
 export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
   for (const pointer in pointers) {
-    const weight: number = pointers[pointer].chance
+    const weight: number = pointers[pointer].weight
     if ((choice -= weight) <= 0) {
       return pointers[pointer]
     }

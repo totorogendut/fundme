@@ -1,6 +1,6 @@
-import { getWinningPointer, setWebMonetizationPointer, getPoolChanceSum } from './utils'
+import { getWinningPointer, setWebMonetizationPointer, getPoolWeightSum } from './utils'
 
-export const DEFAULT_CHANCE: number = 5;
+export const DEFAULT_WEIGHT: number = 5;
 
 // TODO check pointer.address with RegEx
 export function setPointerMultiple(pointers: Array<string | WMPointer>, maxPool?: number): void {
@@ -25,16 +25,16 @@ export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
     let wmPointer: WMPointer;
     if (typeof pointer === "string") pointer = convertToPointer(pointer)
     if (!('address' in pointer)) throw new Error(errors.addressNotFound)
-    wmPointer = stabilizeChance(pointer);
+    wmPointer = checkWeight(pointer);
 
     return wmPointer;
   })
 }
 
-export function stabilizeChance(pointer: WMPointer): WMPointer {
-  if (pointer.chance === undefined || pointer.chance === NaN) {
-    console.warn(`Fundme.js: ${pointer.address} has chance that is not a number. It has been set to 5 (default).`);
-    pointer.chance = DEFAULT_CHANCE;
+export function checkWeight(pointer: WMPointer): WMPointer {
+  if (pointer.weight === undefined || pointer.weight === NaN) {
+    console.warn(errors.weightIsNotANumber(pointer.address));
+    pointer.weight = DEFAULT_WEIGHT;
   }
 
   return pointer;
@@ -42,7 +42,7 @@ export function stabilizeChance(pointer: WMPointer): WMPointer {
 
 // TODO getting pointer from pool
 export function pickPointer(pointers: WMPointer[]): WMPointer {
-  const sum = getPoolChanceSum(pointers)
+  const sum = getPoolWeightSum(pointers)
   let choice: number = getChoice(sum)
 
   return getWinningPointer(pointers, choice)
@@ -57,7 +57,7 @@ export function getChoice(sum: number): number {
 export function convertToPointer(str: string): WMPointer {
   const pointer = {
     address: str,
-    chance: DEFAULT_CHANCE
+    weight: DEFAULT_WEIGHT
   }
   return pointer
 }
@@ -65,5 +65,8 @@ export function convertToPointer(str: string): WMPointer {
 const errors: any = {
   addressNotFound: "Fundme.js: address not found.",
   addressIsNotAString: "Fundme.js: address must be a string.",
-  chanceNotFound: "Fundme.js: entries .chance not found.",
+  weightNotFound: "Fundme.js: entries .weight not found.",
+  weightIsNotANumber(str) {
+    return `Fundme.js: ${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`
+  }
 }

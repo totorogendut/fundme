@@ -1,0 +1,28 @@
+module.exports = {
+  parserOptions: {
+    ecmaVersion: 2019,
+    sourceType: 'module'
+  },
+  env: {
+    es6: true,
+    browser: true
+  },
+  plugins: [
+  ],
+  overrides: [
+  ],
+  rules: {
+    quotes: ["error", "double", { "allowTemplateLiterals": true }],
+    semi: ["error", true],
+    "space-in-brackets": ["error", "always"],
+    "comma-dangle": ["error", {
+      arrays: "only-multiline",
+      objects: "only-multiline"
+    }],
+    "arrow-parens": ["error", "always"],
+    "arrow-spacing": ["error", { "before": true, "after": true }]
+  },
+  settings: {
+    // ...
+  }
+};
