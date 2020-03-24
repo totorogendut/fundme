@@ -5,29 +5,44 @@ A simple but powerful library to manage monetization on the web.
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master)
 
-## Dig in (WIP)
-```js
-import fund from 'fundme'
+## Dig in (WIP - still hasn't published yet)
 
-fund('wm-pointer-address')
+```js
+import { fund } from 'fundme'
+
+fund('$coil.com/some-guy-funding-address')
 ```
 
 or you can split revenue using [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
 
-To split revenue, `fund()` must take an array containing strings or our own opiniated Web Monetization pointer object. Pointer address objects must have `address` and `chance` in it.
+To split revenue, `fund(pointerAddress)` must take an array containing strings or our own opiniated Web Monetization pointer object. Pointer address objects must have `address` and `weight` in it.
 
 ```js
-import fund from 'fundme'
+import { fund } from 'fundme'
 
 const validPointerObject = {
-  address: 'some other guy address',
-  chance: 44
+  address: '$coil.com/my-address',
+  weight: 44
 }
 
-fund(['my first address', 'my friend pointer address', validPointerObject])
+fund(['$coil.com/my-friend-pointer-address', '$coil.com/his-friend-pointer-address', validPointerObject])
 ```
 
-## What is this, really?
+Additionally, it's possible to declare pointer address in the HTML with `<template />`. For this to work `<template />` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
+
+`fund()` must have no parameters when using HTML template monetization.
+
+```html
+<template data-fund="$coil.com/my-address" data-fund-weight="10" />
+<template data-fund="$coil.com/my-friend-address" data-fund-weight="7" />
+
+<script src="/fundme.js"></script>
+<script>
+  fund()
+</script>
+```
+
+## What is this, really (?)
 
 Fundme.js is a whole tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny Web Monetization API.
 
