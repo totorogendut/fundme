@@ -9,5 +9,6 @@ export declare enum FundType {
 }
 export declare function fund(pointer?: WMAddress, options?: fundOptions): FundType;
 export declare function setDefaultAddress(address: WMAddress): void;
+export declare function setCurrentPointer(pointer: string | WMPointer[]): void;
 export declare function getCurrentPointerAddress(): string;
 export declare function getCurrentPointerPool(): Array<string | WMPointer>;

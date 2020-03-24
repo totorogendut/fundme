@@ -48,10 +48,14 @@ define(['exports'], function (exports) { 'use strict';
   function weightIsNotANumber(str) {
       return `Fundme.js: ${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`;
   }
+  // pointers template
+  const noTemplateFound = 'Fundme.js: no monetization template is found.';
+  const noDataFundIsFound = 'Fundme.js: <template /> has no data-fund attribute to parse.';
+  const templateSinglePointerHasWeight = 'Fundme.js: found single <template data-fund /> but has weight - only address will be parsed.';
 
   const DEFAULT_WEIGHT = 5;
   // TODO check pointer.address with RegEx
-  function setPointerMultiple(pointers, maxPool) {
+  function setPointerMultiple(pointers) {
       const pool = createPool(pointers);
       const pickedPointer = pickPointer(pool);
       setWebMonetizationPointer(getPointerAddress(pickedPointer));
@@ -102,6 +106,49 @@ define(['exports'], function (exports) { 'use strict';
       return pointer;
   }
 
+  function setPointerFromTemplates() {
+      const pointers = scrapeTemplate();
+      if (pointers.length > 1) {
+          setPointerMultiple(pointers);
+      }
+      else if (pointers.length === 1) {
+          setPointerSingle(pointers[0].address);
+          if (typeof pointers[0] !== 'string') {
+              console.warn(templateSinglePointerHasWeight);
+          }
+      }
+      else {
+          console.warn('Pointer from template is undefined.');
+      }
+  }
+  function scrapeTemplate() {
+      const templates = document.body.querySelectorAll('template[data-fund]');
+      let pointers = [];
+      if (templates.length > 0) {
+          templates.forEach(template => {
+              const pointer = parseTemplate(template);
+              pointers = [...pointers, pointer];
+          });
+      }
+      else {
+          throw new Error(noTemplateFound);
+      }
+      return pointers;
+  }
+  function parseTemplate(template) {
+      let address = template.dataset.fund;
+      let weight = parseInt(template.dataset.fundWeight);
+      if (!address) {
+          throw new Error(noDataFundIsFound);
+      }
+      const pointer = checkWeight({
+          address,
+          weight
+      });
+      console.table(pointer);
+      return pointer;
+  }
+
   let defaultAddress;
   var FundType;
   (function (FundType) {
@@ -136,6 +183,7 @@ define(['exports'], function (exports) { 'use strict';
           return FundType.isMultiple;
       }
       if (pointer === undefined) {
+          setPointerFromTemplates();
           return FundType.isFromTemplate;
       }
       throw new Error(invalidAddress);

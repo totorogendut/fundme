@@ -5,3 +5,7 @@ export declare const addressIsNotAString = "Fundme.js: address must be a string.
 export declare const weightNotFound = "Fundme.js: entries .weight not found.";
 export declare function weightIsNotANumber(str: string): string;
 export declare const metaTagNotFound = "Fundme.js: web monetization meta tag is not found.";
+export declare const metaTagMultipleIsFound = "Fundme.js: multiple <meta name=\"monetization\" /> found - Web Monetization API only support a single meta tag.";
+export declare const noTemplateFound = "Fundme.js: no monetization template is found.";
+export declare const noDataFundIsFound = "Fundme.js: <template /> has no data-fund attribute to parse.";
+export declare const templateSinglePointerHasWeight = "Fundme.js: found single <template data-fund /> but has weight - only address will be parsed.";

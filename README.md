@@ -52,6 +52,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 - [ ] Make a JAMstack website to host documentation
 - [ ] Early and basic asynchronous ads support (like amp-ads)
+- [ ] Integrate basic cookies prompt flow and make ads cookie aware if possible (by using non-personalized ads)
 - [ ] More robust API!
 
 ## Disclaimer
