@@ -1,2 +1,2 @@
-import fund from './src/main';
-export default fund;
+import { fund, setDefaultAddress } from './src/fund/main';
+export { fund, setDefaultAddress };

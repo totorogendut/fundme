@@ -1,5 +1,5 @@
-import { fund, setDefaultAddress, FundType, defaultAddress, } from './main'
-import { defaultAddressNotFound, invalidAddress } from './errors'
+import { fund, FundType } from '../main'
+import { invalidAddress } from '../errors'
 
 describe('correctly fund() argument', () => {
   test('get single pointer if parameter is a string', () => {
@@ -16,12 +16,13 @@ describe('correctly fund() argument', () => {
 
     expect(myFundingType).toBe(FundType.isMultiple)
   })
+
   test('get from templates if parameter is empty', () => {
+    document.body.innerHTML = '<template data-fund="meta" />'
     const myFundingType = fund()
 
     expect(myFundingType).toBe(FundType.isFromTemplate)
   })
-
 
   test('throw if fund() argument is not valid', () => {
     // @ts-ignore
@@ -29,14 +30,3 @@ describe('correctly fund() argument', () => {
   })
 })
 
-describe('default pointer', () => {
-  test('correctly set default pointer', () => {
-    setDefaultAddress('default 1')
-    expect(defaultAddress).toBe('default 1')
-  })
-
-  test('throw if using default but default address hasn\'t been set', () => {
-    setDefaultAddress(undefined)
-    expect(() => fund('default')).toThrowError(defaultAddressNotFound)
-  })
-})

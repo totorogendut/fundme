@@ -1,5 +1,5 @@
-import { pickPointer, getPointerAddress, getChoice, setPointerMultiple, convertToPointer, createPool, DEFAULT_WEIGHT, checkWeight } from './set-pointer-multiple'
-import { setWebMonetizationPointer } from './utils'
+import { pickPointer, getPointerAddress, getChoice, setPointerMultiple, convertToPointer, createPool, DEFAULT_WEIGHT, checkWeight } from '../set-pointer-multiple'
+import { setWebMonetizationPointer } from '../utils'
 import {
   toBeInTheDocument,
   toHaveAttribute,
@@ -132,16 +132,3 @@ describe('pointers from weight pool', () => {
   })
 })
 
-describe('interacting with meta web monetization tag', () => {
-  const pointer = setWebMonetizationPointer('test')
-  const metaTags = document.querySelectorAll('meta[name="monetization"]')
-  test('web monetization api meta tag is in the document', () => {
-    expect(metaTags[0]).toBeInTheDocument()
-  })
-  test('does have correct monetization tag', () => {
-    expect(pointer).toHaveAttribute('name', 'monetization')
-  })
-  test('having same pointer as declared', () => {
-    expect(pointer).toHaveAttribute('content', 'test')
-  })
-})

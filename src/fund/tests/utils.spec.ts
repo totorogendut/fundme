@@ -2,11 +2,9 @@ import {
   isMultiplePointer,
   getPoolWeightSum,
   getWinningPointer,
-  createWebMonetizationTag,
-  setWebMonetizationTag
-} from './utils'
-import { getCurrentPointerAddress } from './main'
-import { metaTagNotFound } from './errors'
+} from '../utils'
+import { getCurrentPointerAddress } from '../main'
+import { metaTagNotFound } from '../errors'
 
 import {
   toBeInTheDocument,
@@ -44,22 +42,6 @@ describe('check multiple pointers correctly', () => {
   })
 })
 
-describe('creating web monetization tag', () => {
-  const pointer = createWebMonetizationTag('test')
-  const metaTags = document.querySelectorAll('meta[name="monetization"]')
-  test('web monetization meta tag is appended on the document', () => {
-    expect(metaTags[0]).toBeInTheDocument()
-  })
-
-  setWebMonetizationTag(pointer, 'new address')
-  test('don\'t append monetization tag if there\'s already one', () => {
-    expect(metaTags.length).toBe(1)
-  })
-  test('and now monetization tag has new address', () => {
-    expect(metaTags[0]).toHaveAttribute('content', 'new address')
-  })
-})
-
 describe('ensure pickPointer() is robust', () => {
   const myPointers = [
     {
@@ -85,19 +67,6 @@ describe('ensure pickPointer() is robust', () => {
   })
 })
 
-describe('testing getCurrentPointer()', () => {
-  const pointerAddress = '$coil.com/testing'
-  document.body.innerHTML = `<meta name="monetization" content=${pointerAddress} />`
-
-  test('get pointer address', () => {
-    expect(getCurrentPointerAddress()).toBe(pointerAddress)
-  })
-
-  test('throw not found', () => {
-    document.querySelector('meta[name="monetization"]').remove()
-    expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
-  })
-})
 describe('test getCurrentPointerAddress() when there\'s no meta tag', () => {
   test('throw not found', () => {
     expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)

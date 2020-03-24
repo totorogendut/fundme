@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "del dist /Q && rollup -c && npm run compress-iife && npm run create-compat && npm run create-cjs-compat && npm run compress-amd",
+    "pre-commit": "npm run build && git add .",
     "compress-amd": "uglifyjs --compress --mangle -o dist/fundme-amd.min.js dist/fundme-amd.js",
     "compress-iife": "uglifyjs --compress --mangle -o dist/fundme-iife.min.js dist/fundme-iife.js",
     "create-cjs-compat": "babel dist/fundme-cjs.js | uglifyjs --compress --mangle > dist/fundme-cjs-compat.min.js",
