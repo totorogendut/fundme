@@ -28,7 +28,7 @@ const validPointerObject = {
 fund(['$coil.com/my-friend-pointer-address', '$coil.com/his-friend-pointer-address', validPointerObject])
 ```
 
-Additionally, it's possible to declare pointer address in the HTML with `<template />`. For this to work `<template />` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
+Additionally, it's possible to declare pointer address in the HTML with `<template />` tags. For this to work `<template />` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
 
 `fund()` must have no parameters when using HTML template monetization.
 
