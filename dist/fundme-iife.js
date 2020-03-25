@@ -51,8 +51,10 @@ var fund = (function (exports) {
   }
   // pointers template
   const noTemplateFound = 'Fundme.js: no monetization template is found.';
-  const noDataFundIsFound = 'Fundme.js: <template /> has no data-fund attribute to parse.';
-  const templateSinglePointerHasWeight = 'Fundme.js: found single <template data-fund /> but has weight - only address will be parsed.';
+  const failParsingTemplate = 'Fundme.js: fails to parse address from <template data-fund></template>.';
+  // script json template
+  const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
+  const jsonTemplateIsNotArray = 'Fundme.js: found <script fundme> but it\'s not an array.';
 
   const DEFAULT_WEIGHT = 5;
   // TODO check pointer.address with RegEx
@@ -108,22 +110,49 @@ var fund = (function (exports) {
   }
 
   const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]';
+  const FUNDME_JSON_SELECTOR = 'script[fundme]';
   function setPointerFromTemplates() {
-      const pointers = scrapeTemplate();
+      const pointers = [...scrapeTemplate(), ...scrapeJson()];
       if (pointers.length > 1) {
-          console.log('Scrapped from templates:');
-          console.table(pointers);
           setPointerMultiple(pointers);
       }
       else if (pointers.length === 1) {
           setPointerSingle(pointers[0].address);
-          if (typeof pointers[0] !== 'string') {
-              console.warn(templateSinglePointerHasWeight);
-          }
+          // if (typeof pointers[0] !== 'string') {
+          //   console.warn(templateSinglePointerHasWeight)
+          // }
       }
       else {
-          console.warn('Pointer from template is undefined.');
+          throw new Error(noTemplateFound);
       }
+  }
+  // DON'T throw errors inside scrape functions if array is found to be empty
+  // fund() already do that
+  function scrapeJson() {
+      const scriptTags = document.body.querySelectorAll(FUNDME_JSON_SELECTOR);
+      let pointers = [];
+      if (scriptTags.length > 0) {
+          scriptTags.forEach(json => {
+              pointers = parseScriptJson(json);
+          });
+      }
+      return pointers;
+  }
+  function parseScriptJson(json) {
+      let pointers = [];
+      try {
+          pointers = JSON.parse(json.innerHTML);
+      }
+      catch (err) {
+          throw new Error(cannotParseScriptJson);
+      }
+      if (Array.isArray(pointers)) {
+          pointers = createPool(pointers);
+      }
+      else {
+          throw new Error(jsonTemplateIsNotArray);
+      }
+      return pointers;
   }
   function scrapeTemplate() {
       const templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
@@ -134,9 +163,6 @@ var fund = (function (exports) {
               pointers = [...pointers, pointer];
           });
       }
-      else {
-          throw new Error(noTemplateFound);
-      }
       return pointers;
   }
   function parseTemplate(template) {
@@ -145,7 +171,7 @@ var fund = (function (exports) {
           ? parseInt(template.dataset.fundWeight, 0)
           : DEFAULT_WEIGHT;
       if (!address) {
-          throw new Error(noDataFundIsFound);
+          throw new Error(failParsingTemplate);
       }
       const pointer = checkWeight({
           address,
@@ -155,6 +181,7 @@ var fund = (function (exports) {
   }
 
   let defaultAddress;
+  let currentFundType;
   var FundType;
   (function (FundType) {
       FundType["isSingle"] = "single";
@@ -174,27 +201,36 @@ var fund = (function (exports) {
                   else {
                       setPointerMultiple(defaultAddress);
                   }
-                  return FundType.isDefault;
+                  return setFundType(FundType.isDefault);
               }
               else {
                   throw new Error(defaultAddressNotFound);
               }
           }
           setPointerSingle(pointer);
-          return FundType.isSingle;
+          return setFundType(FundType.isSingle);
       }
       if (isMultiplePointer(pointer)) {
           setPointerMultiple(pointer);
-          return FundType.isMultiple;
+          return setFundType(FundType.isMultiple);
       }
       if (pointer === undefined) {
           setPointerFromTemplates();
-          return FundType.isFromTemplate;
+          return setFundType(FundType.isFromTemplate);
       }
       throw new Error(invalidAddress);
   }
   function setDefaultAddress(address) {
-      defaultAddress = address;
+      if (Array.isArray(address)) {
+          defaultAddress = createPool(address);
+      }
+      else {
+          defaultAddress = address;
+      }
+  }
+  function setFundType(type) {
+      currentFundType = type;
+      return currentFundType;
   }
 
   exports.fund = fund;

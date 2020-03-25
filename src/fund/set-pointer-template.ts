@@ -1,39 +1,69 @@
-import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT } from './set-pointer-multiple'
+import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool } from './set-pointer-multiple'
 import { setPointerSingle } from './set-pointer-single'
-import { noTemplateFound, noDataFundIsFound, templateSinglePointerHasWeight } from './errors'
+import { noTemplateFound, failParsingTemplate, templateSinglePointerHasWeight, cannotParseScriptJson, jsonTemplateIsNotArray } from './errors'
 
 export const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]'
+export const FUNDME_JSON_SELECTOR = 'script[fundme]'
 
 export function setPointerFromTemplates(): void {
-  const pointers: WMPointer[] = scrapeTemplate()
+  const pointers: WMPointer[] = [...scrapeTemplate(), ...scrapeJson()]
 
   if (pointers.length > 1) {
-    console.log('Scrapped from templates:')
-
-    console.table(pointers)
-
     setPointerMultiple(pointers)
   } else if (pointers.length === 1) {
     setPointerSingle(pointers[0].address)
-    if (typeof pointers[0] !== 'string') {
-      console.warn(templateSinglePointerHasWeight)
-    }
+    // if (typeof pointers[0] !== 'string') {
+    //   console.warn(templateSinglePointerHasWeight)
+    // }
   } else {
-    console.warn('Pointer from template is undefined.')
+    throw new Error(noTemplateFound)
   }
 }
 
+// DON'T throw errors inside scrape functions if array is found to be empty
+// fund() already do that
+export function scrapeJson(): WMPointer[] {
+  const scriptTags: NodeListOf<HTMLScriptElement> = document.body.querySelectorAll(FUNDME_JSON_SELECTOR)
+  let pointers: WMPointer[] = []
+
+  if (scriptTags.length > 0) {
+    scriptTags.forEach(json => {
+      pointers = parseScriptJson(json)
+    })
+  }
+
+  return pointers
+}
+
+function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
+  let pointers: WMPointer[] = []
+
+  try {
+    pointers = JSON.parse(json.innerHTML)
+  }
+  catch (err) {
+    throw new Error(cannotParseScriptJson)
+  }
+
+  if (Array.isArray(pointers)) {
+    pointers = createPool(pointers)
+  } else {
+    throw new Error(jsonTemplateIsNotArray)
+  }
+
+  return pointers
+}
+
 export function scrapeTemplate(): WMPointer[] {
-  const templates: NodeListOf<HTMLMetaElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
-  let pointers: WMPointer[] = [];
+  const templates: NodeListOf<HTMLMetaElement>
+    = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
+  let pointers: WMPointer[] = []
 
   if (templates.length > 0) {
     templates.forEach(template => {
       const pointer: WMPointer = parseTemplate(template)
       pointers = [...pointers, pointer]
     })
-  } else {
-    throw new Error(noTemplateFound)
   }
 
   return pointers
@@ -46,7 +76,7 @@ export function parseTemplate(template: any): WMPointer {
     : DEFAULT_WEIGHT
 
   if (!address) {
-    throw new Error(noDataFundIsFound)
+    throw new Error(failParsingTemplate)
   }
 
   const pointer: WMPointer = checkWeight({

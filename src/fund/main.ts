@@ -1,11 +1,12 @@
 import { isMultiplePointer } from './utils'
 import { setPointerSingle } from './set-pointer-single'
-import { setPointerMultiple } from './set-pointer-multiple'
+import { setPointerMultiple, createPool } from './set-pointer-multiple'
 import { setPointerFromTemplates } from './set-pointer-template'
 import { defaultAddressNotFound, invalidAddress, metaTagNotFound, metaTagMultipleIsFound } from './errors'
 
 export let defaultAddress: WMAddress;
 export let currentPointer: WMAddress;
+export let currentFundType: FundType;
 
 export enum FundType {
   isSingle = 'single',
@@ -25,33 +26,43 @@ export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
         } else {
           setPointerMultiple(defaultAddress);
         }
-        return FundType.isDefault
+        return setFundType(FundType.isDefault)
       } else {
         throw new Error(defaultAddressNotFound)
       }
     }
     setPointerSingle(pointer);
-    return FundType.isSingle
+    return setFundType(FundType.isSingle)
   }
 
   if (isMultiplePointer(pointer)) {
     setPointerMultiple(pointer);
-    return FundType.isMultiple
+    return setFundType(FundType.isMultiple)
   }
 
   if (pointer === undefined) {
     setPointerFromTemplates()
-    return FundType.isFromTemplate
+    return setFundType(FundType.isFromTemplate)
   }
   throw new Error(invalidAddress);
 }
 
 export function setDefaultAddress(address: WMAddress): void {
-  defaultAddress = address
+  if (Array.isArray(address)) {
+    defaultAddress = createPool(address)
+  } else {
+    defaultAddress = address
+  }
 }
 
 export function setCurrentPointer(pointer: string | WMPointer[]) {
   currentPointer = pointer
+}
+
+export function setFundType(type: FundType): FundType {
+  currentFundType = type
+
+  return currentFundType
 }
 
 export function getCurrentPointerAddress(): string {
@@ -72,9 +83,13 @@ export function getCurrentPointerAddress(): string {
 export function getCurrentPointerPool(): Array<string | WMPointer> {
   let pointer = currentPointer
 
+  return convertToPointerPool(pointer)
+}
+
+export function convertToPointerPool(pointer: WMAddress): Array<string | WMPointer> {
   if (!Array.isArray(pointer)) {
     pointer = [pointer]
   }
 
   return pointer
-}
+} 

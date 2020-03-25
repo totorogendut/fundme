@@ -15,6 +15,10 @@ export const metaTagMultipleIsFound = 'Fundme.js: multiple <meta name="monetizat
 
 // pointers template
 export const noTemplateFound = 'Fundme.js: no monetization template is found.'
-export const noDataFundIsFound = 'Fundme.js: <template /> has no data-fund attribute to parse.'
+export const failParsingTemplate = 'Fundme.js: fails to parse address from <template data-fund></template>.'
 export const templateSinglePointerHasWeight
-  = 'Fundme.js: found single <template data-fund /> but has weight - only address will be parsed.'
+  = 'Fundme.js: found single <template data-fund></template> but has weight - only address will be parsed.'
+
+// script json template
+export const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.'
+export const jsonTemplateIsNotArray = 'Fundme.js: found <script fundme> but it\'s not an array.'
