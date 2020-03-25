@@ -1,6 +1,6 @@
 {
   "name": "fundme",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Simple but powerful tool to get started with Web Monetization API.",
   "main": "./dist/fundme-cjs.js",
   "module": "./dist/fundme.mjs",
@@ -9,10 +9,16 @@
     "@testing-library/jest-dom": "^5.1.1",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.2",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "del-cli": "^3.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
     "jest": "^25.1.0",
+    "prettier": "^2.0.2",
     "rollup": "^2.1.0",
     "rollup-plugin-typescript2": "^0.26.0",
     "ts-jest": "^25.2.1",
@@ -20,6 +26,7 @@
     "uglify-es": "^3.3.9"
   },
   "scripts": {
+    "version": "npm run build",
     "build": "del dist /Q && rollup -c && npm run compress-iife && npm run create-compat && npm run create-cjs-compat && npm run compress-amd",
     "pre-commit": "npm run build && git add .",
     "compress-amd": "uglifyjs --compress --mangle -o dist/fundme-amd.min.js dist/fundme-amd.js",

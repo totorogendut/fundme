@@ -1,6 +1,12 @@
 import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool } from './set-pointer-multiple'
 import { setPointerSingle } from './set-pointer-single'
-import { noTemplateFound, failParsingTemplate, templateSinglePointerHasWeight, cannotParseScriptJson, jsonTemplateIsNotArray } from './errors'
+import {
+  noTemplateFound,
+  failParsingTemplate,
+  templateSinglePointerHasWeight,
+  cannotParseScriptJson,
+  jsonTemplateIsNotArray,
+} from './errors'
 
 export const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]'
 export const FUNDME_JSON_SELECTOR = 'script[fundme]'
@@ -27,7 +33,7 @@ export function scrapeJson(): WMPointer[] {
   let pointers: WMPointer[] = []
 
   if (scriptTags.length > 0) {
-    scriptTags.forEach(json => {
+    scriptTags.forEach((json) => {
       pointers = parseScriptJson(json)
     })
   }
@@ -40,8 +46,7 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
 
   try {
     pointers = JSON.parse(json.innerHTML)
-  }
-  catch (err) {
+  } catch (err) {
     throw new Error(cannotParseScriptJson)
   }
 
@@ -55,12 +60,11 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
 }
 
 export function scrapeTemplate(): WMPointer[] {
-  const templates: NodeListOf<HTMLMetaElement>
-    = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
+  const templates: NodeListOf<HTMLMetaElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
   let pointers: WMPointer[] = []
 
   if (templates.length > 0) {
-    templates.forEach(template => {
+    templates.forEach((template) => {
       const pointer: WMPointer = parseTemplate(template)
       pointers = [...pointers, pointer]
     })
@@ -71,9 +75,8 @@ export function scrapeTemplate(): WMPointer[] {
 
 export function parseTemplate(template: any): WMPointer {
   let address: string = template.dataset.fund
-  let weight: number = template.dataset.fundWeight !== undefined
-    ? parseInt(template.dataset.fundWeight, 0)
-    : DEFAULT_WEIGHT
+  let weight: number =
+    template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT
 
   if (!address) {
     throw new Error(failParsingTemplate)
@@ -81,7 +84,7 @@ export function parseTemplate(template: any): WMPointer {
 
   const pointer: WMPointer = checkWeight({
     address,
-    weight
+    weight,
   })
 
   return pointer

@@ -8,7 +8,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
     document.body.innerHTML = ''
   })
 
-  test('found <script fundme> but it\'s not an array', () => {
+  test("found <script fundme> but it's not an array", () => {
     document.body.innerHTML = `
       <script fundme type="application/json">
         {
@@ -21,7 +21,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
     document.body.innerHTML = ''
   })
 
-  test('found <script fundme> but it\'s not a valid JSON', () => {
+  test("found <script fundme> but it's not a valid JSON", () => {
     document.body.innerHTML = `
       <script fundme type="application/json">
         $coil.com/test-@@

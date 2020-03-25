@@ -1,13 +1,8 @@
-import {
-  setWebMonetizationPointer
-} from '../utils'
+import { setWebMonetizationPointer } from '../utils'
 
 import { getCurrentPointerAddress } from '../main'
 
-import {
-  toBeInTheDocument,
-  toHaveAttribute,
-} from '@testing-library/jest-dom/matchers'
+import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 import { metaTagMultipleIsFound, metaTagNotFound } from '../errors'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })

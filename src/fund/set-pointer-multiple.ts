@@ -1,15 +1,15 @@
 import { getWinningPointer, setWebMonetizationPointer, getPoolWeightSum } from './utils'
 import { addressNotFound, addressIsNotAString, weightIsNotANumber } from './errors'
-import { setCurrentPointer } from './main';
+import { setCurrentPointer } from './main'
 
-export const DEFAULT_WEIGHT: number = 5;
+export const DEFAULT_WEIGHT: number = 5
 
 // TODO check pointer.address with RegEx
 export function setPointerMultiple(pointers: Array<string | WMPointer>): void {
   const pool = createPool(pointers)
   const pickedPointer = pickPointer(pool)
   setCurrentPointer(pool)
-  setWebMonetizationPointer(getPointerAddress(pickedPointer));
+  setWebMonetizationPointer(getPointerAddress(pickedPointer))
 }
 
 export function getPointerAddress(pointer: WMPointer): string {
@@ -24,23 +24,23 @@ export function getPointerAddress(pointer: WMPointer): string {
 }
 
 export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
-  return pointers.map(pointer => {
-    let wmPointer: WMPointer;
-    if (typeof pointer === "string") pointer = convertToPointer(pointer)
+  return pointers.map((pointer) => {
+    let wmPointer: WMPointer
+    if (typeof pointer === 'string') pointer = convertToPointer(pointer)
     if (!('address' in pointer)) throw new Error(addressNotFound)
-    wmPointer = checkWeight(pointer);
+    wmPointer = checkWeight(pointer)
 
-    return wmPointer;
+    return wmPointer
   })
 }
 
 export function checkWeight(pointer: WMPointer): WMPointer {
   if (pointer.weight === undefined || pointer.weight === NaN) {
-    console.warn(weightIsNotANumber(pointer.address));
-    pointer.weight = DEFAULT_WEIGHT;
+    console.warn(weightIsNotANumber(pointer.address))
+    pointer.weight = DEFAULT_WEIGHT
   }
 
-  return pointer;
+  return pointer
 }
 
 // TODO getting pointer from pool
@@ -60,7 +60,7 @@ export function getChoice(sum: number): number {
 export function convertToPointer(str: string): WMPointer {
   const pointer = {
     address: str,
-    weight: DEFAULT_WEIGHT
+    weight: DEFAULT_WEIGHT,
   }
   return pointer
 }

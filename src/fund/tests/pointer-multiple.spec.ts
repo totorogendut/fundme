@@ -1,9 +1,15 @@
-import { pickPointer, getPointerAddress, getChoice, setPointerMultiple, convertToPointer, createPool, DEFAULT_WEIGHT, checkWeight } from '../set-pointer-multiple'
-import { setWebMonetizationPointer } from '../utils'
 import {
-  toBeInTheDocument,
-  toHaveAttribute,
-} from '@testing-library/jest-dom/matchers'
+  pickPointer,
+  getPointerAddress,
+  getChoice,
+  setPointerMultiple,
+  convertToPointer,
+  createPool,
+  DEFAULT_WEIGHT,
+  checkWeight,
+} from '../set-pointer-multiple'
+import { setWebMonetizationPointer } from '../utils'
+import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 
@@ -13,14 +19,14 @@ describe('pointers having correct payment address', () => {
 
     expect(convertToPointer(s)).toStrictEqual({
       address: 'myaddress',
-      weight: DEFAULT_WEIGHT
+      weight: DEFAULT_WEIGHT,
     })
   })
 
   test('correcting get address (string) from pointer', () => {
     const pointer = {
       address: 'my address is cool',
-      weight: 55
+      weight: 55,
     }
 
     expect(getPointerAddress(pointer)).toBe('my address is cool')
@@ -28,7 +34,7 @@ describe('pointers having correct payment address', () => {
 
   test('pointer.address must not undefined', () => {
     const pointer = {
-      weight: 11
+      weight: 11,
     }
     // @ts-ignore
     expect(() => getPointerAddress(pointer)).toThrowError(/not found/)
@@ -36,7 +42,7 @@ describe('pointers having correct payment address', () => {
   test('pointer.address must not undefined', () => {
     const pointer = {
       address: 222,
-      weight: 11
+      weight: 11,
     }
     // @ts-ignore
     expect(() => getPointerAddress(pointer)).toThrowError(/must be a string/)
@@ -47,12 +53,12 @@ describe('pointers having correct payment address', () => {
       'myaddress',
       // @ts-ignore
       {
-        weight: 5
+        weight: 5,
       },
       {
         address: 'myaddress2',
-        weight: 11
-      }
+        weight: 11,
+      },
     ]
     // @ts-ignore
     expect(() => setPointerMultiple(pointers)).toThrow()
@@ -64,15 +70,15 @@ describe('creating weight pool', () => {
     'my address',
     {
       address: 'address with weight',
-      weight: 10
+      weight: 10,
     },
-    'my other address'
+    'my other address',
   ]
   const pool = createPool(rawPointers)
   test('convert all string to legal pointers', () => {
-    let noString = pool.every(pointer => {
-      return ('address' in pointer) && ('weight' in pointer)
-    });
+    let noString = pool.every((pointer) => {
+      return 'address' in pointer && 'weight' in pointer
+    })
 
     expect(noString).toBeTruthy()
   })
@@ -83,11 +89,11 @@ describe('pointers from weight pool', () => {
     const pointers1 = [
       {
         address: 'with weight',
-        weight: 11
+        weight: 11,
       },
       {
         address: 'another weight',
-        weight: 5
+        weight: 5,
       },
       {
         address: 'doge',
@@ -95,7 +101,7 @@ describe('pointers from weight pool', () => {
       },
       {
         address: 'pussycat',
-        weight: 0
+        weight: 0,
       },
     ]
     expect(pickPointer(pointers1).address).toContain('weight')
@@ -108,7 +114,7 @@ describe('pointers from weight pool', () => {
       },
       {
         address: 'noweight',
-        weight: 0
+        weight: 0,
       },
     ]
 
@@ -117,7 +123,7 @@ describe('pointers from weight pool', () => {
 
   test('correct empty weight on WMPointer', () => {
     const pointer = {
-      address: 'my.address/'
+      address: 'my.address/',
     }
 
     // @ts-ignore
@@ -131,4 +137,3 @@ describe('pointers from weight pool', () => {
     expect(choice).toBeLessThanOrEqual(55)
   })
 })
-

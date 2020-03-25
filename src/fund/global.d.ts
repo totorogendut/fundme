@@ -1,13 +1,13 @@
-type WMAddress = string | Array<string | WMPointer> | undefined;
+type WMAddress = string | Array<string | WMPointer> | undefined
 
 interface WMPointer {
-  address: string;
-  weight: number;
+  address: string
+  weight: number
 }
 
 interface fundOptions {
-  maxPool?: number;
-  default?: boolean;
+  maxPool?: number
+  default?: boolean
 }
 
 // declare var document: any;

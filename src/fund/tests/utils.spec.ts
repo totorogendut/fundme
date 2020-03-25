@@ -1,18 +1,10 @@
-import {
-  isMultiplePointer,
-  getPoolWeightSum,
-  getWinningPointer,
-} from '../utils'
+import { isMultiplePointer, getPoolWeightSum, getWinningPointer } from '../utils'
 import { getCurrentPointerAddress } from '../main'
 import { metaTagNotFound } from '../errors'
 
-import {
-  toBeInTheDocument,
-  toHaveAttribute,
-} from '@testing-library/jest-dom/matchers'
+import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
-
 
 describe('check multiple pointers correctly', () => {
   test('if pointer is array', () => {
@@ -24,8 +16,8 @@ describe('check multiple pointers correctly', () => {
   })
   test('if pointer is object', () => {
     const obj = {
-      address: "myaddress",
-      weight: 10
+      address: 'myaddress',
+      weight: 10,
     }
 
     expect(isMultiplePointer(obj)).toBeFalsy()
@@ -46,16 +38,16 @@ describe('ensure pickPointer() is robust', () => {
   const myPointers = [
     {
       address: 'coolguy',
-      weight: 33
+      weight: 33,
     },
     {
       address: 'someother guy',
-      weight: 22
+      weight: 22,
     },
     {
-      address: 'is doesn\'t matter',
-      weight: 45
-    }
+      address: "is doesn't matter",
+      weight: 45,
+    },
   ]
   const choice = 50
   test('get correct sum for pool weight', () => {
@@ -67,7 +59,7 @@ describe('ensure pickPointer() is robust', () => {
   })
 })
 
-describe('test getCurrentPointerAddress() when there\'s no meta tag', () => {
+describe("test getCurrentPointerAddress() when there's no meta tag", () => {
   test('throw not found', () => {
     expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
   })

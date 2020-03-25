@@ -1,9 +1,6 @@
 import { fund, getCurrentPointerPool } from '../main'
 
-import {
-  toBeInTheDocument,
-  toHaveAttribute,
-} from '@testing-library/jest-dom/matchers'
+import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 

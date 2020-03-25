@@ -1,4 +1,3 @@
-
 import { metaTagNotFound } from '../errors'
 import { getCurrentPointerAddress } from '../main'
 
@@ -10,7 +9,6 @@ describe('no currentpointer atm', () => {
 })
 
 describe('testing getCurrentPointer()', () => {
-
   test('get pointer address', () => {
     const pointerAddress = '$coil.com/testing'
     document.head.innerHTML = `<meta name="monetization" content=${pointerAddress} />`
@@ -18,4 +16,3 @@ describe('testing getCurrentPointer()', () => {
     document.head.innerHTML = ''
   })
 })
-

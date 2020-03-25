@@ -4,39 +4,39 @@ import { setPointerMultiple, createPool } from './set-pointer-multiple'
 import { setPointerFromTemplates } from './set-pointer-template'
 import { defaultAddressNotFound, invalidAddress, metaTagNotFound, metaTagMultipleIsFound } from './errors'
 
-export let defaultAddress: WMAddress;
-export let currentPointer: WMAddress;
-export let currentFundType: FundType;
+export let defaultAddress: WMAddress
+export let currentPointer: WMAddress
+export let currentFundType: FundType
 
 export enum FundType {
   isSingle = 'single',
   isMultiple = 'multiple',
   isDefault = 'default',
   isFromTemplate = 'template',
-  isUndefined = 'undefined'
+  isUndefined = 'undefined',
 }
 
 export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
   // const setDefault = options && options.default
-  if (typeof pointer === "string") {
+  if (typeof pointer === 'string') {
     if (pointer === 'default') {
       if (defaultAddress !== undefined) {
         if (typeof defaultAddress === 'string') {
-          setPointerSingle(defaultAddress);
+          setPointerSingle(defaultAddress)
         } else {
-          setPointerMultiple(defaultAddress);
+          setPointerMultiple(defaultAddress)
         }
         return setFundType(FundType.isDefault)
       } else {
         throw new Error(defaultAddressNotFound)
       }
     }
-    setPointerSingle(pointer);
+    setPointerSingle(pointer)
     return setFundType(FundType.isSingle)
   }
 
   if (isMultiplePointer(pointer)) {
-    setPointerMultiple(pointer);
+    setPointerMultiple(pointer)
     return setFundType(FundType.isMultiple)
   }
 
@@ -44,7 +44,7 @@ export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
     setPointerFromTemplates()
     return setFundType(FundType.isFromTemplate)
   }
-  throw new Error(invalidAddress);
+  throw new Error(invalidAddress)
 }
 
 export function setDefaultAddress(address: WMAddress): void {
@@ -66,8 +66,7 @@ export function setFundType(type: FundType): FundType {
 }
 
 export function getCurrentPointerAddress(): string {
-  const metaTag: NodeListOf<HTMLMetaElement> =
-    document.head.querySelectorAll('meta[name="monetization"]')
+  const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
 
   if (metaTag.length > 1) {
     throw new Error(metaTagMultipleIsFound)
@@ -92,4 +91,4 @@ export function convertToPointerPool(pointer: WMAddress): Array<string | WMPoint
   }
 
   return pointer
-} 
+}

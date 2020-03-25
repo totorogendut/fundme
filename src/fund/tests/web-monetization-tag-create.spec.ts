@@ -1,12 +1,6 @@
-import {
-  createWebMonetizationTag,
-  setWebMonetizationTag
-} from '../utils'
+import { createWebMonetizationTag, setWebMonetizationTag } from '../utils'
 
-import {
-  toBeInTheDocument,
-  toHaveAttribute,
-} from '@testing-library/jest-dom/matchers'
+import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 
@@ -18,7 +12,7 @@ describe('creating web monetization tag', () => {
   })
 
   setWebMonetizationTag(pointer, 'new address')
-  test('don\'t append monetization tag if there\'s already one', () => {
+  test("don't append monetization tag if there's already one", () => {
     const metaTags = document.head.querySelectorAll('meta[name="monetization"]')
     expect(metaTags.length).toBe(1)
   })

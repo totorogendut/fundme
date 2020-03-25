@@ -1,12 +1,8 @@
 import { fund, getCurrentPointerPool } from '../main'
 
-import {
-  toBeInTheDocument,
-  toHaveAttribute,
-} from '@testing-library/jest-dom/matchers'
+import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
-
 
 describe('get monetization pointer address from <template></template>', () => {
   test('fund() will scrape from template', () => {
@@ -62,7 +58,7 @@ describe('get monetization pointer address from <template></template>', () => {
     fund()
     const metaTag: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
     expect(metaTag).toBeInTheDocument()
-    expect(metaTag.content).toBe(pointerAddress + "222")
+    expect(metaTag.content).toBe(pointerAddress + '222')
     // @ts-ignore
     expect(getCurrentPointerPool()[0].weight).not.toBe(NaN)
 

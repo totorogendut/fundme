@@ -9,10 +9,14 @@ describe('correctly fund() argument', () => {
   })
 
   test('get multiple pointer if parameter is an array', () => {
-    const myFundingType = fund(['test', 'address2', {
-      address: 'Wooooww',
-      weight: 4
-    }])
+    const myFundingType = fund([
+      'test',
+      'address2',
+      {
+        address: 'Wooooww',
+        weight: 4,
+      },
+    ])
 
     expect(myFundingType).toBe(FundType.isMultiple)
   })
@@ -29,4 +33,3 @@ describe('correctly fund() argument', () => {
     expect(() => fund({})).toThrowError(invalidAddress)
   })
 })
-

@@ -4,12 +4,12 @@ describe('test getCurrentPointerPool()', () => {
   test('it returns correct pool', () => {
     const pointers = [
       {
-        address: "$coil.com/pointer-test",
-        weight: 44
+        address: '$coil.com/pointer-test',
+        weight: 44,
       },
       {
-        address: "$coil.com/pointer-test2",
-        weight: 33
+        address: '$coil.com/pointer-test2',
+        weight: 33,
       },
     ]
     document.body.innerHTML = `
@@ -23,7 +23,7 @@ describe('test getCurrentPointerPool()', () => {
   })
 
   test('convertToPointerPool ensure returning an array', () => {
-    const pointer = "$coil.com/pointer"
+    const pointer = '$coil.com/pointer'
 
     expect(convertToPointerPool(pointer)).toEqual([pointer])
   })

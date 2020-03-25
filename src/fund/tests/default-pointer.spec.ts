@@ -1,4 +1,4 @@
-import { fund, setDefaultAddress, defaultAddress, getCurrentPointerAddress, getCurrentPointerPool, } from '../main'
+import { fund, setDefaultAddress, getCurrentPointerAddress, getCurrentPointerPool } from '../main'
 import { defaultAddressNotFound } from '../errors'
 import { DEFAULT_WEIGHT } from '../set-pointer-multiple'
 
@@ -15,17 +15,17 @@ describe('default pointer', () => {
       // @ts-ignore
       {
         address: '$coil.com/test',
-        weight: 6
+        weight: 6,
       },
       {
         address: '$xrp.com/my-address2',
-        weight: 11
-      }
+        weight: 11,
+      },
     ]
     setDefaultAddress(pointers)
     const expectedPointers = [
       {
-        address: "$twitter.com/my-address",
+        address: '$twitter.com/my-address',
         weight: DEFAULT_WEIGHT,
       },
       {
@@ -34,14 +34,14 @@ describe('default pointer', () => {
       },
       {
         address: '$xrp.com/my-address2',
-        weight: 11
-      }
+        weight: 11,
+      },
     ]
 
     fund('default')
     expect(getCurrentPointerPool()).toEqual(expectedPointers)
   })
-  test('throw if using default but default address hasn\'t been set', () => {
+  test("throw if using default but default address hasn't been set", () => {
     setDefaultAddress(undefined)
     expect(() => fund('default')).toThrowError(defaultAddressNotFound)
   })

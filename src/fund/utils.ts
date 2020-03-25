@@ -5,7 +5,7 @@ export function isMultiplePointer(s: any): boolean {
 }
 
 export function setWebMonetizationPointer(address: string): HTMLMetaElement {
-  let wmAddress: HTMLMetaElement = document.querySelector('meta[name="monetization"]');
+  let wmAddress: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
 
   return setWebMonetizationTag(wmAddress, address)
 }
@@ -30,9 +30,8 @@ export function createWebMonetizationTag(address: string): HTMLMetaElement {
 }
 
 export function getPoolWeightSum(pointers: WMPointer[]): number {
-  const weights: number[] = pointers.map(pointer => pointer.weight)
-  return Object.values(weights)
-    .reduce((sum: number, weight: number): number => sum + weight, 0)
+  const weights: number[] = pointers.map((pointer) => pointer.weight)
+  return Object.values(weights).reduce((sum: number, weight: number): number => sum + weight, 0)
 }
 
 export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
