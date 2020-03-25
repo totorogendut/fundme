@@ -50,12 +50,13 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ## Short-term goal
 
+- [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid
 - [ ] Simpler and more intuitive implementation that will goes nicely with current API standard.
 - [ ] Make a JAMstack website to host documentation.
 - [ ] Early and basic asynchronous ads support (like amp-ads).
 - [ ] Integrate basic cookies prompt flow and make ads cookie aware if possible (by using non-personalized ads).
 - [ ] Web components / Stencil to provide basic `VIP only content` for Web Monetization subscribers.
-- [ ] More robust API! Better test!
+- [ ] More robust API! Better tests!
 
 ## Long term goal
 

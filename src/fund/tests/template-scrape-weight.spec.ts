@@ -16,7 +16,6 @@ describe('get weight from <template data-fund-weight="xx" />', () => {
     `
     fund()
     const pool = getCurrentPointerPool()
-    console.log(JSON.stringify(pool))
     // @ts-ignore
     expect(pool[0].weight).toBe(52)
     document.body.innerHTML = ''
