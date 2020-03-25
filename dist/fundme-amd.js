@@ -24,9 +24,8 @@ define(['exports'], function (exports) { 'use strict';
       return wmAddress;
   }
   function getPoolWeightSum(pointers) {
-      const weights = pointers.map(pointer => pointer.weight);
-      return Object.values(weights)
-          .reduce((sum, weight) => sum + weight, 0);
+      const weights = pointers.map((pointer) => pointer.weight);
+      return Object.values(weights).reduce((sum, weight) => sum + weight, 0);
   }
   function getWinningPointer(pointers, choice) {
       for (const pointer in pointers) {
@@ -43,8 +42,8 @@ define(['exports'], function (exports) { 'use strict';
 
   const defaultAddressNotFound = 'Fundme.js: default address not found. Use setDefaultAddress(str: string) to set it first.';
   const invalidAddress = 'Fundme.js: Invalid Web Monetization pointer address is given.';
-  const addressNotFound = "Fundme.js: address not found.";
-  const addressIsNotAString = "Fundme.js: address must be a string.";
+  const addressNotFound = 'Fundme.js: address not found.';
+  const addressIsNotAString = 'Fundme.js: address must be a string.';
   function weightIsNotANumber(str) {
       return `Fundme.js: ${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`;
   }
@@ -53,7 +52,7 @@ define(['exports'], function (exports) { 'use strict';
   const failParsingTemplate = 'Fundme.js: fails to parse address from <template data-fund></template>.';
   // script json template
   const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
-  const jsonTemplateIsNotArray = 'Fundme.js: found <script fundme> but it\'s not an array.';
+  const jsonTemplateIsNotArray = "Fundme.js: found <script fundme> but it's not an array.";
 
   const DEFAULT_WEIGHT = 5;
   // TODO check pointer.address with RegEx
@@ -73,9 +72,9 @@ define(['exports'], function (exports) { 'use strict';
       return address;
   }
   function createPool(pointers) {
-      return pointers.map(pointer => {
+      return pointers.map((pointer) => {
           let wmPointer;
-          if (typeof pointer === "string")
+          if (typeof pointer === 'string')
               pointer = convertToPointer(pointer);
           if (!('address' in pointer))
               throw new Error(addressNotFound);
@@ -103,7 +102,7 @@ define(['exports'], function (exports) { 'use strict';
   function convertToPointer(str) {
       const pointer = {
           address: str,
-          weight: DEFAULT_WEIGHT
+          weight: DEFAULT_WEIGHT,
       };
       return pointer;
   }
@@ -131,7 +130,7 @@ define(['exports'], function (exports) { 'use strict';
       const scriptTags = document.body.querySelectorAll(FUNDME_JSON_SELECTOR);
       let pointers = [];
       if (scriptTags.length > 0) {
-          scriptTags.forEach(json => {
+          scriptTags.forEach((json) => {
               pointers = parseScriptJson(json);
           });
       }
@@ -157,7 +156,7 @@ define(['exports'], function (exports) { 'use strict';
       const templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
       let pointers = [];
       if (templates.length > 0) {
-          templates.forEach(template => {
+          templates.forEach((template) => {
               const pointer = parseTemplate(template);
               pointers = [...pointers, pointer];
           });
@@ -166,15 +165,13 @@ define(['exports'], function (exports) { 'use strict';
   }
   function parseTemplate(template) {
       let address = template.dataset.fund;
-      let weight = template.dataset.fundWeight !== undefined
-          ? parseInt(template.dataset.fundWeight, 0)
-          : DEFAULT_WEIGHT;
+      let weight = template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT;
       if (!address) {
           throw new Error(failParsingTemplate);
       }
       const pointer = checkWeight({
           address,
-          weight
+          weight,
       });
       return pointer;
   }
@@ -191,7 +188,7 @@ define(['exports'], function (exports) { 'use strict';
   })(FundType || (FundType = {}));
   function fund(pointer, options) {
       // const setDefault = options && options.default
-      if (typeof pointer === "string") {
+      if (typeof pointer === 'string') {
           if (pointer === 'default') {
               if (defaultAddress !== undefined) {
                   if (typeof defaultAddress === 'string') {
