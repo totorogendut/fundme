@@ -58,6 +58,7 @@ If you prefer to work directly from JSON, like listing revenue sharing contribut
     }
   ]
 </script>
+
 <script src="/path/to/fundme.js"></script>
 <script>
   fund()
