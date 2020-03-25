@@ -1,6 +1,6 @@
 {
   "name": "fundme",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Simple but powerful tool to get started with Web Monetization API.",
   "main": "./dist/fundme-cjs.js",
   "module": "./dist/fundme.mjs",
