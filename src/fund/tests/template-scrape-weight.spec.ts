@@ -12,7 +12,7 @@ describe('get weight from <template data-fund-weight="xx" />', () => {
     const pointerAddress = '$coil.com/pointer-address1'
     document.body.innerHTML = `
       <template data-fund="${pointerAddress}" data-fund-weight="52" ></template>
-      <template data-fund="${pointerAddress}2" data-fund-weight="22" />
+      <template data-fund="${pointerAddress}2" data-fund-weight="22" ></template>
     `
     fund()
     const pool = getCurrentPointerPool()

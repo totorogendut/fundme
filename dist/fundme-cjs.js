@@ -108,9 +108,12 @@ function convertToPointer(str) {
     return pointer;
 }
 
+const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]';
 function setPointerFromTemplates() {
     const pointers = scrapeTemplate();
     if (pointers.length > 1) {
+        console.log('Scrapped from templates:');
+        console.table(pointers);
         setPointerMultiple(pointers);
     }
     else if (pointers.length === 1) {
@@ -124,7 +127,7 @@ function setPointerFromTemplates() {
     }
 }
 function scrapeTemplate() {
-    const templates = document.body.querySelectorAll('template[data-fund]');
+    const templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
     let pointers = [];
     if (templates.length > 0) {
         templates.forEach(template => {
@@ -139,7 +142,9 @@ function scrapeTemplate() {
 }
 function parseTemplate(template) {
     let address = template.dataset.fund;
-    let weight = parseInt(template.dataset.fundWeight);
+    let weight = template.dataset.fundWeight !== undefined
+        ? parseInt(template.dataset.fundWeight, 0)
+        : DEFAULT_WEIGHT;
     if (!address) {
         throw new Error(noDataFundIsFound);
     }
@@ -147,7 +152,6 @@ function parseTemplate(template) {
         address,
         weight
     });
-    console.table(pointer);
     return pointer;
 }
 

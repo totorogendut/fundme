@@ -106,9 +106,12 @@ define(['exports'], function (exports) { 'use strict';
       return pointer;
   }
 
+  const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]';
   function setPointerFromTemplates() {
       const pointers = scrapeTemplate();
       if (pointers.length > 1) {
+          console.log('Scrapped from templates:');
+          console.table(pointers);
           setPointerMultiple(pointers);
       }
       else if (pointers.length === 1) {
@@ -122,7 +125,7 @@ define(['exports'], function (exports) { 'use strict';
       }
   }
   function scrapeTemplate() {
-      const templates = document.body.querySelectorAll('template[data-fund]');
+      const templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
       let pointers = [];
       if (templates.length > 0) {
           templates.forEach(template => {
@@ -137,7 +140,9 @@ define(['exports'], function (exports) { 'use strict';
   }
   function parseTemplate(template) {
       let address = template.dataset.fund;
-      let weight = parseInt(template.dataset.fundWeight);
+      let weight = template.dataset.fundWeight !== undefined
+          ? parseInt(template.dataset.fundWeight, 0)
+          : DEFAULT_WEIGHT;
       if (!address) {
           throw new Error(noDataFundIsFound);
       }
@@ -145,7 +150,6 @@ define(['exports'], function (exports) { 'use strict';
           address,
           weight
       });
-      console.table(pointer);
       return pointer;
   }
 
