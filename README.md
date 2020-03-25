@@ -42,6 +42,28 @@ Additionally, it's possible to declare pointer address in the HTML with `<templa
 </script>
 ```
 
+If you prefer to work directly from JSON, like listing revenue sharing contributors from server-side, you can also write an array in `<script fundme type="application/json">` tags. (Note the `fundme` attribute!)
+
+```html
+<script fundme type="application/json">
+  [
+    "$xrp.com/some-address-with-no-weight",
+    {
+      "address": "$coil.com/address-with-weight",
+      "weight": 12
+    },
+    {
+      "address": "$coil.com/another-one-with-weight",
+      "weight": 3
+    }
+  ]
+</script>
+<script src="/path/to/fundme.js"></script>
+<script>
+  fund()
+</script>
+```
+
 ## What is this, really (?)
 
 Fundme.js is a whole tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
