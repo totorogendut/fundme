@@ -5,11 +5,21 @@ A simple but powerful client-side library to manage monetization on the web.
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master) ![GitHub top language](https://img.shields.io/github/languages/top/prognovel/fundme) ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/fundme) ![npm](https://img.shields.io/npm/v/fundme) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/fundme)
 
-## Dig in (Warning, WIP!)
+## Dig in
+
+```shell
+npm i fundme --save
+```
 
 _This library is still work in progress, not ready for production! Tested and worked using Webpack with ES Module import._
 
-### Get Started with Web Monetization API!
+### Get Started with Web Monetization API
+
+Web Monetization API is a new web standard being developed to provide better payment alternative for publishers and creators other than ads. Learn more about it on [https://www.webmonetization.org](https://www.webmonetization.org).
+
+#### Using Fundme.js with bundler; webpack, rollup, parcel, etc
+
+Example with ES Module
 
 ```js
 import { fund } from 'fundme'
@@ -17,35 +27,75 @@ import { fund } from 'fundme'
 fund('$coil.com/some-guy-funding-address')
 ```
 
-or you can split revenue using [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
+Or with CommonJS
+
+```js
+const fund = require('fundme').fund
+
+fund('$coil.com/some-guy-funding-address')
+```
+
+#### Using Fundme.js in the browser
+
+Fundme.js is designed to be fully tree-shakeable library thus it has quite a weird way to use in the browser than normal library. It needs to use IIFE (Immediately Invoke Function E) to get exported function that normally use in brackets when importing it with ES Module.
+
+```html
+<script src="/dist/fundme-iife.min.js"></script>
+<script>
+  fundme.fund('$coil.com/my-address')
+</script>
+```
+
+### Using Fundme.js Server-Side in Node
+
+**WIP** - Server-Side Fundme.js is in the roadmap for short-term goal.
+
+### Advanced Monetization - Revenue Share Among Contributors
+
+Web Monetization API can only stream one pointer address due to performance issue, but you can split revenue using [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method that relies on chance whoever gets picked among contributors.
 
 To split revenue, `fund(pointerAddress)` must take an array containing strings or our own opiniated Web Monetization pointer object. Pointer address objects must have `address` and `weight` in it.
+
+Below is a scenario where author of a content get the most of the revenue of an article, while editor and proofreader get the same slice of the pie, while the website owner get the least (website owner's chance isn't being implictly set, but more that on the code).
 
 ```js
 import { fund } from 'fundme'
 
-const validPointerObject = {
-  address: '$coil.com/my-address',
-  weight: 44,
+const AuthorPointerAddress = {
+  address: '$coil.xrptipbot.com/author-address',
+  weight: 40,
 }
 
-fund(['$coil.com/my-friend-pointer-address', '$coil.com/his-friend-pointer-address', validPointerObject])
+const EditorPointerAddress = {
+  address: '$coil.xrptipbot.com/editor-address',
+  weight: 10,
+}
 
-// for address that doesn't have weight
-// fundme.js will set it to default value (5)
+const ProofreaderPointerAddress = {
+  address: '$coil.xrptipbot.com/proofreader-address',
+  weight: 10,
+}
+
+// pointers with type string or those with no weight will use
+// default weight which is 5
+const WebsiteOwnerPointerAddress = '$coil.xrptipbot.com/website-owner'
+
+// calling the function...
+fund([AuthorPointerAddress, EditorPointerAddress, ProofreaderPointerAddress, WebsiteOwnerPointerAddress])
 ```
 
-Additionally, it's possible to declare pointer address in the HTML with `<template></template>` tags. For this to work `<template></template>` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
+Additionally, it's possible to declare pointer address with `<template></template>` tags. Instead of pointing payment address in function parameters you can set it beforehand in the HTML and let fundme.js scrape them during the browser runtime. For this to work, `<template></template>` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
 
 `fund()` must have no parameters when using HTML template monetization. Note that below are for examples purpose (you can use the template tags in HTML but please use ES Module import to use `fund()` for now).
 
 ```html
+<!-- WARNING: you must close <template> tags with proper closing tag -->
 <template data-fund="$coil.com/my-address" data-fund-weight="10"></template>
 <template data-fund="$coil.com/my-friend-address" data-fund-weight="7"></template>
 
-<script src="/path/to/fundme.js"></script>
+<script src="/dist/fundme-iife.min.js"></script>
 <script>
-  fund()
+  fundme.fund('$coil.com/my-address')
 </script>
 ```
 
@@ -66,8 +116,11 @@ If you prefer to work directly from JSON, like listing revenue sharing contribut
   ]
 </script>
 
-<script src="/path/to/fundme.js"></script>
-<script>
+<!-- PROTIP: instead of IIFE script, you can use browser native ES Modules -->
+<!-- be aware that browser ES Modules still isn't widely support by browsers -->
+<script type="module">
+  import { fund } from '/dist/fundme.mjs'
+
   fund()
 </script>
 ```
@@ -80,6 +133,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ## Short-term goal
 
+- [ ] Make some config to let Fundme.js operate in Server-Side.
 - [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid
 - [ ] Simpler and more intuitive implementation that will goes nicely with current API standard.
 - [ ] Make a JAMstack website to host documentation.
@@ -98,4 +152,4 @@ In additionally, integrating broad monetizations like affiliation marketing or p
 
 ## Disclaimer
 
-Fundme.js is still in early phase development and thus API might change a lot! Not ready for production. Use scripts from `dist` folder if you want to play with it locally.
+Fundme.js is still in early phase development and thus API might change a lot! Not ready for production. Use scripts from `dist` folder in the repo if you want to play with it locally.

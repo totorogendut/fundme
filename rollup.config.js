@@ -6,7 +6,7 @@ export default {
   output: [{
     file: 'dist/fundme-iife.js',
     format: 'iife',
-    name: 'fund'
+    name: 'fundme'
   }, {
     file: 'dist/fundme-cjs.js',
     format: 'cjs'

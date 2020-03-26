@@ -1,5 +1,10 @@
 # Releases
 
+## 0.0.3
+
+- Change production IIFE script name from `fund` to `fundme`. Calling fundme.js in browser now using `fundme.fund()` (previously `fund.fund()` with IIFE).
+- Add Server-Side on the roadmap.
+
 ## 0.0.2
 
 - Previous NPM publish is accidental and the documenet isn't clear yet, now README.md has been updated.
