@@ -1,7 +1,7 @@
 {
   "name": "fundme",
   "version": "0.0.1",
-  "description": "Simple but powerful tool to get started with Web Monetization API.",
+  "description": "A simple but powerful client-side library to manage monetization on the web.",
   "main": "./dist/fundme-cjs.js",
   "module": "./dist/fundme.mjs",
   "dependencies": {},
@@ -35,12 +35,17 @@
     "create-compat": "babel dist/fundme-iife.js | uglifyjs --compress --mangle > dist/fundme-iife-compat.min.js",
     "test": "jest --coverage --verbose"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProgNovel/fundme.git"
+  },
   "keywords": [
     "Web Monetization API",
     "Donation",
     "Ads",
     "Revenue",
-    "Coil"
+    "Coil",
+    "Split revenue"
   ],
   "author": "ProgNovel",
   "license": "Apache-2.0"

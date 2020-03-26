@@ -1,11 +1,15 @@
 # Fundme.js
 
-A simple but powerful library to manage monetization on the web.
+A simple but powerful client-side library to manage monetization on the web.
 
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master) ![GitHub top language](https://img.shields.io/github/languages/top/prognovel/fundme) ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/fundme) ![npm](https://img.shields.io/npm/v/fundme) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/fundme)
 
-## Dig in (WIP - still hasn't published yet)
+## Dig in (Warning, WIP!)
+
+_This library is still work in progress, not ready for production! Tested and worked using Webpack with ES Module import._
+
+### Get Started with Web Monetization API!
 
 ```js
 import { fund } from 'fundme'
@@ -22,19 +26,22 @@ import { fund } from 'fundme'
 
 const validPointerObject = {
   address: '$coil.com/my-address',
-  weight: 44
+  weight: 44,
 }
 
 fund(['$coil.com/my-friend-pointer-address', '$coil.com/his-friend-pointer-address', validPointerObject])
+
+// for address that doesn't have weight
+// fundme.js will set it to default value (5)
 ```
 
 Additionally, it's possible to declare pointer address in the HTML with `<template></template>` tags. For this to work `<template></template>` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
 
-`fund()` must have no parameters when using HTML template monetization.
+`fund()` must have no parameters when using HTML template monetization. Note that below are for examples purpose (you can use the template tags in HTML but please use ES Module import to use `fund()` for now).
 
 ```html
-<template data-fund="$coil.com/my-address" data-fund-weight="10" ></template>
-<template data-fund="$coil.com/my-friend-address" data-fund-weight="7" ></template>
+<template data-fund="$coil.com/my-address" data-fund-weight="10"></template>
+<template data-fund="$coil.com/my-friend-address" data-fund-weight="7"></template>
 
 <script src="/path/to/fundme.js"></script>
 <script>
