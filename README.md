@@ -24,7 +24,7 @@ Example with ES Module
 ```js
 import { fund } from 'fundme'
 
-fund('$coil.com/some-guy-funding-address')
+fund('$wallet.example.com/some-guy-funding-address')
 ```
 
 Or with CommonJS
@@ -32,7 +32,7 @@ Or with CommonJS
 ```js
 const fund = require('fundme').fund
 
-fund('$coil.com/some-guy-funding-address')
+fund('$wallet.example.com/some-guy-funding-address')
 ```
 
 #### Using Fundme.js in the browser
@@ -42,7 +42,7 @@ Fundme.js is designed to be fully tree-shakeable library thus it has quite a wei
 ```html
 <script src="/dist/fundme-iife.min.js"></script>
 <script>
-  fundme.fund('$coil.com/my-address')
+  fundme.fund('$wallet.example.com/my-address')
 </script>
 ```
 
@@ -62,23 +62,23 @@ Below is a scenario where author of a content get the most of the revenue of an 
 import { fund } from 'fundme'
 
 const AuthorPointerAddress = {
-  address: '$coil.xrptipbot.com/author-address',
+  address: '$wallet.example.xrptipbot.com/author-address',
   weight: 40,
 }
 
 const EditorPointerAddress = {
-  address: '$coil.xrptipbot.com/editor-address',
+  address: '$wallet.example.xrptipbot.com/editor-address',
   weight: 10,
 }
 
 const ProofreaderPointerAddress = {
-  address: '$coil.xrptipbot.com/proofreader-address',
+  address: '$wallet.example.xrptipbot.com/proofreader-address',
   weight: 10,
 }
 
 // pointers with type string or those with no weight will use
 // default weight which is 5
-const WebsiteOwnerPointerAddress = '$coil.xrptipbot.com/website-owner'
+const WebsiteOwnerPointerAddress = '$wallet.example.xrptipbot.com/website-owner'
 
 // calling the function...
 fund([AuthorPointerAddress, EditorPointerAddress, ProofreaderPointerAddress, WebsiteOwnerPointerAddress])
@@ -90,12 +90,12 @@ Additionally, it's possible to declare pointer address with `<template></templat
 
 ```html
 <!-- WARNING: you must close <template> tags with proper closing tag -->
-<template data-fund="$coil.com/my-address" data-fund-weight="10"></template>
-<template data-fund="$coil.com/my-friend-address" data-fund-weight="7"></template>
+<template data-fund="$wallet.example.com/my-address" data-fund-weight="10"></template>
+<template data-fund="$wallet.example.com/my-friend-address" data-fund-weight="7"></template>
 
 <script src="/dist/fundme-iife.min.js"></script>
 <script>
-  fundme.fund('$coil.com/my-address')
+  fundme.fund('$wallet.example.com/my-address')
 </script>
 ```
 
@@ -106,11 +106,11 @@ If you prefer to work directly from JSON, like listing revenue sharing contribut
   [
     "$xrp.com/some-address-with-no-weight",
     {
-      "address": "$coil.com/address-with-weight",
+      "address": "$wallet.example.com/address-with-weight",
       "weight": 12
     },
     {
-      "address": "$coil.com/another-one-with-weight",
+      "address": "$wallet.example.com/another-one-with-weight",
       "weight": 3
     }
   ]
