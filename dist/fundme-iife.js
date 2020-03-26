@@ -1,4 +1,4 @@
-var fund = (function (exports) {
+var fundme = (function (exports) {
   'use strict';
 
   function isMultiplePointer(s) {
