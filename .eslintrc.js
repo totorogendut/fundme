@@ -9,5 +9,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: "module" // Allows for the use of imports
-  }
+  },
+  excludes: [
+    'dist/',
+    'node_modules/'
+  ]
 };
