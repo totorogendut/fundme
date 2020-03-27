@@ -1,5 +1,9 @@
 # Releases
 
+## unreleased
+
+- Add examples for using fundme.js in the browser.
+
 ## 0.0.3
 
 - Change production IIFE script name from `fund` to `fundme`. Calling fundme.js in browser now using `fundme.fund()` (previously `fund.fund()` with IIFE).
