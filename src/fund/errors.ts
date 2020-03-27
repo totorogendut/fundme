@@ -25,3 +25,5 @@ export const templateSinglePointerHasWeight =
 export const cannotParseScriptJson =
   'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.'
 export const jsonTemplateIsNotArray = "Fundme.js: found <script fundme> but it's not an array."
+export const scriptFundmeIsNotApplicationJson =
+  'Fundme.js: found <script fundme> but its type is not "application/json"'

@@ -51,6 +51,7 @@ const failParsingTemplate = 'Fundme.js: fails to parse address from <template da
 // script json template
 const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
 const jsonTemplateIsNotArray = "Fundme.js: found <script fundme> but it's not an array.";
+const scriptFundmeIsNotApplicationJson = 'Fundme.js: found <script fundme> but its type is not "application/json"';
 
 const DEFAULT_WEIGHT = 5;
 // TODO check pointer.address with RegEx
@@ -141,6 +142,9 @@ function parseScriptJson(json) {
     }
     catch (err) {
         throw new Error(cannotParseScriptJson);
+    }
+    if (json.type !== 'application/json') {
+        throw new Error(scriptFundmeIsNotApplicationJson);
     }
     if (Array.isArray(pointers)) {
         pointers = createPool(pointers);

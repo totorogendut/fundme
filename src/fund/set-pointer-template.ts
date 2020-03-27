@@ -3,7 +3,7 @@ import { setPointerSingle } from './set-pointer-single'
 import {
   noTemplateFound,
   failParsingTemplate,
-  templateSinglePointerHasWeight,
+  scriptFundmeIsNotApplicationJson,
   cannotParseScriptJson,
   jsonTemplateIsNotArray,
 } from './errors'
@@ -48,6 +48,10 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
     pointers = JSON.parse(json.innerHTML)
   } catch (err) {
     throw new Error(cannotParseScriptJson)
+  }
+
+  if (json.type !== 'application/json') {
+    throw new Error(scriptFundmeIsNotApplicationJson)
   }
 
   if (Array.isArray(pointers)) {

@@ -11,3 +11,4 @@ export declare const failParsingTemplate = "Fundme.js: fails to parse address fr
 export declare const templateSinglePointerHasWeight = "Fundme.js: found single <template data-fund></template> but has weight - only address will be parsed.";
 export declare const cannotParseScriptJson = "Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.";
 export declare const jsonTemplateIsNotArray = "Fundme.js: found <script fundme> but it's not an array.";
+export declare const scriptFundmeIsNotApplicationJson = "Fundme.js: found <script fundme> but its type is not \"application/json\"";

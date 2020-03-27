@@ -3,6 +3,8 @@
 ## unreleased
 
 - Add examples for using fundme.js in the browser.
+- Now `<script fundme>` will throw an error if its type not `application/json`.
+- Test: add test for `<script fundme>` type.
 
 ## 0.0.3
 

@@ -53,6 +53,7 @@ define(['exports'], function (exports) { 'use strict';
   // script json template
   const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
   const jsonTemplateIsNotArray = "Fundme.js: found <script fundme> but it's not an array.";
+  const scriptFundmeIsNotApplicationJson = 'Fundme.js: found <script fundme> but its type is not "application/json"';
 
   const DEFAULT_WEIGHT = 5;
   // TODO check pointer.address with RegEx
@@ -143,6 +144,9 @@ define(['exports'], function (exports) { 'use strict';
       }
       catch (err) {
           throw new Error(cannotParseScriptJson);
+      }
+      if (json.type !== 'application/json') {
+          throw new Error(scriptFundmeIsNotApplicationJson);
       }
       if (Array.isArray(pointers)) {
           pointers = createPool(pointers);
