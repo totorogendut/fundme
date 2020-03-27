@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Monetization API test!</title>
+    <meta name="monetization" content="no pointer address" />
+  </head>
+
+  <body>
+    <h1 id="text">Loading...</h1>
+
+    <!-- 
+      below is a script tag with JSON type
+      the script tag must have fundme attribute so 
+      Fundme.js can recognize it
+    -->
+    <script fundme type="application/json">
+      [
+        {
+          "address": "$wallet.example.com/address-one",
+          "weight": 40
+        },
+        {
+          "address": "$wallet.example.com/address-two",
+          "weight": 10
+        },
+        {
+          "address": "$wallet.example.com/address-three",
+          "weight": 0.5
+        }
+      ]
+    </script>
+
+    <script type="module">
+      import { fund } from '../../dist/fundme.mjs'
+
+      // notice that the function below is not fundme.fund anymore
+      fund()
+
+      /*
+        WARNING!!!
+        Browser Native ES Modules is not widely supported between browser vendors
+        before using it in the production please consult 
+        https://caniuse.com/es-modules
+      */
+
+      // code below are optional, just to show that fundme is working
+      if (document.monetization) {
+        const address = document.querySelector('meta[name="monetization"]').content
+        document.getElementById('text').innerText = `Browser is streaming to ${address}`
+      } else {
+        document.getElementById('text').innerText = `Coil extension not found.`
+      }
+    </script>
+  </body>
+</html>

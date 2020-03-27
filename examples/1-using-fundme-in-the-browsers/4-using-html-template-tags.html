@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Monetization API test!</title>
+    <meta name="monetization" content="no pointer address" />
+  </head>
+
+  <body>
+    <h1 id="text">Loading...</h1>
+
+    <!-- WARNING: template tag must be properly closed! -->
+    <template data-fund="$wallet.example.com/address"></template>
+
+    <script src="../../dist/fundme-iife.js"></script>
+    <script>
+      fundme.fund()
+
+      // code below are optional, just to show that fundme is working
+      if (document.monetization) {
+        const address = document.querySelector('meta[name="monetization"]').content
+        document.getElementById('text').innerText = `Browser is streaming to ${address}`
+      } else {
+        document.getElementById('text').innerText = `Coil extension not found.`
+      }
+    </script>
+  </body>
+</html>
