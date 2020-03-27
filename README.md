@@ -17,7 +17,7 @@ _This library is still work in progress, not ready for production! Tested and wo
 
 Web Monetization API is a new web standard being developed to provide better payment alternative for publishers and creators other than ads. Learn more about it on [https://www.webmonetization.org](https://www.webmonetization.org).
 
-#### Using Fundme.js with bundler; webpack, rollup, parcel, etc
+#### Using Fundme.js in Client-Side with bundler; webpack, rollup, parcel, etc
 
 Example with ES Module
 
@@ -37,7 +37,7 @@ fund('$wallet.example.com/some-guy-funding-address')
 
 #### Using Fundme.js in the browser
 
-Fundme.js is designed to be fully tree-shakeable library thus it has quite a weird way to use in the browser than normal library. It needs to use IIFE (Immediately Invoke Function E) to get exported function that normally use in brackets when importing it with ES Module.
+Fundme.js is designed to be fully tree-shakeable library thus it has quite a weird way to use in the browser than normal library. It needs to use IIFE (Immediately Invoked Function Expression) to get exported function that normally use in brackets when importing it with ES Module.
 
 ```html
 <script src="/dist/fundme-iife.min.js"></script>
