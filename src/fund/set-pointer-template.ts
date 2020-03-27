@@ -5,19 +5,22 @@ import {
   failParsingTemplate,
   scriptFundmeIsNotApplicationJson,
   cannotParseScriptJson,
-  jsonTemplateIsNotArray,
+  jsonTemplateIsInvalid,
 } from './errors'
 
 export const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]'
 export const FUNDME_JSON_SELECTOR = 'script[fundme]'
 
-export function setPointerFromTemplates(): void {
-  const pointers: WMPointer[] = [...scrapeTemplate(), ...scrapeJson()]
+type JSONTemplate = Array<WMPointer | string>
 
-  if (pointers.length > 1) {
+export function setPointerFromTemplates(): void {
+  const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson()]
+
+  if (pointers.length > 0) {
     setPointerMultiple(pointers)
-  } else if (pointers.length === 1) {
-    setPointerSingle(pointers[0].address)
+    // } else if (pointers.length === 1) {
+    //   console.warn(pointers)
+    //   setPointerSingle(pointers[0].address)
     // if (typeof pointers[0] !== 'string') {
     //   console.warn(templateSinglePointerHasWeight)
     // }
@@ -43,9 +46,10 @@ export function scrapeJson(): WMPointer[] {
 
 function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
   let pointers: WMPointer[] = []
+  let parsed: string | WMPointer[] | Array<string | WMPointer>
 
   try {
-    pointers = JSON.parse(json.innerHTML)
+    parsed = JSON.parse(json.innerHTML)
   } catch (err) {
     throw new Error(cannotParseScriptJson)
   }
@@ -54,10 +58,12 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
     throw new Error(scriptFundmeIsNotApplicationJson)
   }
 
-  if (Array.isArray(pointers)) {
-    pointers = createPool(pointers)
+  if (Array.isArray(parsed)) {
+    pointers = createPool(parsed)
+  } else if (typeof parsed === 'string') {
+    pointers = createPool([parsed])
   } else {
-    throw new Error(jsonTemplateIsNotArray)
+    throw new Error(jsonTemplateIsInvalid)
   }
 
   return pointers
