@@ -1,8 +1,7 @@
-import { isMultiplePointer } from './utils'
-import { setPointerSingle } from './set-pointer-single'
-import { setPointerMultiple, createPool } from './set-pointer-multiple'
-import { setPointerFromTemplates } from './set-pointer-template'
-import { defaultAddressNotFound, invalidAddress, metaTagNotFound, metaTagMultipleIsFound } from './errors'
+import { createPool } from './set-pointer-multiple'
+import { metaTagNotFound, metaTagMultipleIsFound } from './errors'
+import { clientSideFund } from './main-client'
+import { serverSideFund } from './main-server'
 
 export let defaultAddress: WMAddress
 export let currentPointer: WMAddress
@@ -16,35 +15,14 @@ export enum FundType {
   isUndefined = 'undefined',
 }
 
-export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
-  // const setDefault = options && options.default
-  if (typeof pointer === 'string') {
-    if (pointer === 'default') {
-      if (defaultAddress !== undefined) {
-        if (typeof defaultAddress === 'string') {
-          setPointerSingle(defaultAddress)
-        } else {
-          setPointerMultiple(defaultAddress)
-        }
-        return setFundType(FundType.isDefault)
-      } else {
-        throw new Error(defaultAddressNotFound)
-      }
-    }
-    setPointerSingle(pointer)
-    return setFundType(FundType.isSingle)
-  }
+export const isBrowser = this.window === this
 
-  if (isMultiplePointer(pointer)) {
-    setPointerMultiple(pointer)
-    return setFundType(FundType.isMultiple)
+export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
+  if (isBrowser) {
+    return clientSideFund()
+  } else {
+    return serverSideFund()
   }
-
-  if (pointer === undefined) {
-    setPointerFromTemplates()
-    return setFundType(FundType.isFromTemplate)
-  }
-  throw new Error(invalidAddress)
 }
 
 export function setDefaultAddress(address: WMAddress): void {
