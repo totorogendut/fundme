@@ -16,7 +16,7 @@ type JSONTemplate = Array<WMPointer | string>
 export function setPointerFromTemplates(): void {
   const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson()]
 
-  if (pointers.length > 0) {
+  if (pointers.length) {
     setPointerMultiple(pointers)
   } else {
     throw new Error(noTemplateFound)
@@ -29,7 +29,7 @@ export function scrapeJson(): WMPointer[] {
   const scriptTags: NodeListOf<HTMLScriptElement> = document.body.querySelectorAll(FUNDME_JSON_SELECTOR)
   let pointers: WMPointer[] = []
 
-  if (scriptTags.length > 0) {
+  if (scriptTags.length) {
     scriptTags.forEach((json) => {
       pointers = parseScriptJson(json)
     })
@@ -67,7 +67,7 @@ export function scrapeTemplate(): WMPointer[] {
   const templates: NodeListOf<HTMLMetaElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
   let pointers: WMPointer[] = []
 
-  if (templates.length > 0) {
+  if (templates.length) {
     templates.forEach((template) => {
       const pointer: WMPointer = parseTemplate(template)
       pointers = [...pointers, pointer]
