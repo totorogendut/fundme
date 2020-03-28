@@ -1,5 +1,9 @@
 # Releases
 
+## 0.0.5
+
+- Fix: error parsing JSON `<script fundme>` if the content is `string`.
+
 ## 0.0.4
 
 - Add examples for using fundme.js in the browser.

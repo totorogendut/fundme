@@ -19,18 +19,10 @@ Web Monetization API is a new web standard being developed to provide better pay
 
 #### Using Fundme.js in Client-Side with bundler; webpack, rollup, parcel, etc
 
-Example with ES Module
+Example with ES Modules
 
 ```js
 import { fund } from 'fundme'
-
-fund('$wallet.example.com/some-guy-funding-address')
-```
-
-Or with CommonJS - Fundme.js usage in Node is still Work In Progress, using this will give you an error.
-
-```js
-const { fund } = require('fundme')
 
 fund('$wallet.example.com/some-guy-funding-address')
 ```
@@ -47,6 +39,22 @@ Fundme.js is designed to be fully tree-shakeable library thus it has quite a wei
 ```
 
 ### Using Fundme.js Server-Side in Node
+
+Using Fundme.js with CommonJS - note that usage in Node is still Work In Progress, using this will give you an error.
+
+```js
+const { fund } = require('fundme')
+
+fund('$wallet.example.com/some-guy-funding-address')
+
+/*
+  Instead of manipulating monetization meta tag in the DOM, Server-Side
+  Fundme.js will return DOM string that you can inject to your page.
+
+  This is useful if you want to calculate Fundme.js built-in
+  revenue share system on your server.
+*/
+```
 
 **WIP** - Server-Side Fundme.js is in the roadmap for short-term goal.
 
@@ -134,6 +142,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 ## Short-term goal
 
 - [ ] Make some config to let Fundme.js operate in Server-Side.
+- [ ] A way to get relative chances for contributors' addresses (something like CSS relative unit).
 - [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid
 - [ ] Simpler and more intuitive implementation that will goes nicely with current API standard.
 - [ ] Make a JAMstack website to host documentation.
