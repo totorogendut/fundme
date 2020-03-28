@@ -27,10 +27,10 @@ import { fund } from 'fundme'
 fund('$wallet.example.com/some-guy-funding-address')
 ```
 
-Or with CommonJS
+Or with CommonJS - Fundme.js usage in Node is still Work In Progress, using this will give you an error.
 
 ```js
-const fund = require('fundme').fund
+const { fund } = require('fundme')
 
 fund('$wallet.example.com/some-guy-funding-address')
 ```

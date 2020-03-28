@@ -17,7 +17,6 @@ export enum FundType {
 }
 
 export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
-  // const setDefault = options && options.default
   if (typeof pointer === 'string') {
     if (pointer === 'default') {
       if (defaultAddress !== undefined) {

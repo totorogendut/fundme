@@ -18,12 +18,6 @@ export function setPointerFromTemplates(): void {
 
   if (pointers.length > 0) {
     setPointerMultiple(pointers)
-    // } else if (pointers.length === 1) {
-    //   console.warn(pointers)
-    //   setPointerSingle(pointers[0].address)
-    // if (typeof pointers[0] !== 'string') {
-    //   console.warn(templateSinglePointerHasWeight)
-    // }
   } else {
     throw new Error(noTemplateFound)
   }
