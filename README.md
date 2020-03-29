@@ -66,33 +66,49 @@ To split revenue, `fund(pointerAddress)` must take an array containing strings o
 
 Below is a scenario where author of a content get the most of the revenue of an article, while editor and proofreader get the same slice of the pie, while the website owner get the least (website owner's chance isn't being implictly set, but more that on the code).
 
+#### With pure JavaScript
+
 ```js
 import { fund } from 'fundme'
 
 const AuthorPointerAddress = {
-  address: '$wallet.example.xrptipbot.com/author-address',
+  address: '$wallet.example.com/author-address',
   weight: 40,
 }
 
 const EditorPointerAddress = {
-  address: '$wallet.example.xrptipbot.com/editor-address',
+  address: '$wallet.example.com/editor-address',
   weight: 10,
 }
 
 const ProofreaderPointerAddress = {
-  address: '$wallet.example.xrptipbot.com/proofreader-address',
+  address: '$wallet.example.com/proofreader-address',
   weight: 10,
 }
 
 // pointers with type string or those with no weight will use
 // default weight which is 5
-const WebsiteOwnerPointerAddress = '$wallet.example.xrptipbot.com/website-owner'
+const WebsiteOwnerPointerAddress = '$wallet.example.com/website-owner'
 
 // calling the function...
 fund([AuthorPointerAddress, EditorPointerAddress, ProofreaderPointerAddress, WebsiteOwnerPointerAddress])
 ```
 
-Additionally, it's possible to declare pointer address with `<template></template>` tags. Instead of pointing payment address in function parameters you can set it beforehand in the HTML and let fundme.js scrape them during the browser runtime. For this to work, `<template></template>` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
+Additionally, in case you don't like working with objects, it's possible to work solely with an array of strings but still declaring their chances. Fundme.js will read modifier `#` at the end of the pointer address as a way to read a payment pointer's weight.
+
+```js
+import { fund } from 'fundme'
+
+fund([
+  '$wallet.example.com/this-has-ten-weight#10',
+  '$wallet.example.com/this-has-six-weight#6',
+  '$wallet.example.com/this-has-seven-weight#7',
+])
+```
+
+#### Inside HTML pages
+
+It's possible to declare pointer address with `<template></template>` tags. Instead of pointing payment address in function parameters you can set it beforehand in the HTML and let fundme.js scrape them during the browser runtime. For this to work, `<template></template>` tag must have `data-fund` and `data-fund-weight` (weight is optional) attribute.
 
 `fund()` must have no parameters when using HTML template monetization. Note that below are for examples purpose (you can use the template tags in HTML but please use ES Module import to use `fund()` for now).
 

@@ -2,6 +2,7 @@
 
 ## 0.0.5
 
+- Now you can use string to provide payment pointer address weight with modifier `#`. For example: `$wallet.address.com/test#22` will be read as having `$wallet.address.com/test` as its address and has `22` weight.
 - Fix: error parsing JSON `<script fundme>` if the content is `string`.
 
 ## 0.0.4
@@ -17,7 +18,7 @@
 
 ## 0.0.2
 
-- Previous NPM publish is accidental and the documenet isn't clear yet, now README.md has been updated.
+- Previous NPM publish is accidental and the document isn't clear yet, now README.md has been updated.
 - Make it clear that this is a client-side library and tested with ES Module imports
 - Link github repo to package.json
 
