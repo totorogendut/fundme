@@ -54,7 +54,7 @@ const noTemplateFound = 'Fundme.js: no monetization template is found.';
 const failParsingTemplate = 'Fundme.js: fails to parse address from <template data-fund></template>.';
 // script json template
 const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
-const jsonTemplateIsNotArray = "Fundme.js: found <script fundme> but it's not an array.";
+const jsonTemplateIsInvalid = "Fundme.js: found <script fundme> but it's not an array.";
 const scriptFundmeIsNotApplicationJson = 'Fundme.js: found <script fundme> but its type is not "application/json"';
 
 const DEFAULT_WEIGHT = 5;
@@ -103,9 +103,16 @@ function getChoice(sum) {
     return choice;
 }
 function convertToPointer(str) {
+    let address = str;
+    let weight;
+    const split = str.split('#');
+    if (split.length > 1) {
+        address = split[0];
+        weight = parseInt(split[1], 10);
+    }
     const pointer = {
-        address: str,
-        weight: DEFAULT_WEIGHT,
+        address,
+        weight: weight || DEFAULT_WEIGHT,
     };
     return pointer;
 }
@@ -114,14 +121,8 @@ const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]';
 const FUNDME_JSON_SELECTOR = 'script[fundme]';
 function setPointerFromTemplates() {
     const pointers = [...scrapeTemplate(), ...scrapeJson()];
-    if (pointers.length > 1) {
+    if (pointers.length) {
         setPointerMultiple(pointers);
-    }
-    else if (pointers.length === 1) {
-        setPointerSingle(pointers[0].address);
-        // if (typeof pointers[0] !== 'string') {
-        //   console.warn(templateSinglePointerHasWeight)
-        // }
     }
     else {
         throw new Error(noTemplateFound);
@@ -132,7 +133,7 @@ function setPointerFromTemplates() {
 function scrapeJson() {
     const scriptTags = document.body.querySelectorAll(FUNDME_JSON_SELECTOR);
     let pointers = [];
-    if (scriptTags.length > 0) {
+    if (scriptTags.length) {
         scriptTags.forEach((json) => {
             pointers = parseScriptJson(json);
         });
@@ -141,8 +142,9 @@ function scrapeJson() {
 }
 function parseScriptJson(json) {
     let pointers = [];
+    let parsed;
     try {
-        pointers = JSON.parse(json.innerHTML);
+        parsed = JSON.parse(json.innerHTML);
     }
     catch (err) {
         throw new Error(cannotParseScriptJson);
@@ -150,18 +152,21 @@ function parseScriptJson(json) {
     if (json.type !== 'application/json') {
         throw new Error(scriptFundmeIsNotApplicationJson);
     }
-    if (Array.isArray(pointers)) {
-        pointers = createPool(pointers);
+    if (Array.isArray(parsed)) {
+        pointers = createPool(parsed);
+    }
+    else if (typeof parsed === 'string') {
+        pointers = createPool([parsed]);
     }
     else {
-        throw new Error(jsonTemplateIsNotArray);
+        throw new Error(jsonTemplateIsInvalid);
     }
     return pointers;
 }
 function scrapeTemplate() {
     const templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
     let pointers = [];
-    if (templates.length > 0) {
+    if (templates.length) {
         templates.forEach((template) => {
             const pointer = parseTemplate(template);
             pointers = [...pointers, pointer];
@@ -193,7 +198,6 @@ var FundType;
     FundType["isUndefined"] = "undefined";
 })(FundType || (FundType = {}));
 function fund(pointer, options) {
-    // const setDefault = options && options.default
     if (typeof pointer === 'string') {
         if (pointer === 'default') {
             if (defaultAddress !== undefined) {
