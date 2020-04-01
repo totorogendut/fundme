@@ -1,5 +1,5 @@
 import { fund, getCurrentPointerAddress } from '../main'
-import { noTemplateFound, jsonTemplateIsNotArray, cannotParseScriptJson, failParsingTemplate } from '../errors'
+import { noTemplateFound, jsonTemplateIsInvalid, cannotParseScriptJson, failParsingTemplate } from '../errors'
 
 describe('test scraping template crashes resulting right throw errors', () => {
   test('fund() is called but no template is found', () => {
@@ -17,7 +17,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
         }
       </script>
     `
-    expect(() => fund()).toThrowError(jsonTemplateIsNotArray)
+    expect(() => fund()).toThrowError(jsonTemplateIsInvalid)
     document.body.innerHTML = ''
   })
 
