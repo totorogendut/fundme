@@ -50,7 +50,7 @@ const noTemplateFound = 'Fundme.js: no monetization template is found.';
 const failParsingTemplate = 'Fundme.js: fails to parse address from <template data-fund></template>.';
 // script json template
 const cannotParseScriptJson = 'Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
-const jsonTemplateIsInvalid = "Fundme.js: found <script fundme> but it's not an array.";
+const jsonTemplateIsInvalid = "Fundme.js: found <script fundme> but it's not valid.";
 const scriptFundmeIsNotApplicationJson = 'Fundme.js: found <script fundme> but its type is not "application/json"';
 
 const DEFAULT_WEIGHT = 5;
@@ -114,9 +114,10 @@ function convertToPointer(str) {
 }
 
 const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]';
+const FUNDME_CUSTOM_SYNTAX_SELECTOR = 'template[fundme]';
 const FUNDME_JSON_SELECTOR = 'script[fundme]';
 function setPointerFromTemplates() {
-    const pointers = [...scrapeTemplate(), ...scrapeJson()];
+    const pointers = [...scrapeTemplate(), ...scrapeJson(), ...scrapeCustomSyntax()];
     if (pointers.length) {
         setPointerMultiple(pointers);
     }
@@ -181,6 +182,27 @@ function parseTemplate(template) {
         weight,
     });
     return pointer;
+}
+function scrapeCustomSyntax() {
+    const templates = document.querySelectorAll(FUNDME_CUSTOM_SYNTAX_SELECTOR);
+    let pointers = [];
+    if (templates.length) {
+        templates.forEach((template) => {
+            pointers = [...pointers, ...parseCustomSyntax(template)];
+        });
+    }
+    return pointers;
+}
+function parseCustomSyntax(template) {
+    let pointers = [];
+    const temp = template.innerHTML;
+    temp.split(';').forEach((str) => {
+        const strippedString = str.replace(/(^\s+|\s+$)/g, '');
+        if (strippedString) {
+            pointers = [...pointers, convertToPointer(strippedString)];
+        }
+    });
+    return pointers;
 }
 
 let defaultAddress;

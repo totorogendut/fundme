@@ -10,5 +10,5 @@ export declare const noTemplateFound = "Fundme.js: no monetization template is f
 export declare const failParsingTemplate = "Fundme.js: fails to parse address from <template data-fund></template>.";
 export declare const templateSinglePointerHasWeight = "Fundme.js: found single <template data-fund></template> but has weight - only address will be parsed.";
 export declare const cannotParseScriptJson = "Fundme.js: cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.";
-export declare const jsonTemplateIsInvalid = "Fundme.js: found <script fundme> but it's not an array.";
+export declare const jsonTemplateIsInvalid = "Fundme.js: found <script fundme> but it's not valid.";
 export declare const scriptFundmeIsNotApplicationJson = "Fundme.js: found <script fundme> but its type is not \"application/json\"";
