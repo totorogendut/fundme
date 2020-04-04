@@ -100,9 +100,9 @@ Additionally, in case you don't like working with objects, it's possible to work
 import { fund } from 'fundme'
 
 fund([
-  '$wallet.example.com/this-has-ten-weight#10',
-  '$wallet.example.com/this-has-six-weight#6',
-  '$wallet.example.com/this-has-seven-weight#7',
+  '$wallet.example.com/this-has-weight-ten#10',
+  '$wallet.example.com/this-has-weight-six#6',
+  '$wallet.example.com/this-has-weight-seven#7',
 ])
 ```
 
@@ -123,7 +123,7 @@ It's possible to declare pointer address with `<template></template>` tags. Inst
 </script>
 ```
 
-If you prefer to work directly from JSON, like listing revenue sharing contributors from server-side, you can also write an array in `<script fundme type="application/json">` tags. (Note the `fundme` attribute!)
+If you prefer to work directly from JSON, like listing revenue sharing contributors from server-side or static sites, you can also write an array in `<script fundme type="application/json">` tags. (Note the `fundme` attribute!)
 
 ```html
 <script fundme type="application/json">
@@ -149,6 +149,25 @@ If you prefer to work directly from JSON, like listing revenue sharing contribut
 </script>
 ```
 
+However, we have an opiniated (and recommended) way to declare payment pointers with familiar custom syntax. We're using `<template fundme></template>` tags but without declare payment pointers and revenue share weights inside `data-fund` and such, declaring them directly inside the tags instead.
+
+NOTE: all payment pointer has to be separated by semicolons (like CSS or JavaScript lines).
+
+```html
+<template fundme>
+  $wallet.example.com/this-has-weight-ten#10; $wallet.example.com/this-has-weight-twelve#12;
+  $wallet.example.com/this-has-weight-twelve#12;
+</template>
+
+<!-- PROTIP: instead of IIFE script, you can use browser native ES Modules -->
+<!-- be aware that browser ES Modules still isn't widely support by browsers -->
+<script type="module">
+  import { fund } from '/dist/fundme.mjs'
+
+  fund()
+</script>
+```
+
 ## What is this, really (?)
 
 Fundme.js is a whole tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
@@ -157,6 +176,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ## Short-term goal
 
+- [ ] Add bias system.
 - [ ] Make some config to let Fundme.js operate in Server-Side.
 - [ ] A way to get relative chances for contributors' addresses (something like CSS relative unit).
 - [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid

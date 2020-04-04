@@ -1,5 +1,4 @@
-import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool } from './set-pointer-multiple'
-import { setPointerSingle } from './set-pointer-single'
+import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool, convertToPointer } from './set-pointer-multiple'
 import {
   noTemplateFound,
   failParsingTemplate,
@@ -9,12 +8,13 @@ import {
 } from './errors'
 
 export const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]'
+export const FUNDME_CUSTOM_SYNTAX_SELECTOR = 'template[fundme]'
 export const FUNDME_JSON_SELECTOR = 'script[fundme]'
 
 type JSONTemplate = Array<WMPointer | string>
 
 export function setPointerFromTemplates(): void {
-  const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson()]
+  const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson(), ...scrapeCustomSyntax()]
 
   if (pointers.length) {
     setPointerMultiple(pointers)
@@ -64,7 +64,7 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
 }
 
 export function scrapeTemplate(): WMPointer[] {
-  const templates: NodeListOf<HTMLMetaElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
+  const templates: NodeListOf<HTMLTemplateElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
   let pointers: WMPointer[] = []
 
   if (templates.length) {
@@ -77,7 +77,7 @@ export function scrapeTemplate(): WMPointer[] {
   return pointers
 }
 
-export function parseTemplate(template: any): WMPointer {
+export function parseTemplate(template: HTMLTemplateElement): WMPointer {
   let address: string = template.dataset.fund
   let weight: number =
     template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT
@@ -92,4 +92,30 @@ export function parseTemplate(template: any): WMPointer {
   })
 
   return pointer
+}
+
+export function scrapeCustomSyntax(): WMPointer[] {
+  const templates: NodeListOf<HTMLTemplateElement> = document.querySelectorAll(FUNDME_CUSTOM_SYNTAX_SELECTOR)
+  let pointers: WMPointer[] = []
+
+  if (templates.length) {
+    templates.forEach((template) => {
+      pointers = [...pointers, ...parseCustomSyntax(template)]
+    })
+  }
+  return pointers
+}
+
+export function parseCustomSyntax(template: HTMLTemplateElement): WMPointer[] {
+  let pointers: WMPointer[] = []
+  const temp = template.innerHTML
+
+  temp.split(';').forEach((str) => {
+    const strippedString = str.replace(/(^\s+|\s+$)/g, '')
+    if (strippedString) {
+      pointers = [...pointers, convertToPointer(strippedString)]
+    }
+  })
+
+  return pointers
 }
