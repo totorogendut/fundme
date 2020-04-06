@@ -119,7 +119,7 @@ It's possible to declare pointer address with `<template></template>` tags. Inst
 
 <script src="/dist/fundme-iife.min.js"></script>
 <script>
-  fundme.fund('$wallet.example.com/my-address')
+  fundme.fund()
 </script>
 ```
 
@@ -155,7 +155,8 @@ NOTE: all payment pointer has to be separated by semicolons (like CSS or JavaScr
 
 ```html
 <template fundme>
-  $wallet.example.com/this-has-weight-ten#10; $wallet.example.com/this-has-weight-twelve#12;
+  $wallet.example.com/this-has-weight-ten#10; 
+  $wallet.example.com/this-has-weight-twelve#12;
   $wallet.example.com/this-has-weight-twelve#12;
 </template>
 
