@@ -1,4 +1,4 @@
-import { fund, getCurrentPointerAddress } from '../main'
+import { fund } from '../main'
 import { noTemplateFound, jsonTemplateIsInvalid, cannotParseScriptJson, failParsingTemplate } from '../errors'
 
 describe('test scraping template crashes resulting right throw errors', () => {

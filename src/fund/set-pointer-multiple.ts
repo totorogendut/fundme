@@ -1,5 +1,5 @@
 import { getWinningPointer, setWebMonetizationPointer, getPoolWeightSum } from './utils'
-import { addressNotFound, addressIsNotAString, weightIsNotANumber } from './errors'
+import { addressNotFound, addressIsNotAString, weightIsNotANumber, FundmeError } from './errors'
 import { setCurrentPointer } from './main'
 
 export const DEFAULT_WEIGHT: number = 5
@@ -16,9 +16,9 @@ export function getPointerAddress(pointer: WMPointer): string {
   const address = pointer.address
 
   if (!address) {
-    throw new Error(addressNotFound)
+    throw FundmeError(addressNotFound)
   } else if (typeof address !== 'string') {
-    throw new Error(addressIsNotAString)
+    throw FundmeError(addressIsNotAString)
   }
   return address
 }
@@ -27,7 +27,7 @@ export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
   return pointers.map((pointer) => {
     let wmPointer: WMPointer
     if (typeof pointer === 'string') pointer = convertToPointer(pointer)
-    if (!('address' in pointer)) throw new Error(addressNotFound)
+    if (!('address' in pointer)) throw FundmeError(addressNotFound)
     wmPointer = checkWeight(pointer)
 
     return wmPointer

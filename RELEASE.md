@@ -1,5 +1,9 @@
 # Releases
 
+## 0.1.1
+
+- Errors now more readable.
+
 ## 0.1.0
 
 - FEAT: Custom syntax with `<template fundme></template>` tags.

@@ -1,4 +1,4 @@
-import { currentPointer } from './main'
+// import { currentPointer } from './main'
 
 export function isMultiplePointer(s: any): boolean {
   return Array.isArray(s)
