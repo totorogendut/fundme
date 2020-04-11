@@ -1,31 +1,26 @@
-import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool } from './set-pointer-multiple'
-import { setPointerSingle } from './set-pointer-single'
+import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool, convertToPointer } from './set-pointer-multiple'
 import {
   noTemplateFound,
   failParsingTemplate,
   scriptFundmeIsNotApplicationJson,
   cannotParseScriptJson,
   jsonTemplateIsInvalid,
+  FundmeError,
 } from './errors'
 
 export const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]'
+export const FUNDME_CUSTOM_SYNTAX_SELECTOR = 'template[fundme]'
 export const FUNDME_JSON_SELECTOR = 'script[fundme]'
 
 type JSONTemplate = Array<WMPointer | string>
 
 export function setPointerFromTemplates(): void {
-  const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson()]
+  const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson(), ...scrapeCustomSyntax()]
 
-  if (pointers.length > 0) {
+  if (pointers.length) {
     setPointerMultiple(pointers)
-    // } else if (pointers.length === 1) {
-    //   console.warn(pointers)
-    //   setPointerSingle(pointers[0].address)
-    // if (typeof pointers[0] !== 'string') {
-    //   console.warn(templateSinglePointerHasWeight)
-    // }
   } else {
-    throw new Error(noTemplateFound)
+    throw FundmeError(noTemplateFound)
   }
 }
 
@@ -35,7 +30,7 @@ export function scrapeJson(): WMPointer[] {
   const scriptTags: NodeListOf<HTMLScriptElement> = document.body.querySelectorAll(FUNDME_JSON_SELECTOR)
   let pointers: WMPointer[] = []
 
-  if (scriptTags.length > 0) {
+  if (scriptTags.length) {
     scriptTags.forEach((json) => {
       pointers = parseScriptJson(json)
     })
@@ -51,11 +46,11 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
   try {
     parsed = JSON.parse(json.innerHTML)
   } catch (err) {
-    throw new Error(cannotParseScriptJson)
+    throw FundmeError(cannotParseScriptJson)
   }
 
   if (json.type !== 'application/json') {
-    throw new Error(scriptFundmeIsNotApplicationJson)
+    throw FundmeError(scriptFundmeIsNotApplicationJson)
   }
 
   if (Array.isArray(parsed)) {
@@ -63,17 +58,17 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
   } else if (typeof parsed === 'string') {
     pointers = createPool([parsed])
   } else {
-    throw new Error(jsonTemplateIsInvalid)
+    throw FundmeError(jsonTemplateIsInvalid)
   }
 
   return pointers
 }
 
 export function scrapeTemplate(): WMPointer[] {
-  const templates: NodeListOf<HTMLMetaElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
+  const templates: NodeListOf<HTMLTemplateElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
   let pointers: WMPointer[] = []
 
-  if (templates.length > 0) {
+  if (templates.length) {
     templates.forEach((template) => {
       const pointer: WMPointer = parseTemplate(template)
       pointers = [...pointers, pointer]
@@ -83,13 +78,13 @@ export function scrapeTemplate(): WMPointer[] {
   return pointers
 }
 
-export function parseTemplate(template: any): WMPointer {
+export function parseTemplate(template: HTMLTemplateElement): WMPointer {
   let address: string = template.dataset.fund
   let weight: number =
     template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT
 
   if (!address) {
-    throw new Error(failParsingTemplate)
+    throw FundmeError(failParsingTemplate)
   }
 
   const pointer: WMPointer = checkWeight({
@@ -98,4 +93,30 @@ export function parseTemplate(template: any): WMPointer {
   })
 
   return pointer
+}
+
+export function scrapeCustomSyntax(): WMPointer[] {
+  const templates: NodeListOf<HTMLTemplateElement> = document.querySelectorAll(FUNDME_CUSTOM_SYNTAX_SELECTOR)
+  let pointers: WMPointer[] = []
+
+  if (templates.length) {
+    templates.forEach((template) => {
+      pointers = [...pointers, ...parseCustomSyntax(template)]
+    })
+  }
+  return pointers
+}
+
+export function parseCustomSyntax(template: HTMLTemplateElement): WMPointer[] {
+  let pointers: WMPointer[] = []
+  const temp = template.innerHTML
+
+  temp.split(';').forEach((str) => {
+    const strippedString = str.replace(/(^\s+|\s+$)/g, '')
+    if (strippedString) {
+      pointers = [...pointers, convertToPointer(strippedString)]
+    }
+  })
+
+  return pointers
 }

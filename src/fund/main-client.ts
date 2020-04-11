@@ -16,7 +16,7 @@ export function clientSideFund(pointer?: WMAddress): FundType {
         }
         return setFundType(FundType.isDefault)
       } else {
-        throw new Error(defaultAddressNotFound)
+        throw FundmeError(defaultAddressNotFound)
       }
     }
     setPointerSingle(pointer)

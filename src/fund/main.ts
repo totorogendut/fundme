@@ -1,5 +1,5 @@
 import { createPool } from './set-pointer-multiple'
-import { metaTagNotFound, metaTagMultipleIsFound } from './errors'
+import { metaTagNotFound, metaTagMultipleIsFound, FundmeError } from './errors'
 import { clientSideFund } from './main-client'
 import { serverSideFund, isServer } from './main-server'
 
@@ -51,14 +51,14 @@ export function getCurrentPointerAddress(): string {
   const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
 
   if (metaTag.length > 1) {
-    throw new Error(metaTagMultipleIsFound)
+    throw FundmeError(metaTagMultipleIsFound)
   }
 
   if (metaTag[0]) {
     return metaTag[0].content
   }
 
-  throw new Error(metaTagNotFound)
+  throw FundmeError(metaTagNotFound)
 }
 
 export function getCurrentPointerPool(): Array<string | WMPointer> {
