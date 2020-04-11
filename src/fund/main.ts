@@ -1,5 +1,5 @@
 import { createPool } from './set-pointer-multiple'
-import { metaTagNotFound, metaTagMultipleIsFound, FundmeError } from './errors'
+import { metaTagNotFound, metaTagMultipleIsFound, noUndefinedFundOnServerSide, FundmeError } from './errors'
 import { clientSideFund } from './main-client'
 import { serverSideFund } from './main-server'
 
@@ -24,7 +24,7 @@ export function fund(pointer?: WMAddress, options?: fundOptions): FundType | str
     return clientSideFund(pointer)
   } else {
     if (pointer === undefined) {
-      throw new Error("Can't use fund() with empty parameters in server side.")
+      throw FundmeError(noUndefinedFundOnServerSide)
     } else {
       return serverSideFund(pointer)
     }
