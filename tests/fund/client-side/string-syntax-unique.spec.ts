@@ -1,5 +1,5 @@
-import { fund, getCurrentPointerPool } from '../main'
-import { convertToPointer } from '../set-pointer-multiple'
+import { fund, getCurrentPointerPool } from '../../../src/fund/main'
+import { convertToPointer } from '../../../src/fund/set-pointer-multiple'
 
 describe('Unique syntax on string', () => {
   test('will result correct weights', () => {

@@ -1,5 +1,10 @@
-import { fund } from '../main'
-import { noTemplateFound, jsonTemplateIsInvalid, cannotParseScriptJson, failParsingTemplate } from '../errors'
+import { fund } from '../../../src/fund/main'
+import {
+  noTemplateFound,
+  jsonTemplateIsInvalid,
+  cannotParseScriptJson,
+  failParsingTemplate,
+} from '../../../src/fund/errors'
 
 describe('test scraping template crashes resulting right throw errors', () => {
   test('fund() is called but no template is found', () => {

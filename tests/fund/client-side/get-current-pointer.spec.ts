@@ -1,5 +1,5 @@
-import { metaTagNotFound } from '../errors'
-import { getCurrentPointerAddress } from '../main'
+import { metaTagNotFound } from '../../../src/fund/errors'
+import { getCurrentPointerAddress } from '../../../src/fund/main'
 
 describe('no currentpointer atm', () => {
   document.head.innerHTML = ''

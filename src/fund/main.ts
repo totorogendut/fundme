@@ -1,7 +1,7 @@
 import { createPool } from './set-pointer-multiple'
 import { metaTagNotFound, metaTagMultipleIsFound, FundmeError } from './errors'
 import { clientSideFund } from './main-client'
-import { serverSideFund, isServer } from './main-server'
+import { serverSideFund } from './main-server'
 
 export let defaultAddress: WMAddress
 export let currentPointer: WMAddress
@@ -15,13 +15,15 @@ export enum FundType {
   isUndefined = 'undefined',
 }
 
-export const isBrowser = this.window === this
+export const isBrowser = (): boolean => {
+  return true
+}
 
 export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
-  if (isBrowser) {
-    return clientSideFund()
+  if (isBrowser()) {
+    return clientSideFund(pointer)
   } else {
-    if (isServer() && pointer === null) {
+    if (pointer === undefined) {
       throw new Error("Can't use fund() with empty parameters in server side.")
     } else {
       return serverSideFund(pointer)

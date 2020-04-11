@@ -2,7 +2,7 @@ import { isMultiplePointer } from './utils'
 import { setPointerSingle } from './set-pointer-single'
 import { setPointerFromTemplates } from './set-pointer-template'
 import { setPointerMultiple } from './set-pointer-multiple'
-import { defaultAddressNotFound, invalidAddress } from './errors'
+import { defaultAddressNotFound, invalidAddress, FundmeError } from './errors'
 import { defaultAddress, FundType, setFundType } from './main'
 
 export function clientSideFund(pointer?: WMAddress): FundType {
@@ -32,5 +32,5 @@ export function clientSideFund(pointer?: WMAddress): FundType {
     setPointerFromTemplates()
     return setFundType(FundType.isFromTemplate)
   }
-  throw new Error(invalidAddress)
+  throw FundmeError(invalidAddress)
 }

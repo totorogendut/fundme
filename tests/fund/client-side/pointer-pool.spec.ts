@@ -1,4 +1,4 @@
-import { getCurrentPointerPool, convertToPointerPool, fund } from '../main'
+import { getCurrentPointerPool, convertToPointerPool, fund } from '../../../src/fund/main'
 
 describe('test getCurrentPointerPool()', () => {
   test('it returns correct pool', () => {

@@ -1,5 +1,5 @@
-import { fund, FundType } from '../main'
-import { invalidAddress } from '../errors'
+import { fund, FundType } from '../../../src/fund/main'
+import { invalidAddress } from '../../../src/fund/errors'
 
 describe('correctly fund() argument', () => {
   test('get single pointer if parameter is a string', () => {

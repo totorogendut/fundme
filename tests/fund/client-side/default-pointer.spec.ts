@@ -1,6 +1,6 @@
-import { fund, setDefaultAddress, getCurrentPointerAddress, getCurrentPointerPool } from '../main'
-import { defaultAddressNotFound } from '../errors'
-import { DEFAULT_WEIGHT } from '../set-pointer-multiple'
+import { fund, setDefaultAddress, getCurrentPointerAddress, getCurrentPointerPool } from '../../../src/fund/main'
+import { defaultAddressNotFound } from '../../../src/fund/errors'
+import { DEFAULT_WEIGHT } from '../../../src/fund/set-pointer-multiple'
 
 describe('default pointer', () => {
   test('correctly set default pointer for single paramter', () => {

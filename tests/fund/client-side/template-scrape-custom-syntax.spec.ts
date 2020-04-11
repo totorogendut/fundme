@@ -1,7 +1,7 @@
-import { fund, getCurrentPointerPool } from '../main'
+import { fund, getCurrentPointerPool } from '../../../src/fund/main'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
-import { scriptFundmeIsNotApplicationJson } from '../errors'
+import { scriptFundmeIsNotApplicationJson } from '../../../src/fund/errors'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 

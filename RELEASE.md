@@ -2,11 +2,12 @@
 
 ## 0.1.1
 
+- FEATURE: Server-side fund() now live.
 - Errors now more readable.
 
 ## 0.1.0
 
-- FEAT: Custom syntax with `<template fundme></template>` tags.
+- FEATURE: Custom syntax with `<template fundme></template>` tags.
 
 ## 0.0.5
 
