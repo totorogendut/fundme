@@ -27,12 +27,15 @@ export function forceFundmeOnBrowser() {
 }
 
 export const isBrowser = (): boolean => {
+  if (forceBrowser) {
+    forceBrowser = false
+    return true
+  }
   return require === undefined && module === undefined
 }
 
 export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
-  if (isBrowser() || forceBrowser) {
-    forceBrowser = false
+  if (isBrowser()) {
     return clientSideFund(pointer)
   } else {
     if (pointer === undefined) {
@@ -62,10 +65,8 @@ export function setFundType(type: FundType): FundType {
 }
 
 export function getCurrentPointerAddress(): string {
-  if (!isBrowser() && !forceBrowser) {
+  if (!isBrowser()) {
     throw FundmeError(getCurrentPointerAddressMustClientSide)
-  } else {
-    forceBrowser = false
   }
 
   const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
