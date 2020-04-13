@@ -1,5 +1,11 @@
 import { createPool } from './set-pointer-multiple'
-import { metaTagNotFound, metaTagMultipleIsFound, noUndefinedFundOnServerSide, FundmeError } from './errors'
+import {
+  metaTagNotFound,
+  metaTagMultipleIsFound,
+  noUndefinedFundOnServerSide,
+  getCurrentPointerAddressMustClientSide,
+  FundmeError,
+} from './errors'
 import { clientSideFund } from './main-client'
 import { serverSideFund } from './main-server'
 
@@ -15,12 +21,18 @@ export enum FundType {
   isUndefined = 'undefined',
 }
 
+let forceBrowser: boolean = false
+export function forceFundmeOnBrowser() {
+  forceBrowser = true
+}
+
 export const isBrowser = (): boolean => {
-  return true
+  return require === undefined && module === undefined
 }
 
 export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
-  if (isBrowser()) {
+  if (isBrowser() || forceBrowser) {
+    forceBrowser = false
     return clientSideFund(pointer)
   } else {
     if (pointer === undefined) {
@@ -50,6 +62,12 @@ export function setFundType(type: FundType): FundType {
 }
 
 export function getCurrentPointerAddress(): string {
+  if (!isBrowser() && !forceBrowser) {
+    throw FundmeError(getCurrentPointerAddressMustClientSide)
+  } else {
+    forceBrowser = false
+  }
+
   const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
 
   if (metaTag.length > 1) {

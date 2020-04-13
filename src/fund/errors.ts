@@ -8,6 +8,7 @@ export const defaultAddressNotFound = 'default address not found. Use setDefault
 export const invalidAddress = 'Invalid Web Monetization pointer address is given.'
 export const addressNotFound = 'address not found.'
 export const addressIsNotAString = 'address must be a string.'
+export const getCurrentPointerAddressMustClientSide = "can't use getCurrentPointerAddress() server-side."
 export const weightNotFound = 'entries .weight not found.'
 export function weightIsNotANumber(str: string) {
   return `${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`

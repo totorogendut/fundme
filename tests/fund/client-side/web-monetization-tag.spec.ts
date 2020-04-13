@@ -1,6 +1,6 @@
 import { setWebMonetizationPointer } from '../../../src/fund/utils'
 
-import { getCurrentPointerAddress } from '../../../src/fund/main'
+import { getCurrentPointerAddress, forceFundmeOnBrowser } from '../../../src/fund/main'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 import { metaTagMultipleIsFound, metaTagNotFound } from '../../../src/fund/errors'
@@ -27,11 +27,13 @@ describe('getCurrentPointerAddress() found incorrect meta tags', () => {
       <meta name="monetization" content="$coil.com/test1" />
       <meta name="monetization" content="$coil.com/test2" />
     `
+    forceFundmeOnBrowser()
     expect(() => getCurrentPointerAddress()).toThrowError(metaTagMultipleIsFound)
     document.head.innerHTML = ''
   })
   test('no meta tag is found', () => {
     document.head.innerHTML = ''
+    forceFundmeOnBrowser()
     expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
   })
 })

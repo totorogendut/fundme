@@ -1,4 +1,4 @@
-import { fund, getCurrentPointerPool } from '../../../src/fund/main'
+import { fund, getCurrentPointerPool, forceFundmeOnBrowser } from '../../../src/fund/main'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
@@ -8,8 +8,9 @@ describe('get monetization pointer address from <template></template>', () => {
   test('fund() will scrape from template', () => {
     const pointerAddress = '$money.com/pointer-address2'
     document.body.innerHTML = `
-      <template data-fund="${pointerAddress}"></template>
+    <template data-fund="${pointerAddress}"></template>
     `
+    forceFundmeOnBrowser()
     fund()
     const metaTag = document.querySelector('meta[name="monetization"]')
     expect(metaTag).toBeInTheDocument()
@@ -23,6 +24,7 @@ describe('get monetization pointer address from <template></template>', () => {
       <template data-fund="${pointerAddress}"></template>
       <template data-fund="${pointerAddress}222"></template>
     `
+    forceFundmeOnBrowser()
     fund()
     const metaTag: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
     expect(metaTag).toBeInTheDocument()
@@ -39,6 +41,7 @@ describe('get monetization pointer address from <template></template>', () => {
       <template data-fund="${pointerAddress}"></template>
       <template data-fund="${pointerAddress}222" data-fund-weight="44"></template>
     `
+    forceFundmeOnBrowser()
     fund()
     const metaTag: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
     expect(metaTag).toBeInTheDocument()
@@ -55,6 +58,8 @@ describe('get monetization pointer address from <template></template>', () => {
       <template data-fund="${pointerAddress}" data-fund-weight="0"></template>
       <template data-fund="${pointerAddress}222" data-fund-weight="44"></template>
     `
+
+    forceFundmeOnBrowser()
     fund()
     const metaTag: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
     expect(metaTag).toBeInTheDocument()

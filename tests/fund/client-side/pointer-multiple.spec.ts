@@ -8,7 +8,6 @@ import {
   DEFAULT_WEIGHT,
   checkWeight,
 } from '../../../src/fund/set-pointer-multiple'
-import { setWebMonetizationPointer } from '../../../src/fund/utils'
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
