@@ -1,6 +1,6 @@
 # Releases
 
-## 0.1.1
+## unrelased
 
 - FEATURE: Server-side fund() now live.
 - Errors now more readable.
