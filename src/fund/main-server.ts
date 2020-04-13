@@ -3,8 +3,6 @@ import { isMultiplePointer } from './utils'
 import { setPointerMultiple } from './set-pointer-multiple'
 import { FundmeError, invalidFundmeServerSide } from './errors'
 
-export let walletAddress = ''
-
 export function serverSideFund(pointer: WMAddress): string {
   if (typeof pointer === 'string') {
     setCurrentPointer(pointer)
