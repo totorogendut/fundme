@@ -35,4 +35,5 @@ export const scriptFundmeIsNotApplicationJson = 'found <script fundme> but its t
  *  Server-side fund()       *
  *                           *
  *****************************/
-export const noUndefinedFundOnServerSide = "Can't use fund() with empty parameters in server side."
+export const noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side."
+export const invalidFundmeServerSide = 'invalid fundme parameters on the server-side.'

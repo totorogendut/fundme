@@ -21,6 +21,18 @@ export enum FundType {
   isUndefined = 'undefined',
 }
 
+export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
+  if (isBrowser()) {
+    return clientSideFund(pointer)
+  } else {
+    if (pointer === undefined) {
+      throw FundmeError(noUndefinedFundOnServerSide)
+    } else {
+      return serverSideFund(pointer)
+    }
+  }
+}
+
 let forceBrowser: boolean = false
 export function forceFundmeOnBrowser() {
   forceBrowser = true
@@ -32,18 +44,6 @@ export const isBrowser = (): boolean => {
     return true
   }
   return require === undefined && module === undefined
-}
-
-export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
-  if (isBrowser()) {
-    return clientSideFund(pointer)
-  } else {
-    if (pointer === undefined) {
-      throw FundmeError(noUndefinedFundOnServerSide)
-    } else {
-      return serverSideFund(pointer)
-    }
-  }
 }
 
 export function setDefaultAddress(address: WMAddress): void {
@@ -65,21 +65,22 @@ export function setFundType(type: FundType): FundType {
 }
 
 export function getCurrentPointerAddress(): string {
-  if (!isBrowser()) {
+  // const forced = forceBrowser
+  if (isBrowser()) {
+    const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
+
+    if (metaTag.length > 1) {
+      throw FundmeError(metaTagMultipleIsFound)
+    }
+
+    if (metaTag[0]) {
+      return metaTag[0].content
+    }
+    throw FundmeError(metaTagNotFound)
+  } else {
+    if (currentPointer) return currentPointer.toString()
     throw FundmeError(getCurrentPointerAddressMustClientSide)
   }
-
-  const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
-
-  if (metaTag.length > 1) {
-    throw FundmeError(metaTagMultipleIsFound)
-  }
-
-  if (metaTag[0]) {
-    return metaTag[0].content
-  }
-
-  throw FundmeError(metaTagNotFound)
 }
 
 export function getCurrentPointerPool(): Array<string | WMPointer> {

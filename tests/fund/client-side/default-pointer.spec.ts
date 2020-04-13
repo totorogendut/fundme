@@ -13,7 +13,6 @@ describe('default pointer', () => {
     setDefaultAddress('default 1')
     forceFundmeOnBrowser()
     fund('default')
-    forceFundmeOnBrowser()
     expect(getCurrentPointerAddress()).toBe('default 1')
   })
 
