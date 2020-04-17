@@ -34,3 +34,19 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
   }
   throw FundmeError(invalidAddress)
 }
+
+let forceBrowser: boolean = false
+export function forceFundmeOnBrowser() {
+  forceBrowser = true
+}
+
+export const isBrowser = (options: fundOptions = {}): boolean => {
+  if (options.force === 'server') return false
+
+  if (forceBrowser || options.force === 'client') {
+    forceBrowser = false
+    return true
+  }
+
+  return require === undefined && module === undefined
+}

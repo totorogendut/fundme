@@ -14,11 +14,11 @@ export const FUNDME_JSON_SELECTOR = 'script[fundme]'
 
 type JSONTemplate = Array<WMPointer | string>
 
-export function setPointerFromTemplates(): void {
+export function setPointerFromTemplates(options: fundOptions = {}): void {
   const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson(), ...scrapeCustomSyntax()]
 
   if (pointers.length) {
-    setPointerMultiple(pointers)
+    setPointerMultiple(pointers, options)
   } else {
     throw FundmeError(noTemplateFound)
   }

@@ -6,7 +6,7 @@ import {
   getCurrentPointerAddressMustClientSide,
   FundmeError,
 } from './errors'
-import { clientSideFund } from './main-client'
+import { clientSideFund, isBrowser, forceFundmeOnBrowser } from './main-client'
 import { serverSideFund } from './main-server'
 
 export let defaultAddress: WMAddress
@@ -31,19 +31,6 @@ export function fund(pointer?: WMAddress, options: fundOptions = {}): FundType |
       return serverSideFund(pointer)
     }
   }
-}
-
-let forceBrowser: boolean = false
-export function forceFundmeOnBrowser() {
-  forceBrowser = true
-}
-
-export const isBrowser = (options: fundOptions = {}): boolean => {
-  if (forceBrowser || options.force === 'client') {
-    forceBrowser = false
-    return true
-  }
-  return require === undefined && module === undefined
 }
 
 export function setDefaultAddress(address: WMAddress): void {
@@ -96,3 +83,5 @@ export function convertToPointerPool(pointer: WMAddress): Array<string | WMPoint
 
   return pointer
 }
+
+export { isBrowser, forceFundmeOnBrowser }

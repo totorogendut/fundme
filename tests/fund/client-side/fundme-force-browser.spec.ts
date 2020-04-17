@@ -1,4 +1,4 @@
-import { fund } from '../../../src/fund/main'
+import { fund, isBrowser } from '../../../src/fund/main'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
@@ -29,5 +29,17 @@ describe('force fund() on browser', () => {
 
     expect(meta).toBeInTheDocument()
     expect(meta.content).toContain('$wallet.example.com/test')
+  })
+})
+
+describe('test isBrowser()', () => {
+  test('force client is enabled', () => {
+    expect(isBrowser({ force: 'client' })).toBeTruthy()
+  })
+  test('force server is enabled', () => {
+    expect(isBrowser({ force: 'server' })).toBeFalsy()
+  })
+  test('without forcing in node environment', () => {
+    expect(isBrowser()).toBeFalsy()
   })
 })
