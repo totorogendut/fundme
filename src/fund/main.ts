@@ -1,8 +1,13 @@
-import { isMultiplePointer } from './utils'
-import { setPointerSingle } from './set-pointer-single'
-import { setPointerMultiple, createPool } from './set-pointer-multiple'
-import { setPointerFromTemplates } from './set-pointer-template'
-import { defaultAddressNotFound, invalidAddress, metaTagNotFound, metaTagMultipleIsFound } from './errors'
+import { createPool } from './set-pointer-multiple'
+import {
+  metaTagNotFound,
+  metaTagMultipleIsFound,
+  noUndefinedFundOnServerSide,
+  getCurrentPointerAddressMustClientSide,
+  FundmeError,
+} from './errors'
+import { clientSideFund, isBrowser, forceFundmeOnBrowser } from './main-client'
+import { serverSideFund } from './main-server'
 
 export let defaultAddress: WMAddress
 export let currentPointer: WMAddress
@@ -16,34 +21,16 @@ export enum FundType {
   isUndefined = 'undefined',
 }
 
-export function fund(pointer?: WMAddress, options?: fundOptions): FundType {
-  if (typeof pointer === 'string') {
-    if (pointer === 'default') {
-      if (defaultAddress !== undefined) {
-        if (typeof defaultAddress === 'string') {
-          setPointerSingle(defaultAddress)
-        } else {
-          setPointerMultiple(defaultAddress)
-        }
-        return setFundType(FundType.isDefault)
-      } else {
-        throw new Error(defaultAddressNotFound)
-      }
+export function fund(pointer?: WMAddress, options: fundOptions = {}): FundType | string {
+  if (isBrowser(options)) {
+    return clientSideFund(pointer, options)
+  } else {
+    if (pointer === undefined) {
+      throw FundmeError(noUndefinedFundOnServerSide)
+    } else {
+      return serverSideFund(pointer)
     }
-    setPointerSingle(pointer)
-    return setFundType(FundType.isSingle)
   }
-
-  if (isMultiplePointer(pointer)) {
-    setPointerMultiple(pointer)
-    return setFundType(FundType.isMultiple)
-  }
-
-  if (pointer === undefined) {
-    setPointerFromTemplates()
-    return setFundType(FundType.isFromTemplate)
-  }
-  throw new Error(invalidAddress)
 }
 
 export function setDefaultAddress(address: WMAddress): void {
@@ -65,17 +52,22 @@ export function setFundType(type: FundType): FundType {
 }
 
 export function getCurrentPointerAddress(): string {
-  const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
+  // const forced = forceBrowser
+  if (isBrowser()) {
+    const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll('meta[name="monetization"]')
 
-  if (metaTag.length > 1) {
-    throw new Error(metaTagMultipleIsFound)
+    if (metaTag.length > 1) {
+      throw FundmeError(metaTagMultipleIsFound)
+    }
+
+    if (metaTag[0]) {
+      return metaTag[0].content
+    }
+    throw FundmeError(metaTagNotFound)
+  } else {
+    if (currentPointer) return currentPointer.toString()
+    throw FundmeError(getCurrentPointerAddressMustClientSide)
   }
-
-  if (metaTag[0]) {
-    return metaTag[0].content
-  }
-
-  throw new Error(metaTagNotFound)
 }
 
 export function getCurrentPointerPool(): Array<string | WMPointer> {
@@ -91,3 +83,5 @@ export function convertToPointerPool(pointer: WMAddress): Array<string | WMPoint
 
   return pointer
 }
+
+export { isBrowser, forceFundmeOnBrowser }

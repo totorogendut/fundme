@@ -1,12 +1,13 @@
-import { fund, getCurrentPointerPool } from '../main'
+import { fund, getCurrentPointerPool, forceFundmeOnBrowser } from '../../../src/fund/main'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
-import { scriptFundmeIsNotApplicationJson } from '../errors'
+import { scriptFundmeIsNotApplicationJson } from '../../../src/fund/errors'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 
 describe('parsing custom syntax', () => {
   test('works with hash # weight modifier', () => {
+    forceFundmeOnBrowser()
     document.body.innerHTML = `
       <template fundme>
         $wallet.example.com/testing-one#22;
@@ -41,6 +42,7 @@ describe('parsing custom syntax', () => {
         $wallet.example.com/testing-three#33;
       </template>
     `
+    forceFundmeOnBrowser()
     fund()
     const expectedPool = [
       {

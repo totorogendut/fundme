@@ -1,6 +1,6 @@
-import { isMultiplePointer, getPoolWeightSum, getWinningPointer } from '../utils'
-import { getCurrentPointerAddress } from '../main'
-import { metaTagNotFound } from '../errors'
+import { isMultiplePointer, getPoolWeightSum, getWinningPointer } from '../../../src/fund/utils'
+import { getCurrentPointerAddress, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { metaTagNotFound } from '../../../src/fund/errors'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
@@ -61,6 +61,7 @@ describe('ensure pickPointer() is robust', () => {
 
 describe("test getCurrentPointerAddress() when there's no meta tag", () => {
   test('throw not found', () => {
+    forceFundmeOnBrowser()
     expect(() => getCurrentPointerAddress()).toThrowError(metaTagNotFound)
   })
 })

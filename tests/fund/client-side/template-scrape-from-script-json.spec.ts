@@ -1,23 +1,24 @@
-import { fund, getCurrentPointerPool } from '../main'
+import { fund, getCurrentPointerPool, forceFundmeOnBrowser } from '../../../src/fund/main'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
-import { scriptFundmeIsNotApplicationJson } from '../errors'
+import { scriptFundmeIsNotApplicationJson } from '../../../src/fund/errors'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 
 describe('parsing fundme template from a JSON array', () => {
   test('fund() will scrape from <script fundme type="application/json">', () => {
     document.body.innerHTML = `
-      <script fundme type="application/json">
-        [
-          "$coil.xrptipbot.com/my-pointer",
-          {
-            "address": "$xrp.com/tip-my-content",
-            "weight": 8
-          }
-        ]
-      </script>
+    <script fundme type="application/json">
+    [
+      "$coil.xrptipbot.com/my-pointer",
+      {
+        "address": "$xrp.com/tip-my-content",
+        "weight": 8
+      }
+    ]
+    </script>
     `
+    forceFundmeOnBrowser()
     fund()
     const pool = getCurrentPointerPool()
     // @ts-ignore
@@ -30,6 +31,7 @@ describe('parsing fundme template from a JSON array', () => {
         "$coil.xrptipbot.com/my-pointer"
       </script>
     `
+    forceFundmeOnBrowser()
     fund()
     const pool = getCurrentPointerPool()
     // @ts-ignore
@@ -50,6 +52,7 @@ describe('parsing fundme template from a JSON array', () => {
         ]
       </script>
     `
+    forceFundmeOnBrowser()
     // @ts-ignore
     expect(() => fund()).toThrowError(scriptFundmeIsNotApplicationJson)
     document.body.innerHTML = ''

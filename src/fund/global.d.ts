@@ -6,8 +6,11 @@ interface WMPointer {
 }
 
 interface fundOptions {
+  force?: 'client' | 'server'
   maxPool?: number
   default?: boolean
+  affiliateId?: string
+  affiliateEntry?: boolean
 }
 
 // declare var document: any;

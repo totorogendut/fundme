@@ -7,8 +7,8 @@ import {
   createPool,
   DEFAULT_WEIGHT,
   checkWeight,
-} from '../set-pointer-multiple'
-import { setWebMonetizationPointer } from '../utils'
+} from '../../../src/fund/set-pointer-multiple'
+import { forceFundmeOnBrowser } from '../../../src/fund/main'
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
@@ -60,6 +60,7 @@ describe('pointers having correct payment address', () => {
         weight: 11,
       },
     ]
+    forceFundmeOnBrowser()
     // @ts-ignore
     expect(() => setPointerMultiple(pointers)).toThrow()
   })

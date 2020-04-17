@@ -1,4 +1,4 @@
-import { getCurrentPointerPool, convertToPointerPool, fund } from '../main'
+import { getCurrentPointerPool, convertToPointerPool, fund, forceFundmeOnBrowser } from '../../../src/fund/main'
 
 describe('test getCurrentPointerPool()', () => {
   test('it returns correct pool', () => {
@@ -17,6 +17,7 @@ describe('test getCurrentPointerPool()', () => {
         ${JSON.stringify(pointers)}
       </script>
     `
+    forceFundmeOnBrowser()
     fund()
     expect(getCurrentPointerPool()).toEqual(pointers)
     document.body.innerHTML = ''

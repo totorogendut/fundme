@@ -1,9 +1,15 @@
-import { fund, getCurrentPointerAddress } from '../main'
-import { noTemplateFound, jsonTemplateIsInvalid, cannotParseScriptJson, failParsingTemplate } from '../errors'
+import { fund, forceFundmeOnBrowser } from '../../../src/fund/main'
+import {
+  noTemplateFound,
+  jsonTemplateIsInvalid,
+  cannotParseScriptJson,
+  failParsingTemplate,
+} from '../../../src/fund/errors'
 
 describe('test scraping template crashes resulting right throw errors', () => {
   test('fund() is called but no template is found', () => {
     document.body.innerHTML = ''
+    forceFundmeOnBrowser()
     expect(() => fund()).toThrowError(noTemplateFound)
     document.body.innerHTML = ''
   })
@@ -17,6 +23,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
         }
       </script>
     `
+    forceFundmeOnBrowser()
     expect(() => fund()).toThrowError(jsonTemplateIsInvalid)
     document.body.innerHTML = ''
   })
@@ -27,6 +34,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
         $coil.com/test-@@
       </script>
     `
+    forceFundmeOnBrowser()
     expect(() => fund()).toThrowError(cannotParseScriptJson)
     document.body.innerHTML = ''
   })
@@ -37,6 +45,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
       <template data-fund="" />
     `
     function fundThrow() {
+      forceFundmeOnBrowser()
       fund()
     }
     expect(fundThrow).toThrowError(failParsingTemplate)
