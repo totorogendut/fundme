@@ -12,7 +12,7 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
         if (typeof defaultAddress === 'string') {
           setPointerSingle(defaultAddress, options)
         } else {
-          setPointerMultiple(defaultAddress)
+          setPointerMultiple(defaultAddress, options)
         }
         return setFundType(FundType.isDefault)
       } else {
@@ -24,7 +24,7 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
   }
 
   if (isMultiplePointer(pointer)) {
-    setPointerMultiple(pointer)
+    setPointerMultiple(pointer, options)
     return setFundType(FundType.isMultiple)
   }
 

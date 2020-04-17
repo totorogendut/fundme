@@ -5,12 +5,12 @@ import { setCurrentPointer, isBrowser } from './main'
 export const DEFAULT_WEIGHT: number = 5
 
 // TODO check pointer.address with RegEx
-export function setPointerMultiple(pointers: Array<string | WMPointer>): string {
+export function setPointerMultiple(pointers: Array<string | WMPointer>, options: fundOptions = {}): string {
   const pool = createPool(pointers)
   const pickedPointer = pickPointer(pool)
   const pointerAddress = getPointerAddress(pickedPointer)
   setCurrentPointer(pool)
-  if (isBrowser()) {
+  if (isBrowser(options)) {
     setWebMonetizationPointer(pointerAddress)
   }
 

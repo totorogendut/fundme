@@ -17,4 +17,17 @@ describe('force fund() on browser', () => {
     expect(meta).toBeInTheDocument()
     expect(meta).toHaveAttribute('content', pointer)
   })
+
+  test('force multiple pointer fund() on browser', () => {
+    const pointers = ['$wallet.example.com/test1', '$wallet.example.com/test2']
+
+    fund(pointers, {
+      force: 'client',
+    })
+
+    const meta: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
+
+    expect(meta).toBeInTheDocument()
+    expect(meta.content).toContain('$wallet.example.com/test')
+  })
 })
