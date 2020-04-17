@@ -1,9 +1,9 @@
 import { setWebMonetizationPointer } from './utils'
 import { setCurrentPointer, isBrowser } from './main'
 
-export function setPointerSingle(pointer: string): void {
+export function setPointerSingle(pointer: string, options: fundOptions = {}): void {
   setCurrentPointer(pointer)
-  if (isBrowser()) {
+  if (isBrowser(options)) {
     setWebMonetizationPointer(pointer)
   }
 }

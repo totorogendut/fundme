@@ -21,9 +21,9 @@ export enum FundType {
   isUndefined = 'undefined',
 }
 
-export function fund(pointer?: WMAddress, options?: fundOptions): FundType | string {
-  if (isBrowser()) {
-    return clientSideFund(pointer)
+export function fund(pointer?: WMAddress, options: fundOptions = {}): FundType | string {
+  if (isBrowser(options)) {
+    return clientSideFund(pointer, options)
   } else {
     if (pointer === undefined) {
       throw FundmeError(noUndefinedFundOnServerSide)
@@ -38,8 +38,8 @@ export function forceFundmeOnBrowser() {
   forceBrowser = true
 }
 
-export const isBrowser = (): boolean => {
-  if (forceBrowser) {
+export const isBrowser = (options: fundOptions = {}): boolean => {
+  if (forceBrowser || options.force === 'client') {
     forceBrowser = false
     return true
   }

@@ -5,12 +5,12 @@ import { setPointerMultiple } from './set-pointer-multiple'
 import { defaultAddressNotFound, invalidAddress, FundmeError } from './errors'
 import { defaultAddress, FundType, setFundType } from './main'
 
-export function clientSideFund(pointer?: WMAddress): FundType {
+export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
   if (typeof pointer === 'string') {
     if (pointer === 'default') {
       if (defaultAddress !== undefined) {
         if (typeof defaultAddress === 'string') {
-          setPointerSingle(defaultAddress)
+          setPointerSingle(defaultAddress, options)
         } else {
           setPointerMultiple(defaultAddress)
         }
@@ -19,7 +19,7 @@ export function clientSideFund(pointer?: WMAddress): FundType {
         throw FundmeError(defaultAddressNotFound)
       }
     }
-    setPointerSingle(pointer)
+    setPointerSingle(pointer, options)
     return setFundType(FundType.isSingle)
   }
 
