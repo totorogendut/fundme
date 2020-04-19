@@ -1,5 +1,5 @@
 export declare const DEFAULT_WEIGHT: number;
-export declare function setPointerMultiple(pointers: Array<string | WMPointer>): void;
+export declare function setPointerMultiple(pointers: (string | WMPointer)[], options?: fundOptions): returnValidPointer;
 export declare function getPointerAddress(pointer: WMPointer): string;
 export declare function createPool(pointers: Array<string | WMPointer>): WMPointer[];
 export declare function checkWeight(pointer: WMPointer): WMPointer;

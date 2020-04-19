@@ -1,6 +1,6 @@
 # Releases
 
-## unreleased
+## 0.1.1
 
 - FEATURE: Server-side fund() now live.
 - Hash custom syntax `#` for declaring weight cleaned on single pointer fund().

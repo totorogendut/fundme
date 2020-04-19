@@ -1,2 +1,2 @@
-import { fund, setDefaultAddress } from './src/fund/main';
-export { fund, setDefaultAddress };
+import { fund, setDefaultAddress, getCurrentPointerPool, getCurrentPointerAddress } from './src/fund/main';
+export { fund, setDefaultAddress, getCurrentPointerAddress, getCurrentPointerPool };

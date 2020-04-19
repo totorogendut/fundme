@@ -1,1 +1,1 @@
-export declare function setPointerSingle(pointer: string): void;
+export declare function setPointerSingle(pointer: string, options?: fundOptions): returnValidPointer;

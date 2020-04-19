@@ -45,14 +45,15 @@ Using Fundme.js with CommonJS - note that usage in Node is still Work In Progres
 ```js
 const { fund } = require('fundme')
 
-fund('$wallet.example.com/some-guy-funding-address')
+const randomPointer = fund([
+  '$wallet.example.com/some-guy-funding-address',
+  '$wallet.example.com/helper-funding-address',
+  '$wallet.example.com/platform-payment-address'
+])
 
 /*
-  Instead of manipulating monetization meta tag in the DOM, Server-Side
-  Fundme.js will return DOM string that you can inject to your page.
-
-  This is useful if you want to calculate Fundme.js built-in
-  revenue share system on your server.
+  in Node.js environment, fund() will return one of the three pointers instead
+  of interacting with Web Monetization API meta tag. 
 */
 ```
 
@@ -177,7 +178,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 ## Short-term goal
 
 - [ ] Add bias system.
-- [ ] Make some config to let Fundme.js operate in Server-Side.
+- [x] Make some config to let Fundme.js operate in Server-Side.
 - [ ] A way to get relative chances for contributors' addresses (something like CSS relative unit).
 - [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid
 - [ ] Simpler and more intuitive implementation that will goes nicely with current API standard.
