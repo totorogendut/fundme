@@ -1,6 +1,6 @@
 {
   "name": "fundme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple but powerful client-side library to manage monetization on the web.",
   "main": "./dist/fundme-cjs.js",
   "module": "./dist/fundme.mjs",
