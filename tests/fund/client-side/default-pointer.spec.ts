@@ -12,7 +12,7 @@ import {
   FundmeError,
 } from '../../../src/fund/errors'
 import { DEFAULT_WEIGHT } from '../../../src/fund/set-pointer-multiple'
-import { getDefaultAddress } from '../../../src/fund/utils'
+import { getDefaultAddress, defaultAddressMultiple } from '../../../src/fund/utils'
 
 describe('default pointer', () => {
   test('correctly set default pointer for single paramter', () => {
@@ -60,6 +60,14 @@ describe('default pointer', () => {
     forceFundmeOnBrowser()
     fund('default')
     expect(getCurrentPointerPool()).toEqual(expectedPointers)
+  })
+
+  test('default address multiple must be array', () => {
+    const pointer = '$wallet.example.com/test'
+    const address = defaultAddressMultiple(pointer)
+
+    expect(address).toEqual([pointer])
+    expect(defaultAddressMultiple([pointer])).toEqual([pointer])
   })
 
   test('throw if default address not found', () => {

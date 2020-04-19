@@ -1,4 +1,4 @@
-import { isMultiplePointer, setFundType, getDefaultAddress } from './utils'
+import { isMultiplePointer, setFundType, getDefaultAddress, defaultAddressMultiple } from './utils'
 import { setPointerSingle } from './set-pointer-single'
 import { setPointerFromTemplates } from './set-pointer-template'
 import { setPointerMultiple } from './set-pointer-multiple'
@@ -12,10 +12,7 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
         if (typeof getDefaultAddress() === 'string') {
           setPointerSingle(getDefaultAddress().toString(), options)
         } else {
-          let address: any = getDefaultAddress()
-          address = isMultiplePointer(address) ? address : [address]
-
-          setPointerMultiple(address, options)
+          setPointerMultiple(defaultAddressMultiple(getDefaultAddress()), options)
         }
         return setFundType(FundType.isDefault)
       } else {

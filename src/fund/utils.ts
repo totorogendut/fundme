@@ -57,6 +57,12 @@ export function getWinningPointer(pointers: WMPointer[], choice: number): WMPoin
   }
 }
 
+export function hasAddress(o: any): boolean {
+  if (!o) return false
+
+  return Object.keys(o).some((str) => str === 'address')
+}
+
 let defaultAddress: defaultAddress
 export function setDefaultAddress(
   address: defaultAddress,
@@ -89,14 +95,12 @@ export function setDefaultAddress(
   throw FundmeError(invalidDefaultAddress)
 }
 
-export function hasAddress(o: any): boolean {
-  if (!o) return false
-
-  return Object.keys(o).some((str) => str === 'address')
-}
-
 export function getDefaultAddress(): defaultAddress {
   return defaultAddress
+}
+
+export function defaultAddressMultiple(address: defaultAddress): any {
+  return isMultiplePointer(address) ? address : [address]
 }
 
 export let currentFundType: FundType
