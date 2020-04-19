@@ -5,21 +5,32 @@ import {
   getCurrentPointerPool,
 } from '../../../src/fund/main'
 import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
-import { defaultAddressNotFound } from '../../../src/fund/errors'
+import {
+  defaultAddressNotFound,
+  invalidDefaultAddress,
+  defaultAddressArrayCannotBeEmpty,
+  FundmeError,
+} from '../../../src/fund/errors'
 import { DEFAULT_WEIGHT } from '../../../src/fund/set-pointer-multiple'
+import { getDefaultAddress } from '../../../src/fund/utils'
 
 describe('default pointer', () => {
   test('correctly set default pointer for single paramter', () => {
-    setDefaultAddress('default 1')
+    setDefaultAddress('$wallet.example.com/test1')
     forceFundmeOnBrowser()
     fund('default')
-    expect(getCurrentPointerAddress()).toBe('default 1')
+    expect(getCurrentPointerAddress()).toBe('$wallet.example.com/test1')
+  })
+  test('correctly set default pointer for single paramter with object', () => {
+    setDefaultAddress({ address: '$wallet.example.com/test2' })
+    forceFundmeOnBrowser()
+    fund('default')
+    expect(getCurrentPointerAddress()).toBe('$wallet.example.com/test2')
   })
 
   test('set default address with multiple pointers', () => {
     const pointers = [
-      '$twitter.com/my-address',
-      // @ts-ignore
+      '$twitter.com/my-address', //@ts-ignore
       {
         address: '$coil.com/test',
         weight: 6,
@@ -29,6 +40,7 @@ describe('default pointer', () => {
         weight: 11,
       },
     ]
+
     setDefaultAddress(pointers)
     const expectedPointers = [
       {
@@ -49,9 +61,38 @@ describe('default pointer', () => {
     fund('default')
     expect(getCurrentPointerPool()).toEqual(expectedPointers)
   })
-  test("throw if using default but default address hasn't been set", () => {
-    setDefaultAddress(undefined)
-    forceFundmeOnBrowser()
-    expect(() => fund('default')).toThrowError(defaultAddressNotFound)
+
+  test('throw if default address not found', () => {
+    //@ts-ignore
+    expect(() => {
+      setDefaultAddress(undefined, { allowUndefined: true }) //@ts-ignore
+      fund('default', { force: 'client' })
+    }).toThrowError(FundmeError(defaultAddressNotFound))
+  })
+
+  test('throw if default address undefined', () => {
+    //@ts-ignore
+    expect(() => {
+      setDefaultAddress(undefined) //@ts-ignore
+    }).toThrowError(FundmeError(invalidDefaultAddress))
+  })
+
+  test('throw if default address invalid', () => {
+    const set = (any) => {
+      setDefaultAddress(any)
+      console.log('Default address is', getDefaultAddress())
+    }
+    //@ts-ignore
+    expect(() => set({})).toThrowError(FundmeError(invalidDefaultAddress))
+    //@ts-ignore
+    expect(() => set(4)).toThrowError(FundmeError(invalidDefaultAddress))
+  })
+  test('throw if default address is array but empty', () => {
+    const set = (any) => {
+      setDefaultAddress(any)
+      console.log('Default address is', getDefaultAddress())
+    }
+    //@ts-ignore
+    expect(() => set([])).toThrowError(FundmeError(defaultAddressArrayCannotBeEmpty))
   })
 })

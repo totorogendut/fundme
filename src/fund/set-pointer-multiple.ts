@@ -3,6 +3,7 @@ import {
   setWebMonetizationPointer,
   getPoolWeightSum,
   setCurrentPointer,
+  hasAddress,
 } from './utils'
 import { addressNotFound, addressIsNotAString, weightIsNotANumber, FundmeError } from './errors'
 import { isBrowser } from './fund-browser'
@@ -11,15 +12,15 @@ export const DEFAULT_WEIGHT: number = 5
 
 // TODO check pointer.address with RegEx
 export function setPointerMultiple(
-  pointers: Array<string | WMPointer>,
+  pointers: (string | WMPointer)[],
   options: fundOptions = {},
-): string {
+): returnValidPointer {
   const pool = createPool(pointers)
   const pickedPointer = pickPointer(pool)
   const pointerAddress = getPointerAddress(pickedPointer)
   setCurrentPointer(pool)
   if (isBrowser(options)) {
-    setWebMonetizationPointer(pointerAddress)
+    return setWebMonetizationPointer(pointerAddress)
   }
 
   return pointerAddress
@@ -40,7 +41,7 @@ export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
   return pointers.map((pointer) => {
     let wmPointer: WMPointer
     if (typeof pointer === 'string') pointer = convertToPointer(pointer)
-    if (!('address' in pointer)) throw FundmeError(addressNotFound)
+    if (!hasAddress(pointer)) throw FundmeError(addressNotFound)
     wmPointer = checkWeight(pointer)
 
     return wmPointer
@@ -82,8 +83,8 @@ export function convertToPointer(str: string): WMPointer {
 
   const pointer: WMPointer = {
     address,
-    weight: weight || DEFAULT_WEIGHT,
+    weight,
   }
 
-  return pointer
+  return checkWeight(pointer)
 }

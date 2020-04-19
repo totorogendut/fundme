@@ -1,6 +1,6 @@
 import { getCurrentPointerPool, fund } from '../../../src/fund/main'
 import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
-import { convertToPointerPool } from '../../../src/fund/utils'
+import { convertToPointerPool, hasAddress } from '../../../src/fund/utils'
 
 describe('test getCurrentPointerPool()', () => {
   test('it returns correct pool', () => {
@@ -29,5 +29,21 @@ describe('test getCurrentPointerPool()', () => {
     const pointer = '$coil.com/pointer'
 
     expect(convertToPointerPool(pointer)).toEqual([pointer])
+  })
+})
+
+describe('pointer object has address', () => {
+  test('hasAddress() return true', () => {
+    expect(hasAddress({ address: '$wallet.address.com/test' })).toBeTruthy()
+  })
+  test('hasAddress() return false if not have address', () => {
+    expect(hasAddress({})).toBeFalsy()
+  })
+  test('hasAddress() return false if undefined', () => {
+    expect(hasAddress(undefined)).toBeFalsy()
+  })
+  test('hasAddress() return false if invalid', () => {
+    expect(hasAddress(4)).toBeFalsy()
+    expect(hasAddress('$wallet.example.com/test')).toBeFalsy()
   })
 })

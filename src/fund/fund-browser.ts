@@ -12,7 +12,10 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
         if (typeof getDefaultAddress() === 'string') {
           setPointerSingle(getDefaultAddress().toString(), options)
         } else {
-          setPointerMultiple([...getDefaultAddress()], options)
+          let address: any = getDefaultAddress()
+          address = isMultiplePointer(address) ? address : [address]
+
+          setPointerMultiple(address, options)
         }
         return setFundType(FundType.isDefault)
       } else {
@@ -40,13 +43,12 @@ export function forceFundmeOnBrowser() {
   forceBrowser = true
 }
 
+const isNodeEnv = require !== undefined && module !== undefined
+
 export const isBrowser = (options: fundOptions = {}): boolean => {
   if (options.force === 'server') return false
+  const forced = forceBrowser
+  forceBrowser = false
 
-  if (forceBrowser || options.force === 'client') {
-    forceBrowser = false
-    return true
-  }
-
-  return require === undefined && module === undefined
+  return !isNodeEnv || forced || options.force === 'client'
 }

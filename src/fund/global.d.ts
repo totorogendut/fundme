@@ -1,8 +1,10 @@
 type WMAddress = string | Array<string | WMPointer> | undefined
+type returnValidPointer = string | HTMLMetaElement
+type defaultAddress = string | WMPointer | (string | WMPointer)[]
 
 interface WMPointer {
   address: string
-  weight: number
+  weight?: number
 }
 
 interface fundOptions {
@@ -11,6 +13,10 @@ interface fundOptions {
   default?: boolean
   affiliateId?: string
   affiliateEntry?: boolean
+}
+
+interface defaultAddressOptions {
+  allowUndefined?: boolean
 }
 
 // declare var document: any;

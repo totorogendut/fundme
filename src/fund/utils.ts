@@ -1,4 +1,4 @@
-import { createPool } from './set-pointer-multiple'
+import { createPool, getPointerAddress, checkWeight } from './set-pointer-multiple'
 import { isBrowser } from './fund-browser'
 import { FundType } from './fund'
 import {
@@ -6,6 +6,9 @@ import {
   metaTagMultipleIsFound,
   getCurrentPointerAddressMustClientSide,
   FundmeError,
+  canOnlyCleanStringCustomSyntax,
+  defaultAddressArrayCannotBeEmpty,
+  invalidDefaultAddress,
 } from './errors'
 
 export function isMultiplePointer(s: any): boolean {
@@ -54,16 +57,45 @@ export function getWinningPointer(pointers: WMPointer[], choice: number): WMPoin
   }
 }
 
-let defaultAddress: WMAddress
-export function setDefaultAddress(address: WMAddress): void {
+let defaultAddress: defaultAddress
+export function setDefaultAddress(
+  address: defaultAddress,
+  options: defaultAddressOptions = {},
+): void {
   if (Array.isArray(address)) {
-    defaultAddress = createPool(address)
-  } else {
-    defaultAddress = address
+    if (address.length) {
+      defaultAddress = createPool(address)
+      return
+    } else {
+      throw FundmeError(defaultAddressArrayCannotBeEmpty)
+    }
   }
+
+  if (typeof address === 'string') {
+    defaultAddress = address
+    return
+  }
+
+  if (hasAddress(address)) {
+    defaultAddress = getPointerAddress(address)
+    return
+  }
+
+  if (options.allowUndefined && address === undefined) {
+    defaultAddress = undefined
+    return
+  }
+
+  throw FundmeError(invalidDefaultAddress)
 }
 
-export function getDefaultAddress(): WMAddress {
+export function hasAddress(o: any): boolean {
+  if (!o) return false
+
+  return Object.keys(o).some((str) => str === 'address')
+}
+
+export function getDefaultAddress(): defaultAddress {
   return defaultAddress
 }
 
@@ -103,6 +135,8 @@ export function getCurrentPointerAddress(): string {
 export function cleanSinglePointerSyntax(pointer: any): any {
   if (typeof pointer === 'string') {
     pointer = pointer.split('#')[0]
+  } else {
+    throw FundmeError(canOnlyCleanStringCustomSyntax)
   }
 
   return pointer

@@ -5,13 +5,14 @@ import {
   jsonTemplateIsInvalid,
   cannotParseScriptJson,
   failParsingTemplate,
+  FundmeError,
 } from '../../../src/fund/errors'
 
 describe('test scraping template crashes resulting right throw errors', () => {
   test('fund() is called but no template is found', () => {
     document.body.innerHTML = ''
     forceFundmeOnBrowser()
-    expect(() => fund()).toThrowError(noTemplateFound)
+    expect(() => fund()).toThrowError(FundmeError(noTemplateFound))
     document.body.innerHTML = ''
   })
 
@@ -25,7 +26,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
       </script>
     `
     forceFundmeOnBrowser()
-    expect(() => fund()).toThrowError(jsonTemplateIsInvalid)
+    expect(() => fund()).toThrowError(FundmeError(jsonTemplateIsInvalid))
     document.body.innerHTML = ''
   })
 
@@ -36,7 +37,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
       </script>
     `
     forceFundmeOnBrowser()
-    expect(() => fund()).toThrowError(cannotParseScriptJson)
+    expect(() => fund()).toThrowError(FundmeError(cannotParseScriptJson))
     document.body.innerHTML = ''
   })
 
@@ -49,7 +50,7 @@ describe('test scraping template crashes resulting right throw errors', () => {
       forceFundmeOnBrowser()
       fund()
     }
-    expect(fundThrow).toThrowError(failParsingTemplate)
+    expect(fundThrow).toThrowError(FundmeError(failParsingTemplate))
     document.body.innerHTML = ''
   })
 })

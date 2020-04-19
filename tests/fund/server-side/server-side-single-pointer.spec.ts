@@ -13,4 +13,10 @@ describe('single pointer server side', () => {
 
     expect(fund(pointer + customSyntax)).toBe(pointer)
   })
+
+  test("doesn't generate meta tag", () => {
+    fund('$wallet.example.com/test')
+
+    expect(document.querySelector('meta[name="monetization"]')).toBe(null)
+  })
 })
