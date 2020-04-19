@@ -3,8 +3,9 @@
 ## unrelased
 
 - FEATURE: Server-side fund() now live.
-- Refactor main.ts
+- Hash custom syntax `#` for declaring weight cleaned on single pointer fund().
 - Errors now more readable.
+- Refactor main.ts
 
 ## 0.1.0
 
