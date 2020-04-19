@@ -53,7 +53,7 @@ const randomPointer = fund([
 
 /*
   in Node.js environment, fund() will return one of the three pointers instead
-  of interacting with Web Monetization API meta tag. 
+  of interacting with Web Monetization API meta tag.
 */
 ```
 
