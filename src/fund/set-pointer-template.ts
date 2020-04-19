@@ -1,4 +1,10 @@
-import { checkWeight, setPointerMultiple, DEFAULT_WEIGHT, createPool, convertToPointer } from './set-pointer-multiple'
+import {
+  checkWeight,
+  setPointerMultiple,
+  DEFAULT_WEIGHT,
+  createPool,
+  convertToPointer,
+} from './set-pointer-multiple'
 import {
   noTemplateFound,
   failParsingTemplate,
@@ -15,7 +21,11 @@ export const FUNDME_JSON_SELECTOR = 'script[fundme]'
 type JSONTemplate = Array<WMPointer | string>
 
 export function setPointerFromTemplates(options: fundOptions = {}): void {
-  const pointers: Array<WMPointer> = [...scrapeTemplate(), ...scrapeJson(), ...scrapeCustomSyntax()]
+  const pointers: Array<WMPointer> = [
+    ...scrapeTemplate(),
+    ...scrapeJson(),
+    ...scrapeCustomSyntax(),
+  ]
 
   if (pointers.length) {
     setPointerMultiple(pointers, options)
@@ -27,7 +37,9 @@ export function setPointerFromTemplates(options: fundOptions = {}): void {
 // DON'T throw errors inside scrape functions if array is found to be empty
 // fund() already do that
 export function scrapeJson(): WMPointer[] {
-  const scriptTags: NodeListOf<HTMLScriptElement> = document.body.querySelectorAll(FUNDME_JSON_SELECTOR)
+  const scriptTags: NodeListOf<HTMLScriptElement> = document.body.querySelectorAll(
+    FUNDME_JSON_SELECTOR,
+  )
   let pointers: WMPointer[] = []
 
   if (scriptTags.length) {
@@ -65,7 +77,9 @@ function parseScriptJson(json: HTMLScriptElement): WMPointer[] {
 }
 
 export function scrapeTemplate(): WMPointer[] {
-  const templates: NodeListOf<HTMLTemplateElement> = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR)
+  const templates: NodeListOf<HTMLTemplateElement> = document.body.querySelectorAll(
+    FUNDME_TEMPLATE_SELECTOR,
+  )
   let pointers: WMPointer[] = []
 
   if (templates.length) {
@@ -81,7 +95,9 @@ export function scrapeTemplate(): WMPointer[] {
 export function parseTemplate(template: HTMLTemplateElement): WMPointer {
   let address: string = template.dataset.fund
   let weight: number =
-    template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT
+    template.dataset.fundWeight !== undefined
+      ? parseInt(template.dataset.fundWeight, 0)
+      : DEFAULT_WEIGHT
 
   if (!address) {
     throw FundmeError(failParsingTemplate)
@@ -96,7 +112,9 @@ export function parseTemplate(template: HTMLTemplateElement): WMPointer {
 }
 
 export function scrapeCustomSyntax(): WMPointer[] {
-  const templates: NodeListOf<HTMLTemplateElement> = document.querySelectorAll(FUNDME_CUSTOM_SYNTAX_SELECTOR)
+  const templates: NodeListOf<HTMLTemplateElement> = document.querySelectorAll(
+    FUNDME_CUSTOM_SYNTAX_SELECTOR,
+  )
   let pointers: WMPointer[] = []
 
   if (templates.length) {

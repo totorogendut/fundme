@@ -8,7 +8,7 @@ import {
   DEFAULT_WEIGHT,
   checkWeight,
 } from '../../../src/fund/set-pointer-multiple'
-import { forceFundmeOnBrowser } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })

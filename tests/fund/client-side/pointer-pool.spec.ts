@@ -1,4 +1,6 @@
-import { getCurrentPointerPool, convertToPointerPool, fund, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { getCurrentPointerPool, fund } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
+import { convertToPointerPool } from '../../../src/fund/utils'
 
 describe('test getCurrentPointerPool()', () => {
   test('it returns correct pool', () => {

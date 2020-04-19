@@ -1,4 +1,5 @@
-import { fund, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { fund } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 import {
   noTemplateFound,
   jsonTemplateIsInvalid,

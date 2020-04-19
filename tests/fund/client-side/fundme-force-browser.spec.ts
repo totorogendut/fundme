@@ -1,4 +1,5 @@
-import { fund, isBrowser } from '../../../src/fund/main'
+import { fund } from '../../../src/fund/main'
+import { isBrowser } from '../../../src/fund/fund-browser'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 

@@ -1,5 +1,6 @@
 import { metaTagNotFound, getCurrentPointerAddressMustClientSide } from '../../../src/fund/errors'
-import { getCurrentPointerAddress, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { getCurrentPointerAddress } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 
 describe('no currentpointer atm', () => {
   document.head.innerHTML = ''

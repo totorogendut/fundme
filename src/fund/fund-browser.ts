@@ -1,18 +1,25 @@
-import { isMultiplePointer } from './utils'
+import { isMultiplePointer, setFundType, getDefaultAddress } from './utils'
 import { setPointerSingle } from './set-pointer-single'
 import { setPointerFromTemplates } from './set-pointer-template'
 import { setPointerMultiple } from './set-pointer-multiple'
 import { defaultAddressNotFound, invalidAddress, FundmeError } from './errors'
-import { defaultAddress, FundType, setFundType } from './main'
+
+enum FundType {
+  isSingle = 'single',
+  isMultiple = 'multiple',
+  isDefault = 'default',
+  isFromTemplate = 'template',
+  isUndefined = 'undefined',
+}
 
 export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
   if (typeof pointer === 'string') {
     if (pointer === 'default') {
-      if (defaultAddress !== undefined) {
-        if (typeof defaultAddress === 'string') {
-          setPointerSingle(defaultAddress, options)
+      if (getDefaultAddress() !== undefined) {
+        if (typeof getDefaultAddress() === 'string') {
+          setPointerSingle(getDefaultAddress().toString(), options)
         } else {
-          setPointerMultiple(defaultAddress, options)
+          setPointerMultiple([...getDefaultAddress()], options)
         }
         return setFundType(FundType.isDefault)
       } else {

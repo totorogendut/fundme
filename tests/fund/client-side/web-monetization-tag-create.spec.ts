@@ -1,5 +1,4 @@
 import { createWebMonetizationTag, setWebMonetizationTag } from '../../../src/fund/utils'
-
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })

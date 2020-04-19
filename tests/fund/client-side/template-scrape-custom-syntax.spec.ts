@@ -1,7 +1,8 @@
-import { fund, getCurrentPointerPool, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { fund, getCurrentPointerPool } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
-import { scriptFundmeIsNotApplicationJson } from '../../../src/fund/errors'
+// import { scriptFundmeIsNotApplicationJson } from '../../../src/fund/errors'
 
 expect.extend({ toBeInTheDocument, toHaveAttribute })
 

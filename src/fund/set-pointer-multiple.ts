@@ -1,11 +1,19 @@
-import { getWinningPointer, setWebMonetizationPointer, getPoolWeightSum } from './utils'
+import {
+  getWinningPointer,
+  setWebMonetizationPointer,
+  getPoolWeightSum,
+  setCurrentPointer,
+} from './utils'
 import { addressNotFound, addressIsNotAString, weightIsNotANumber, FundmeError } from './errors'
-import { setCurrentPointer, isBrowser } from './main'
+import { isBrowser } from './fund-browser'
 
 export const DEFAULT_WEIGHT: number = 5
 
 // TODO check pointer.address with RegEx
-export function setPointerMultiple(pointers: Array<string | WMPointer>, options: fundOptions = {}): string {
+export function setPointerMultiple(
+  pointers: Array<string | WMPointer>,
+  options: fundOptions = {},
+): string {
   const pool = createPool(pointers)
   const pickedPointer = pickPointer(pool)
   const pointerAddress = getPointerAddress(pickedPointer)

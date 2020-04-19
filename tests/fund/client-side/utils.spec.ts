@@ -1,5 +1,6 @@
 import { isMultiplePointer, getPoolWeightSum, getWinningPointer } from '../../../src/fund/utils'
-import { getCurrentPointerAddress, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { getCurrentPointerAddress } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 import { metaTagNotFound } from '../../../src/fund/errors'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'

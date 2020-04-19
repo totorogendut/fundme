@@ -3,6 +3,7 @@
 ## unrelased
 
 - FEATURE: Server-side fund() now live.
+- Refactor main.ts
 - Errors now more readable.
 
 ## 0.1.0

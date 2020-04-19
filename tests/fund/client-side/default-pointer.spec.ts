@@ -3,8 +3,8 @@ import {
   setDefaultAddress,
   getCurrentPointerAddress,
   getCurrentPointerPool,
-  forceFundmeOnBrowser,
 } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 import { defaultAddressNotFound } from '../../../src/fund/errors'
 import { DEFAULT_WEIGHT } from '../../../src/fund/set-pointer-multiple'
 

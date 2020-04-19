@@ -1,6 +1,7 @@
 import { setWebMonetizationPointer } from '../../../src/fund/utils'
 
-import { getCurrentPointerAddress, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { getCurrentPointerAddress } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 
 import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 import { metaTagMultipleIsFound, metaTagNotFound } from '../../../src/fund/errors'

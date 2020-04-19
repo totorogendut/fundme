@@ -1,4 +1,5 @@
-import { fund, FundType, forceFundmeOnBrowser } from '../../../src/fund/main'
+import { fund } from '../../../src/fund/main'
+import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 import { invalidAddress } from '../../../src/fund/errors'
 
 describe('correctly fund() argument', () => {
@@ -6,7 +7,7 @@ describe('correctly fund() argument', () => {
     forceFundmeOnBrowser()
     const myFundingType = fund('test')
 
-    expect(myFundingType).toBe(FundType.isSingle)
+    expect(myFundingType).toBe('single')
   })
 
   test('get multiple pointer if parameter is an array', () => {
@@ -20,7 +21,7 @@ describe('correctly fund() argument', () => {
       },
     ])
 
-    expect(myFundingType).toBe(FundType.isMultiple)
+    expect(myFundingType).toBe('multiple')
   })
 
   test('get from templates if parameter is empty', () => {
@@ -28,7 +29,7 @@ describe('correctly fund() argument', () => {
     forceFundmeOnBrowser()
     const myFundingType = fund()
 
-    expect(myFundingType).toBe(FundType.isFromTemplate)
+    expect(myFundingType).toBe('template')
   })
 
   test('throw if fund() argument is not valid', () => {
