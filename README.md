@@ -11,7 +11,7 @@ A simple but powerful client-side library to manage monetization on the web.
 npm i fundme --save
 ```
 
-_This library is still work in progress, not ready for production! Tested and worked using Webpack with ES Module import._
+_This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import._
 
 ### Get Started with Web Monetization API
 
