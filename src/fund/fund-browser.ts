@@ -3,14 +3,7 @@ import { setPointerSingle } from './set-pointer-single'
 import { setPointerFromTemplates } from './set-pointer-template'
 import { setPointerMultiple } from './set-pointer-multiple'
 import { defaultAddressNotFound, invalidAddress, FundmeError } from './errors'
-
-enum FundType {
-  isSingle = 'single',
-  isMultiple = 'multiple',
-  isDefault = 'default',
-  isFromTemplate = 'template',
-  isUndefined = 'undefined',
-}
+import { FundType } from './fund'
 
 export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
   if (typeof pointer === 'string') {

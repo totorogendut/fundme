@@ -1,5 +1,6 @@
 import { createPool } from './set-pointer-multiple'
-import { isBrowser } from '../fund/fund-browser'
+import { isBrowser } from './fund-browser'
+import { FundType } from './fund'
 import {
   metaTagNotFound,
   metaTagMultipleIsFound,
@@ -97,6 +98,14 @@ export function getCurrentPointerAddress(): string {
     if (currentPointer) return currentPointer.toString()
     throw FundmeError(getCurrentPointerAddressMustClientSide)
   }
+}
+
+export function cleanSinglePointerSyntax(pointer: any): any {
+  if (typeof pointer === 'string') {
+    pointer = pointer.split('#')[0]
+  }
+
+  return pointer
 }
 
 export function getCurrentPointerPool(): Array<string | WMPointer> {

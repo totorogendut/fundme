@@ -1,4 +1,4 @@
-import { fund } from '../../../src/fund/main'
+import { fund, getCurrentPointerAddress } from '../../../src/fund/main'
 import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
 import { invalidAddress } from '../../../src/fund/errors'
 
@@ -36,5 +36,13 @@ describe('correctly fund() argument', () => {
     forceFundmeOnBrowser()
     // @ts-ignore
     expect(() => fund({})).toThrowError(invalidAddress)
+  })
+
+  test("client-side single pointer doesn't takes weight custom syntax into consideration", () => {
+    const pointer = '$wallet.address.com/test1'
+    const customSyntax = '#44'
+
+    fund(pointer + customSyntax, { force: 'client' })
+    expect(getCurrentPointerAddress()).toBe(pointer)
   })
 })
