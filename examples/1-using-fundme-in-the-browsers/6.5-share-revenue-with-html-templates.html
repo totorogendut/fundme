@@ -10,9 +10,15 @@
   <body>
     <h1 id="text">Loading...</h1>
 
+    <template fundme>
+      $wallet.example.com/this-address-has-ten-weight#10;
+      $wallet.example.com/this-address-has-twenty-two-weight#22;
+      $wallet.example.com/this-address-has-fifty-five-weight#55;
+    </template>
+
     <script src="../../dist/fundme-iife.js"></script>
     <script>
-      fundme.fund('$wallet.example.com/test-address')
+      fundme.fund()
 
       // code below are optional, just to show that fundme is working
       if (document.monetization) {
