@@ -1,4 +1,2 @@
-import { fund } from './fund'
-import { setDefaultAddress, getCurrentPointerPool, getCurrentPointerAddress } from './utils'
-
-export { fund, setDefaultAddress, getCurrentPointerAddress, getCurrentPointerPool }
+export { fund } from './fund'
+export { setDefaultAddress, getCurrentPointerPool, getCurrentPointerAddress } from './utils'
