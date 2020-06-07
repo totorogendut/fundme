@@ -93,7 +93,7 @@ export function scrapeTemplate(): WMPointer[] {
 }
 
 export function parseTemplate(template: HTMLTemplateElement): WMPointer {
-  let address: string = template.dataset.fund;
+  let address: string = template.dataset.fund!;
   let weight: number =
     template.dataset.fundWeight !== undefined
       ? parseInt(template.dataset.fundWeight, 0)

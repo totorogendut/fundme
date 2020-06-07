@@ -4,6 +4,8 @@ import { FundmeError, invalidFundmeServerSide } from "./errors";
 import { setPointerSingle } from "./set-pointer-single";
 
 export function serverSideFund(pointer: WMAddress): string {
+  if (pointer === undefined) throw FundmeError(invalidFundmeServerSide);
+
   if (typeof pointer === "string") {
     return setPointerSingle(pointer).toString();
   }

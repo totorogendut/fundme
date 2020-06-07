@@ -1,4 +1,4 @@
-import { createPool, getPointerAddress, checkWeight } from "./set-pointer-multiple";
+import { createPool, getPointerAddress, checkWeight, DEFAULT_WEIGHT } from "./set-pointer-multiple";
 import { isBrowser } from "./fund-browser";
 import { FundType } from "./fund";
 import {
@@ -16,7 +16,7 @@ export function isMultiplePointer(s: any): boolean {
 }
 
 export function setWebMonetizationPointer(address: string): HTMLMetaElement {
-  let wmAddress: HTMLMetaElement = document.querySelector('meta[name="monetization"]');
+  let wmAddress = document.head.querySelector('meta[name="monetization"]')! as HTMLMetaElement;
 
   return setWebMonetizationTag(wmAddress, address);
 }
@@ -44,17 +44,21 @@ export function createWebMonetizationTag(address: string): HTMLMetaElement {
 }
 
 export function getPoolWeightSum(pointers: WMPointer[]): number {
-  const weights: number[] = pointers.map((pointer) => pointer.weight);
+  const weights: number[] = pointers.map((pointer) => {
+    return pointer.weight || DEFAULT_WEIGHT; // TODO - safecheck null assertion
+  });
   return Object.values(weights).reduce((sum: number, weight: number): number => sum + weight, 0);
 }
 
 export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
   for (const pointer in pointers) {
-    const weight: number = pointers[pointer].weight;
+    const weight: number = pointers[pointer].weight || DEFAULT_WEIGHT; // TODO - safecheck null assertion
     if ((choice -= weight) <= 0) {
       return pointers[pointer];
     }
   }
+
+  return { address: "" }; // Is this even necessary?
 }
 
 export function hasAddress(o: any): boolean {
@@ -88,7 +92,8 @@ export function setDefaultAddress(
   }
 
   if (options.allowUndefined && address === undefined) {
-    defaultAddress = undefined;
+    // @ts-ignore
+    defaultAddress = undefined; // TODO check if ts-ignore break things
     return;
   }
 
@@ -153,9 +158,9 @@ export function getCurrentPointerPool(): Array<string | WMPointer> {
 }
 
 export function convertToPointerPool(pointer: WMAddress): Array<string | WMPointer> {
-  if (!Array.isArray(pointer)) {
+  if (!Array.isArray(pointer) && pointer !== undefined) {
     pointer = [pointer];
   }
 
-  return pointer;
+  return pointer || [];
 }

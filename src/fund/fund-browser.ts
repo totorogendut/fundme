@@ -6,6 +6,11 @@ import { defaultAddressNotFound, invalidAddress, FundmeError } from "./errors";
 import { FundType } from "./fund";
 
 export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
+  if (pointer === undefined) {
+    setPointerFromTemplates();
+    return setFundType(FundType.isFromTemplate);
+  }
+
   if (typeof pointer === "string") {
     if (pointer === "default") {
       if (getDefaultAddress() !== undefined) {
@@ -28,10 +33,6 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
     return setFundType(FundType.isMultiple);
   }
 
-  if (pointer === undefined) {
-    setPointerFromTemplates();
-    return setFundType(FundType.isFromTemplate);
-  }
   throw FundmeError(invalidAddress);
 }
 

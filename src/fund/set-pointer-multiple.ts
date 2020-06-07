@@ -4,6 +4,7 @@ import {
   getPoolWeightSum,
   setCurrentPointer,
   hasAddress,
+  getCurrentPointerPool,
 } from "./utils";
 import { calculateRelativeWeight } from "./relative-weight";
 import { addressNotFound, addressIsNotAString, weightIsNotANumber, FundmeError } from "./errors";
@@ -74,13 +75,13 @@ export function getChoice(sum: number): number {
 
 export function convertToPointer(str: string): WMPointer {
   let address: string = str;
-  let weight: number;
+  let weight: number = DEFAULT_WEIGHT;
   const split: string[] = str.split("#");
 
   if (split.length > 1) {
     address = split[0];
     if (split[1].endsWith("%")) {
-      calculateRelativeWeight(split[1]);
+      calculateRelativeWeight(split[1], getCurrentPointerPool());
     } else {
       weight = parseInt(split[1], 10);
     }
