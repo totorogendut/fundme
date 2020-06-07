@@ -33,7 +33,8 @@
     "compress-iife": "uglifyjs --compress --mangle -o dist/fundme-iife.min.js dist/fundme-iife.js",
     "create-cjs-compat": "babel dist/fundme-cjs.js | uglifyjs --compress --mangle > dist/fundme-cjs-compat.min.js",
     "create-compat": "babel dist/fundme-iife.js | uglifyjs --compress --mangle > dist/fundme-iife-compat.min.js",
-    "test": "jest --coverage --verbose"
+    "test": "jest --coverage --verbose",
+    "format": "prettier --write src/**/*.{ts,js,md}"
   },
   "repository": {
     "type": "git",

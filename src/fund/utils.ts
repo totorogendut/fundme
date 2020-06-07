@@ -1,6 +1,6 @@
-import { createPool, getPointerAddress, checkWeight } from './set-pointer-multiple'
-import { isBrowser } from './fund-browser'
-import { FundType } from './fund'
+import { createPool, getPointerAddress, checkWeight } from "./set-pointer-multiple";
+import { isBrowser } from "./fund-browser";
+import { FundType } from "./fund";
 import {
   metaTagNotFound,
   metaTagMultipleIsFound,
@@ -9,16 +9,16 @@ import {
   canOnlyCleanStringCustomSyntax,
   defaultAddressArrayCannotBeEmpty,
   invalidDefaultAddress,
-} from './errors'
+} from "./errors";
 
 export function isMultiplePointer(s: any): boolean {
-  return Array.isArray(s)
+  return Array.isArray(s);
 }
 
 export function setWebMonetizationPointer(address: string): HTMLMetaElement {
-  let wmAddress: HTMLMetaElement = document.querySelector('meta[name="monetization"]')
+  let wmAddress: HTMLMetaElement = document.querySelector('meta[name="monetization"]');
 
-  return setWebMonetizationTag(wmAddress, address)
+  return setWebMonetizationTag(wmAddress, address);
 }
 
 export function setWebMonetizationTag(
@@ -26,93 +26,93 @@ export function setWebMonetizationTag(
   address: string,
 ): HTMLMetaElement {
   if (!wmAddress) {
-    wmAddress = createWebMonetizationTag(address)
+    wmAddress = createWebMonetizationTag(address);
   } else {
-    wmAddress.content = address
+    wmAddress.content = address;
   }
 
-  return wmAddress
+  return wmAddress;
 }
 
 export function createWebMonetizationTag(address: string): HTMLMetaElement {
-  const wmAddress = document.createElement('meta')
-  wmAddress.name = 'monetization'
-  wmAddress.content = address
-  document.head.appendChild(wmAddress)
+  const wmAddress = document.createElement("meta");
+  wmAddress.name = "monetization";
+  wmAddress.content = address;
+  document.head.appendChild(wmAddress);
 
-  return wmAddress
+  return wmAddress;
 }
 
 export function getPoolWeightSum(pointers: WMPointer[]): number {
-  const weights: number[] = pointers.map((pointer) => pointer.weight)
-  return Object.values(weights).reduce((sum: number, weight: number): number => sum + weight, 0)
+  const weights: number[] = pointers.map((pointer) => pointer.weight);
+  return Object.values(weights).reduce((sum: number, weight: number): number => sum + weight, 0);
 }
 
 export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
   for (const pointer in pointers) {
-    const weight: number = pointers[pointer].weight
+    const weight: number = pointers[pointer].weight;
     if ((choice -= weight) <= 0) {
-      return pointers[pointer]
+      return pointers[pointer];
     }
   }
 }
 
 export function hasAddress(o: any): boolean {
-  if (!o) return false
+  if (!o) return false;
 
-  return Object.keys(o).some((str) => str === 'address')
+  return Object.keys(o).some((str) => str === "address");
 }
 
-let defaultAddress: defaultAddress
+let defaultAddress: defaultAddress;
 export function setDefaultAddress(
   address: defaultAddress,
   options: defaultAddressOptions = {},
 ): void {
   if (Array.isArray(address)) {
     if (address.length) {
-      defaultAddress = createPool(address)
-      return
+      defaultAddress = createPool(address);
+      return;
     } else {
-      throw FundmeError(defaultAddressArrayCannotBeEmpty)
+      throw FundmeError(defaultAddressArrayCannotBeEmpty);
     }
   }
 
-  if (typeof address === 'string') {
-    defaultAddress = address
-    return
+  if (typeof address === "string") {
+    defaultAddress = address;
+    return;
   }
 
   if (hasAddress(address)) {
-    defaultAddress = getPointerAddress(address)
-    return
+    defaultAddress = getPointerAddress(address);
+    return;
   }
 
   if (options.allowUndefined && address === undefined) {
-    defaultAddress = undefined
-    return
+    defaultAddress = undefined;
+    return;
   }
 
-  throw FundmeError(invalidDefaultAddress)
+  throw FundmeError(invalidDefaultAddress);
 }
 
 export function getDefaultAddress(): defaultAddress {
-  return defaultAddress
+  return defaultAddress;
 }
 
 export function defaultAddressMultiple(address: defaultAddress): any {
-  return isMultiplePointer(address) ? address : [address]
+  return isMultiplePointer(address) ? address : [address];
 }
 
-export let currentFundType: FundType
+export let currentFundType: FundType;
 export function setFundType(type: FundType): FundType {
-  currentFundType = type
+  currentFundType = type;
 
-  return currentFundType
+  return currentFundType;
 }
 
-export let currentPointer: WMAddress
+export let currentPointer: WMAddress;
 export function setCurrentPointer(pointer: string | WMPointer[]) {
-  currentPointer = pointer
+  currentPointer = pointer;
 }
 
 export function getCurrentPointerAddress(): string {
@@ -120,42 +120,42 @@ export function getCurrentPointerAddress(): string {
   if (isBrowser()) {
     const metaTag: NodeListOf<HTMLMetaElement> = document.head.querySelectorAll(
       'meta[name="monetization"]',
-    )
+    );
 
     if (metaTag.length > 1) {
-      throw FundmeError(metaTagMultipleIsFound)
+      throw FundmeError(metaTagMultipleIsFound);
     }
 
     if (metaTag[0]) {
-      return metaTag[0].content
+      return metaTag[0].content;
     }
-    throw FundmeError(metaTagNotFound)
+    throw FundmeError(metaTagNotFound);
   } else {
-    if (currentPointer) return currentPointer.toString()
-    throw FundmeError(getCurrentPointerAddressMustClientSide)
+    if (currentPointer) return currentPointer.toString();
+    throw FundmeError(getCurrentPointerAddressMustClientSide);
   }
 }
 
 export function cleanSinglePointerSyntax(pointer: any): any {
-  if (typeof pointer === 'string') {
-    pointer = pointer.split('#')[0]
+  if (typeof pointer === "string") {
+    pointer = pointer.split("#")[0];
   } else {
-    throw FundmeError(canOnlyCleanStringCustomSyntax)
+    throw FundmeError(canOnlyCleanStringCustomSyntax);
   }
 
-  return pointer
+  return pointer;
 }
 
 export function getCurrentPointerPool(): Array<string | WMPointer> {
-  let pointer = currentPointer
+  let pointer = currentPointer;
 
-  return convertToPointerPool(pointer)
+  return convertToPointerPool(pointer);
 }
 
 export function convertToPointerPool(pointer: WMAddress): Array<string | WMPointer> {
   if (!Array.isArray(pointer)) {
-    pointer = [pointer]
+    pointer = [pointer];
   }
 
-  return pointer
+  return pointer;
 }

@@ -1,51 +1,51 @@
-import { isMultiplePointer, setFundType, getDefaultAddress, defaultAddressMultiple } from './utils'
-import { setPointerSingle } from './set-pointer-single'
-import { setPointerFromTemplates } from './set-pointer-template'
-import { setPointerMultiple } from './set-pointer-multiple'
-import { defaultAddressNotFound, invalidAddress, FundmeError } from './errors'
-import { FundType } from './fund'
+import { isMultiplePointer, setFundType, getDefaultAddress, defaultAddressMultiple } from "./utils";
+import { setPointerSingle } from "./set-pointer-single";
+import { setPointerFromTemplates } from "./set-pointer-template";
+import { setPointerMultiple } from "./set-pointer-multiple";
+import { defaultAddressNotFound, invalidAddress, FundmeError } from "./errors";
+import { FundType } from "./fund";
 
 export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
-  if (typeof pointer === 'string') {
-    if (pointer === 'default') {
+  if (typeof pointer === "string") {
+    if (pointer === "default") {
       if (getDefaultAddress() !== undefined) {
-        if (typeof getDefaultAddress() === 'string') {
-          setPointerSingle(getDefaultAddress().toString(), options)
+        if (typeof getDefaultAddress() === "string") {
+          setPointerSingle(getDefaultAddress().toString(), options);
         } else {
-          setPointerMultiple(defaultAddressMultiple(getDefaultAddress()), options)
+          setPointerMultiple(defaultAddressMultiple(getDefaultAddress()), options);
         }
-        return setFundType(FundType.isDefault)
+        return setFundType(FundType.isDefault);
       } else {
-        throw FundmeError(defaultAddressNotFound)
+        throw FundmeError(defaultAddressNotFound);
       }
     }
-    setPointerSingle(pointer, options)
-    return setFundType(FundType.isSingle)
+    setPointerSingle(pointer, options);
+    return setFundType(FundType.isSingle);
   }
 
   if (isMultiplePointer(pointer)) {
-    setPointerMultiple(pointer, options)
-    return setFundType(FundType.isMultiple)
+    setPointerMultiple(pointer, options);
+    return setFundType(FundType.isMultiple);
   }
 
   if (pointer === undefined) {
-    setPointerFromTemplates()
-    return setFundType(FundType.isFromTemplate)
+    setPointerFromTemplates();
+    return setFundType(FundType.isFromTemplate);
   }
-  throw FundmeError(invalidAddress)
+  throw FundmeError(invalidAddress);
 }
 
-let forceBrowser: boolean = false
+let forceBrowser: boolean = false;
 export function forceFundmeOnBrowser() {
-  forceBrowser = true
+  forceBrowser = true;
 }
 
-const isNodeEnv = require !== undefined && module !== undefined
+const isNodeEnv = require !== undefined && module !== undefined;
 
 export const isBrowser = (options: fundOptions = {}): boolean => {
-  if (options.force === 'server') return false
-  const forced = forceBrowser
-  forceBrowser = false
+  if (options.force === "server") return false;
+  const forced = forceBrowser;
+  forceBrowser = false;
 
-  return !isNodeEnv || forced || options.force === 'client'
-}
+  return !isNodeEnv || forced || options.force === "client";
+};

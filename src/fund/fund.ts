@@ -1,23 +1,23 @@
-import { clientSideFund, isBrowser } from './fund-browser'
-import { serverSideFund } from './fund-server'
-import { noUndefinedFundOnServerSide, FundmeError } from './errors'
+import { clientSideFund, isBrowser } from "./fund-browser";
+import { serverSideFund } from "./fund-server";
+import { noUndefinedFundOnServerSide, FundmeError } from "./errors";
 
 export enum FundType {
-  isSingle = 'single',
-  isMultiple = 'multiple',
-  isDefault = 'default',
-  isFromTemplate = 'template',
-  isUndefined = 'undefined',
+  isSingle = "single",
+  isMultiple = "multiple",
+  isDefault = "default",
+  isFromTemplate = "template",
+  isUndefined = "undefined",
 }
 
 export function fund(pointer?: WMAddress, options: fundOptions = {}): FundType | string {
   if (isBrowser(options)) {
-    return clientSideFund(pointer, options)
+    return clientSideFund(pointer, options);
   } else {
     if (pointer === undefined) {
-      throw FundmeError(noUndefinedFundOnServerSide)
+      throw FundmeError(noUndefinedFundOnServerSide);
     } else {
-      return serverSideFund(pointer)
+      return serverSideFund(pointer);
     }
   }
 }
