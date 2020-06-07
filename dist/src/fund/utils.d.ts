@@ -1,4 +1,4 @@
-import { FundType } from './fund';
+import { FundType } from "./fund";
 export declare function isMultiplePointer(s: any): boolean;
 export declare function setWebMonetizationPointer(address: string): HTMLMetaElement;
 export declare function setWebMonetizationTag(wmAddress: HTMLMetaElement, address: string): HTMLMetaElement;

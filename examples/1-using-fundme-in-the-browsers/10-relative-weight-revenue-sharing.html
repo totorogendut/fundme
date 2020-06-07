@@ -17,14 +17,14 @@
 
     <script src="../../dist/fundme-iife.js"></script>
     <script>
-      fundme.fund()
+      fundme.fund();
 
       // code below are optional, just to show that fundme is working
       if (document.monetization) {
-        const address = document.querySelector('meta[name="monetization"]').content
-        document.getElementById('text').innerText = `Browser is streaming to ${address}`
+        const address = document.querySelector('meta[name="monetization"]').content;
+        document.getElementById("text").innerText = `Browser is streaming to ${address}`;
       } else {
-        document.getElementById('text').innerText = `Coil extension not found.`
+        document.getElementById("text").innerText = `Coil extension not found.`;
       }
     </script>
   </body>

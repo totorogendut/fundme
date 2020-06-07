@@ -1,29 +1,33 @@
 define(['exports'], function (exports) { 'use strict';
 
-  function FundmeError(err) {
-      return 'Fundme.js: ' + err;
+  function calculateRelativeWeight(weight, pool) {
+      return 0; // TODO - add % unit to calculate weight
   }
-  const addressNotFound = 'address not found.';
-  const addressIsNotAString = 'address must be a string.';
+
+  function FundmeError(err) {
+      return "Fundme.js: " + err;
+  }
+  const addressNotFound = "address not found.";
+  const addressIsNotAString = "address must be a string.";
   const getCurrentPointerAddressMustClientSide = "can't use getCurrentPointerAddress() server-side.";
   function weightIsNotANumber(str) {
       return `${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`;
   }
-  const invalidAddress = 'invalid Web Monetization pointer address is given.';
+  const invalidAddress = "invalid Web Monetization pointer address is given.";
   // default address
-  const defaultAddressNotFound = 'default address not found. Use setDefaultAddress(str: string) to set it first.';
-  const invalidDefaultAddress = 'invalid default address.';
-  const defaultAddressArrayCannotBeEmpty = 'invalid default address.';
+  const defaultAddressNotFound = "default address not found. Use setDefaultAddress(str: string) to set it first.";
+  const invalidDefaultAddress = "invalid default address.";
+  const defaultAddressArrayCannotBeEmpty = "invalid default address.";
   // utils
-  const canOnlyCleanStringCustomSyntax = 'can only clean custom syntax with typeof string.';
+  const canOnlyCleanStringCustomSyntax = "can only clean custom syntax with typeof string.";
   // about meta tag for Web Monetization API
-  const metaTagNotFound = 'web monetization meta tag is not found.';
+  const metaTagNotFound = "web monetization meta tag is not found.";
   const metaTagMultipleIsFound = 'multiple <meta name="monetization" /> found - Web Monetization API only support a single meta tag.';
   // pointers template
-  const noTemplateFound = 'no monetization template is found.';
-  const failParsingTemplate = 'fails to parse address from <template data-fund></template>.';
+  const noTemplateFound = "no monetization template is found.";
+  const failParsingTemplate = "fails to parse address from <template data-fund></template>.";
   // script json template
-  const cannotParseScriptJson = 'cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.';
+  const cannotParseScriptJson = "cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.";
   const jsonTemplateIsInvalid = "found <script fundme> but it's not valid.";
   const scriptFundmeIsNotApplicationJson = 'found <script fundme> but its type is not "application/json"';
   /*****************************
@@ -32,7 +36,7 @@ define(['exports'], function (exports) { 'use strict';
    *                           *
    *****************************/
   const noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
-  const invalidFundmeServerSide = 'invalid fundme parameters on the server-side.';
+  const invalidFundmeServerSide = "invalid fundme parameters on the server-side.";
 
   const DEFAULT_WEIGHT = 5;
   // TODO check pointer.address with RegEx
@@ -51,7 +55,7 @@ define(['exports'], function (exports) { 'use strict';
       if (!address) {
           throw FundmeError(addressNotFound);
       }
-      else if (typeof address !== 'string') {
+      else if (typeof address !== "string") {
           throw FundmeError(addressIsNotAString);
       }
       return address;
@@ -59,7 +63,7 @@ define(['exports'], function (exports) { 'use strict';
   function createPool(pointers) {
       return pointers.map((pointer) => {
           let wmPointer;
-          if (typeof pointer === 'string')
+          if (typeof pointer === "string")
               pointer = convertToPointer(pointer);
           if (!hasAddress(pointer))
               throw FundmeError(addressNotFound);
@@ -86,11 +90,16 @@ define(['exports'], function (exports) { 'use strict';
   }
   function convertToPointer(str) {
       let address = str;
-      let weight;
-      const split = str.split('#');
+      let weight = DEFAULT_WEIGHT;
+      const split = str.split("#");
       if (split.length > 1) {
           address = split[0];
-          weight = parseInt(split[1], 10);
+          if (split[1].endsWith("%")) {
+              calculateRelativeWeight(split[1], getCurrentPointerPool());
+          }
+          else {
+              weight = parseInt(split[1], 10);
+          }
       }
       const pointer = {
           address,
@@ -103,7 +112,7 @@ define(['exports'], function (exports) { 'use strict';
       return Array.isArray(s);
   }
   function setWebMonetizationPointer(address) {
-      let wmAddress = document.querySelector('meta[name="monetization"]');
+      let wmAddress = document.head.querySelector('meta[name="monetization"]');
       return setWebMonetizationTag(wmAddress, address);
   }
   function setWebMonetizationTag(wmAddress, address) {
@@ -116,28 +125,31 @@ define(['exports'], function (exports) { 'use strict';
       return wmAddress;
   }
   function createWebMonetizationTag(address) {
-      const wmAddress = document.createElement('meta');
-      wmAddress.name = 'monetization';
+      const wmAddress = document.createElement("meta");
+      wmAddress.name = "monetization";
       wmAddress.content = address;
       document.head.appendChild(wmAddress);
       return wmAddress;
   }
   function getPoolWeightSum(pointers) {
-      const weights = pointers.map((pointer) => pointer.weight);
+      const weights = pointers.map((pointer) => {
+          return pointer.weight || DEFAULT_WEIGHT; // TODO - safecheck null assertion
+      });
       return Object.values(weights).reduce((sum, weight) => sum + weight, 0);
   }
   function getWinningPointer(pointers, choice) {
       for (const pointer in pointers) {
-          const weight = pointers[pointer].weight;
+          const weight = pointers[pointer].weight || DEFAULT_WEIGHT; // TODO - safecheck null assertion
           if ((choice -= weight) <= 0) {
               return pointers[pointer];
           }
       }
+      return { address: "" }; // Is this even necessary?
   }
   function hasAddress(o) {
       if (!o)
           return false;
-      return Object.keys(o).some((str) => str === 'address');
+      return Object.keys(o).some((str) => str === "address");
   }
   let defaultAddress;
   function setDefaultAddress(address, options = {}) {
@@ -150,7 +162,7 @@ define(['exports'], function (exports) { 'use strict';
               throw FundmeError(defaultAddressArrayCannotBeEmpty);
           }
       }
-      if (typeof address === 'string') {
+      if (typeof address === "string") {
           defaultAddress = address;
           return;
       }
@@ -159,7 +171,8 @@ define(['exports'], function (exports) { 'use strict';
           return;
       }
       if (options.allowUndefined && address === undefined) {
-          defaultAddress = undefined;
+          // @ts-ignore
+          defaultAddress = undefined; // TODO check if ts-ignore break things
           return;
       }
       throw FundmeError(invalidDefaultAddress);
@@ -198,8 +211,8 @@ define(['exports'], function (exports) { 'use strict';
       }
   }
   function cleanSinglePointerSyntax(pointer) {
-      if (typeof pointer === 'string') {
-          pointer = pointer.split('#')[0];
+      if (typeof pointer === "string") {
+          pointer = pointer.split("#")[0];
       }
       else {
           throw FundmeError(canOnlyCleanStringCustomSyntax);
@@ -211,10 +224,10 @@ define(['exports'], function (exports) { 'use strict';
       return convertToPointerPool(pointer);
   }
   function convertToPointerPool(pointer) {
-      if (!Array.isArray(pointer)) {
+      if (!Array.isArray(pointer) && pointer !== undefined) {
           pointer = [pointer];
       }
-      return pointer;
+      return pointer || [];
   }
 
   function setPointerSingle(pointer, options = {}) {
@@ -226,9 +239,9 @@ define(['exports'], function (exports) { 'use strict';
       return pointer;
   }
 
-  const FUNDME_TEMPLATE_SELECTOR = 'template[data-fund]';
-  const FUNDME_CUSTOM_SYNTAX_SELECTOR = 'template[fundme]';
-  const FUNDME_JSON_SELECTOR = 'script[fundme]';
+  const FUNDME_TEMPLATE_SELECTOR = "template[data-fund]";
+  const FUNDME_CUSTOM_SYNTAX_SELECTOR = "template[fundme]";
+  const FUNDME_JSON_SELECTOR = "script[fundme]";
   function setPointerFromTemplates(options = {}) {
       const pointers = [
           ...scrapeTemplate(),
@@ -263,13 +276,13 @@ define(['exports'], function (exports) { 'use strict';
       catch (err) {
           throw FundmeError(cannotParseScriptJson);
       }
-      if (json.type !== 'application/json') {
+      if (json.type !== "application/json") {
           throw FundmeError(scriptFundmeIsNotApplicationJson);
       }
       if (Array.isArray(parsed)) {
           pointers = createPool(parsed);
       }
-      else if (typeof parsed === 'string') {
+      else if (typeof parsed === "string") {
           pointers = createPool([parsed]);
       }
       else {
@@ -315,8 +328,8 @@ define(['exports'], function (exports) { 'use strict';
   function parseCustomSyntax(template) {
       let pointers = [];
       const temp = template.innerHTML;
-      temp.split(';').forEach((str) => {
-          const strippedString = str.replace(/(^\s+|\s+$)/g, '');
+      temp.split(";").forEach((str) => {
+          const strippedString = str.replace(/(^\s+|\s+$)/g, "");
           if (strippedString) {
               pointers = [...pointers, convertToPointer(strippedString)];
           }
@@ -325,10 +338,14 @@ define(['exports'], function (exports) { 'use strict';
   }
 
   function clientSideFund(pointer, options = {}) {
-      if (typeof pointer === 'string') {
-          if (pointer === 'default') {
+      if (pointer === undefined) {
+          setPointerFromTemplates();
+          return setFundType(FundType.isFromTemplate);
+      }
+      if (typeof pointer === "string") {
+          if (pointer === "default") {
               if (getDefaultAddress() !== undefined) {
-                  if (typeof getDefaultAddress() === 'string') {
+                  if (typeof getDefaultAddress() === "string") {
                       setPointerSingle(getDefaultAddress().toString(), options);
                   }
                   else {
@@ -347,24 +364,22 @@ define(['exports'], function (exports) { 'use strict';
           setPointerMultiple(pointer, options);
           return setFundType(FundType.isMultiple);
       }
-      if (pointer === undefined) {
-          setPointerFromTemplates();
-          return setFundType(FundType.isFromTemplate);
-      }
       throw FundmeError(invalidAddress);
   }
   let forceBrowser = false;
   const isNodeEnv = require !== undefined && module !== undefined;
   const isBrowser = (options = {}) => {
-      if (options.force === 'server')
+      if (options.force === "server")
           return false;
       const forced = forceBrowser;
       forceBrowser = false;
-      return !isNodeEnv || forced || options.force === 'client';
+      return !isNodeEnv || forced || options.force === "client";
   };
 
   function serverSideFund(pointer) {
-      if (typeof pointer === 'string') {
+      if (pointer === undefined)
+          throw FundmeError(noUndefinedFundOnServerSide);
+      if (typeof pointer === "string") {
           return setPointerSingle(pointer).toString();
       }
       if (isMultiplePointer(pointer)) {
