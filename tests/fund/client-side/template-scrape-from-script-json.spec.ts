@@ -1,12 +1,12 @@
-import { fund, getCurrentPointerPool } from '../../../src/fund/main'
-import { forceFundmeOnBrowser } from '../../../src/fund/fund-browser'
+import { fund, getCurrentPointerPool } from "../../../src/fund/mod";
+import { forceFundmeOnBrowser } from "../../../src/fund/fund-browser";
 
-import { toBeInTheDocument, toHaveAttribute } from '@testing-library/jest-dom/matchers'
-import { scriptFundmeIsNotApplicationJson } from '../../../src/fund/errors'
+import { toBeInTheDocument, toHaveAttribute } from "@testing-library/jest-dom/matchers";
+import { scriptFundmeIsNotApplicationJson } from "../../../src/fund/errors";
 
-expect.extend({ toBeInTheDocument, toHaveAttribute })
+expect.extend({ toBeInTheDocument, toHaveAttribute });
 
-describe('parsing fundme template from a JSON array', () => {
+describe("parsing fundme template from a JSON array", () => {
   test('fund() will scrape from <script fundme type="application/json">', () => {
     document.body.innerHTML = `
     <script fundme type="application/json">
@@ -18,27 +18,27 @@ describe('parsing fundme template from a JSON array', () => {
       }
     ]
     </script>
-    `
-    forceFundmeOnBrowser()
-    fund()
-    const pool = getCurrentPointerPool()
+    `;
+    forceFundmeOnBrowser();
+    fund();
+    const pool = getCurrentPointerPool();
     // @ts-ignore
-    expect(pool[0].address).toBe('$coil.xrptipbot.com/my-pointer')
-    document.body.innerHTML = ''
-  })
-  test('<script fundme> accepts single string', () => {
+    expect(pool[0].address).toBe("$coil.xrptipbot.com/my-pointer");
+    document.body.innerHTML = "";
+  });
+  test("<script fundme> accepts single string", () => {
     document.body.innerHTML = `
       <script fundme type="application/json">
         "$coil.xrptipbot.com/my-pointer"
       </script>
-    `
-    forceFundmeOnBrowser()
-    fund()
-    const pool = getCurrentPointerPool()
+    `;
+    forceFundmeOnBrowser();
+    fund();
+    const pool = getCurrentPointerPool();
     // @ts-ignore
-    expect(pool[0].address).toBe('$coil.xrptipbot.com/my-pointer')
-    document.body.innerHTML = ''
-  })
+    expect(pool[0].address).toBe("$coil.xrptipbot.com/my-pointer");
+    document.body.innerHTML = "";
+  });
 
   test('<script fundme> must have MIME type "application/json"', () => {
     // const pointerAddress = '$coil.com/pointer-address1'
@@ -52,10 +52,10 @@ describe('parsing fundme template from a JSON array', () => {
           }
         ]
       </script>
-    `
-    forceFundmeOnBrowser()
+    `;
+    forceFundmeOnBrowser();
     // @ts-ignore
-    expect(() => fund()).toThrowError(scriptFundmeIsNotApplicationJson)
-    document.body.innerHTML = ''
-  })
-})
+    expect(() => fund()).toThrowError(scriptFundmeIsNotApplicationJson);
+    document.body.innerHTML = "";
+  });
+});

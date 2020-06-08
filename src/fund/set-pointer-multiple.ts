@@ -75,7 +75,7 @@ export function getChoice(sum: number): number {
 
 export function convertToPointer(str: string): WMPointer {
   let address: string = str;
-  let weight: number = DEFAULT_WEIGHT;
+  let weight!: number;
   const split: string[] = str.split("#");
 
   if (split.length > 1) {

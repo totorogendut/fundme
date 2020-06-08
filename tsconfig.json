@@ -7,6 +7,6 @@
     "target": "esnext",
     "declaration": true
   },
-  "include": ["src/**/*", "tests", "src/fund/global.d.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": ["src/**/*", "src/fund/global.d.ts"],
+  "exclude": ["node_modules", "tests"]
 }
