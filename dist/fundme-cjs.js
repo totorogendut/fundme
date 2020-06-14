@@ -2,414 +2,621 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function calculateRelativeWeight(weight, pool) {
-    return 0; // TODO - add % unit to calculate weight
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function FundmeError(err) {
-    return "Fundme.js: " + err;
+  return "Fundme.js: " + err;
 }
-const addressNotFound = "address not found.";
-const addressIsNotAString = "address must be a string.";
-const getCurrentPointerAddressMustClientSide = "can't use getCurrentPointerAddress() server-side.";
+var addressNotFound = "address not found.";
+var addressIsNotAString = "address must be a string.";
+var getCurrentPointerAddressMustClientSide = "can't use getCurrentPointerAddress() server-side.";
 function weightIsNotANumber(str) {
-    return `${str} has weight that is not a number. It has been set to ${DEFAULT_WEIGHT} (default).`;
+  return "".concat(str, " has weight that is not a number. It has been set to ").concat(DEFAULT_WEIGHT, " (default).");
 }
-const invalidAddress = "invalid Web Monetization pointer address is given.";
-// default address
-const defaultAddressNotFound = "default address not found. Use setDefaultAddress(str: string) to set it first.";
-const invalidDefaultAddress = "invalid default address.";
-const defaultAddressArrayCannotBeEmpty = "invalid default address.";
-// utils
-const canOnlyCleanStringCustomSyntax = "can only clean custom syntax with typeof string.";
-// about meta tag for Web Monetization API
-const metaTagNotFound = "web monetization meta tag is not found.";
-const metaTagMultipleIsFound = 'multiple <meta name="monetization" /> found - Web Monetization API only support a single meta tag.';
-// pointers template
-const noTemplateFound = "no monetization template is found.";
-const failParsingTemplate = "fails to parse address from <template data-fund></template>.";
-// script json template
-const cannotParseScriptJson = "cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.";
-const jsonTemplateIsInvalid = "found <script fundme> but it's not valid.";
-const scriptFundmeIsNotApplicationJson = 'found <script fundme> but its type is not "application/json"';
+var invalidAddress = "invalid Web Monetization pointer address is given."; // multiple pointers
+
+var getWinningPointerMustBeANumber = "all pointers' weight during calculating a winning pointer must have type of number."; // default address
+
+var defaultAddressNotFound = "default address not found. Use setDefaultAddress(str: string) to set it first.";
+var invalidDefaultAddress = "invalid default address.";
+var defaultAddressArrayCannotBeEmpty = "invalid default address."; // utils
+
+var canOnlyCleanStringCustomSyntax = "can only clean custom syntax with typeof string."; // about meta tag for Web Monetization API
+
+var metaTagNotFound = "web monetization meta tag is not found.";
+var metaTagMultipleIsFound = 'multiple <meta name="monetization" /> found - Web Monetization API only support a single meta tag.'; // pointers template
+
+var noTemplateFound = "no monetization template is found.";
+var failParsingTemplate = "fails to parse address from <template data-fund></template>.";
+
+var cannotParseScriptJson = "cannot parse JSON from <script fundme>. Make sure it contains a valid JSON.";
+var jsonTemplateIsInvalid = "found <script fundme> but it's not valid.";
+var scriptFundmeIsNotApplicationJson = 'found <script fundme> but its type is not "application/json"'; // relative weight
+
+var paymentPointersMustHaveAtLeastOneFixedPointer = "revenue sharing payment pointers must have at least one payment address pointer with fixed weight.";
+var relativeWeightChanceError = "error when calculating total relative weight chance. Make sure it's a float between 0~1.0.";
+var weightForRelativePointerNotFound = function weightForRelativePointerNotFound(address) {
+  return "payment pointer weights not found for ".concat(address);
+};
+var relativeWeightMustEndsWithPercentage = "relative weights must end with character %.";
+var invalidRelativeWeight = function invalidRelativeWeight(address) {
+  return "relative weight for payment pointer ".concat(address, " must be integer or float.");
+};
+var invalidWeight = function invalidWeight(address) {
+  return "weight for payment pointer ".concat(address, " is invalid.");
+};
 /*****************************
  *                           *
  *  Server-side fund()       *
  *                           *
  *****************************/
-const noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
-const invalidFundmeServerSide = "invalid fundme parameters on the server-side.";
 
-const DEFAULT_WEIGHT = 5;
-// TODO check pointer.address with RegEx
-function setPointerMultiple(pointers, options = {}) {
-    const pool = createPool(pointers);
-    const pickedPointer = pickPointer(pool);
-    const pointerAddress = getPointerAddress(pickedPointer);
-    setCurrentPointer(pool);
-    if (isBrowser(options)) {
-        return setWebMonetizationPointer(pointerAddress);
+var noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
+var invalidFundmeServerSide = "invalid fundme parameters on the server-side.";
+
+var relativeWeightPointers = [];
+var fixedWeightPointers = [];
+var totalRelativeChance = 0;
+var pointerPoolSum = 0;
+
+function clear() {
+  relativeWeightPointers = [];
+  fixedWeightPointers = [];
+  totalRelativeChance = 0;
+}
+
+function calculateRelativeWeight(pool) {
+  clear();
+  pointerPoolSum = getPoolWeightSum(pool);
+  var relativeWeightPointers;
+
+  try {
+    relativeWeightPointers = pool.filter(filterRelativeWeight);
+  } catch (err) {
+    throw err;
+  }
+
+  if (!fixedWeightPointers.length) throw FundmeError(paymentPointersMustHaveAtLeastOneFixedPointer);
+  var newFixedPointers = normalizeFixedPointers(fixedWeightPointers, totalRelativeChance);
+  var newRelativePointers = normalizeRelativePointers(relativeWeightPointers);
+  return [].concat(_toConsumableArray(newFixedPointers), _toConsumableArray(newRelativePointers));
+}
+
+function filterRelativeWeight(pointer) {
+  var weight = pointer.weight;
+
+  if (typeof weight === "string" && weight.endsWith("%")) {
+    var convertedWeight = weight.slice(0, -1);
+
+    if (!isNumberOnly(convertedWeight)) {
+      throw FundmeError(invalidRelativeWeight(pointer.address));
     }
-    return pointerAddress;
+
+    registerRelativeWeight(pointer);
+    return true;
+  } else {
+    if (typeof JSON.parse(weight) !== "number") {
+      throw FundmeError(invalidWeight(pointer.address));
+    }
+
+    registerFixedWeight(pointer);
+    return false;
+  }
+}
+
+function registerRelativeWeight(pointer) {
+  pointer.weight = getWeight(pointer);
+  relativeWeightPointers.push(pointer);
+}
+function registerFixedWeight(pointer) {
+  fixedWeightPointers.push(pointer);
+}
+
+function normalizeFixedPointers(pool, chance) {
+  if (chance > 1 || chance === NaN) throw FundmeError(relativeWeightChanceError);
+  chance = 1 - chance;
+  return pool.map(function (pointer) {
+    var weight;
+
+    if (typeof pointer.weight === "string") {
+      weight = parseFloat(pointer.weight);
+    } else {
+      weight = pointer.weight;
+    }
+
+    pointer.weight = weight * chance;
+    return pointer;
+  });
+}
+
+function normalizeRelativePointers(pool, sum) {
+  return pool.map(function (pointer) {
+    return pointer;
+  });
+}
+
+function getWeight(pointer) {
+  var chance;
+
+  if (typeof pointer === "string") {
+    if (pointer.endsWith("%")) {
+      var weight = pointer.split("#")[1];
+      chance = parseFloat(weight) / 100;
+    } else {
+      throw FundmeError(relativeWeightMustEndsWithPercentage);
+    }
+  } else {
+    if (!pointer.weight) {
+      throw FundmeError(weightForRelativePointerNotFound(pointer.address || pointer));
+    }
+
+    if (typeof pointer.weight === "string") pointer.weight = parseFloat(pointer.weight);
+    chance = pointer.weight / 100;
+  }
+
+  totalRelativeChance += chance;
+  return pointerPoolSum * chance; // TODO - add % unit to calculate weight
+}
+
+var DEFAULT_WEIGHT = 5; // TODO check pointer.address with RegEx
+
+function setPointerMultiple(pointers) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var pool = createPool(pointers);
+  pool = calculateRelativeWeight(pool);
+  var pickedPointer = pickPointer(pool);
+  var pointerAddress = getPointerAddress(pickedPointer);
+  setCurrentPointer(pool);
+
+  if (isBrowser(options)) {
+    return setWebMonetizationPointer(pointerAddress);
+  }
+
+  return pointerAddress;
 }
 function getPointerAddress(pointer) {
-    const address = pointer.address;
-    if (!address) {
-        throw FundmeError(addressNotFound);
-    }
-    else if (typeof address !== "string") {
-        throw FundmeError(addressIsNotAString);
-    }
-    return address;
+  var address = pointer.address;
+
+  if (!address) {
+    throw FundmeError(addressNotFound);
+  } else if (typeof address !== "string") {
+    throw FundmeError(addressIsNotAString);
+  }
+
+  return address;
 }
 function createPool(pointers) {
-    return pointers.map((pointer) => {
-        let wmPointer;
-        if (typeof pointer === "string")
-            pointer = convertToPointer(pointer);
-        if (!hasAddress(pointer))
-            throw FundmeError(addressNotFound);
-        wmPointer = checkWeight(pointer);
-        return wmPointer;
-    });
+  return pointers.map(function (pointer) {
+    var wmPointer;
+    if (typeof pointer === "string") pointer = convertToPointer(pointer);
+    if (!hasAddress(pointer)) throw FundmeError(addressNotFound);
+    wmPointer = checkWeight(pointer);
+    return wmPointer;
+  });
 }
 function checkWeight(pointer) {
-    if (pointer.weight === undefined || pointer.weight === NaN) {
-        console.warn(weightIsNotANumber(pointer.address));
-        pointer.weight = DEFAULT_WEIGHT;
-    }
-    return pointer;
-}
-// TODO getting pointer from pool
+  if (pointer.weight === undefined || pointer.weight === NaN) {
+    console.warn(weightIsNotANumber(pointer.address));
+    pointer.weight = DEFAULT_WEIGHT;
+  }
+
+  return pointer;
+} // TODO getting pointer from pool
+
 function pickPointer(pointers) {
-    const sum = getPoolWeightSum(pointers);
-    let choice = getChoice(sum);
-    return getWinningPointer(pointers, choice);
+  var sum = getPoolWeightSum(pointers);
+  var choice = getChoice(sum);
+  return getWinningPointer(pointers, choice);
 }
 function getChoice(sum) {
-    const choice = Math.random() * sum;
-    return choice;
+  var choice = Math.random() * sum;
+  return choice;
 }
 function convertToPointer(str) {
-    let address = str;
-    let weight = DEFAULT_WEIGHT;
-    const split = str.split("#");
-    if (split.length > 1) {
-        address = split[0];
-        if (split[1].endsWith("%")) {
-            calculateRelativeWeight(split[1], getCurrentPointerPool());
-        }
-        else {
-            weight = parseInt(split[1], 10);
-        }
+  var address = str;
+  var weight;
+  var split = str.split("#");
+
+  if (split.length > 1) {
+    address = split[0];
+
+    if (split[1].endsWith("%")) {
+      weight = split[1];
+    } else {
+      weight = parseInt(split[1], 10);
     }
-    const pointer = {
-        address,
-        weight,
-    };
-    return checkWeight(pointer);
+  }
+
+  var pointer = {
+    address: address,
+    weight: weight
+  };
+  return checkWeight(pointer);
 }
 
 function isMultiplePointer(s) {
-    return Array.isArray(s);
+  return Array.isArray(s);
 }
 function setWebMonetizationPointer(address) {
-    let wmAddress = document.head.querySelector('meta[name="monetization"]');
-    return setWebMonetizationTag(wmAddress, address);
+  var wmAddress = document.head.querySelector('meta[name="monetization"]');
+  return setWebMonetizationTag(wmAddress, address);
 }
 function setWebMonetizationTag(wmAddress, address) {
-    if (!wmAddress) {
-        wmAddress = createWebMonetizationTag(address);
-    }
-    else {
-        wmAddress.content = address;
-    }
-    return wmAddress;
+  if (!wmAddress) {
+    wmAddress = createWebMonetizationTag(address);
+  } else {
+    wmAddress.content = address;
+  }
+
+  return wmAddress;
 }
 function createWebMonetizationTag(address) {
-    const wmAddress = document.createElement("meta");
-    wmAddress.name = "monetization";
-    wmAddress.content = address;
-    document.head.appendChild(wmAddress);
-    return wmAddress;
+  var wmAddress = document.createElement("meta");
+  wmAddress.name = "monetization";
+  wmAddress.content = address;
+  document.head.appendChild(wmAddress);
+  return wmAddress;
 }
 function getPoolWeightSum(pointers) {
-    const weights = pointers.map((pointer) => {
-        return pointer.weight || DEFAULT_WEIGHT; // TODO - safecheck null assertion
-    });
-    return Object.values(weights).reduce((sum, weight) => sum + weight, 0);
+  var weights = pointers.map(function (pointer) {
+    return pointer.weight; // TODO - safecheck null assertion
+  });
+  return Object.values(weights).reduce(function (sum, weight) {
+    if (typeof weight === "number") {
+      return sum + weight;
+    } else {
+      return sum;
+    }
+  }, 0);
 }
 function getWinningPointer(pointers, choice) {
-    for (const pointer in pointers) {
-        const weight = pointers[pointer].weight || DEFAULT_WEIGHT; // TODO - safecheck null assertion
-        if ((choice -= weight) <= 0) {
-            return pointers[pointer];
-        }
+  for (var pointer in pointers) {
+    var _pointers$pointer$wei;
+
+    var _weight = (_pointers$pointer$wei = pointers[pointer].weight) !== null && _pointers$pointer$wei !== void 0 ? _pointers$pointer$wei : DEFAULT_WEIGHT; // TODO - safecheck null assertion
+
+
+    if (typeof _weight !== "number") throw FundmeError(getWinningPointerMustBeANumber);
+
+    if ((choice -= _weight) <= 0) {
+      return pointers[pointer];
     }
-    return { address: "" }; // Is this even necessary?
+  }
+
+  console.error("GET WINNING POOL LEAKED!");
+  return {
+    address: ""
+  }; // Is this even necessary?
 }
 function hasAddress(o) {
-    if (!o)
-        return false;
-    return Object.keys(o).some((str) => str === "address");
+  if (!o) return false;
+  return Object.keys(o).some(function (str) {
+    return str === "address";
+  });
 }
-let defaultAddress;
-function setDefaultAddress(address, options = {}) {
-    if (Array.isArray(address)) {
-        if (address.length) {
-            defaultAddress = createPool(address);
-            return;
-        }
-        else {
-            throw FundmeError(defaultAddressArrayCannotBeEmpty);
-        }
+var defaultAddress;
+function setDefaultAddress(address) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (Array.isArray(address)) {
+    if (address.length) {
+      defaultAddress = createPool(address);
+      return;
+    } else {
+      throw FundmeError(defaultAddressArrayCannotBeEmpty);
     }
-    if (typeof address === "string") {
-        defaultAddress = address;
-        return;
-    }
-    if (hasAddress(address)) {
-        defaultAddress = getPointerAddress(address);
-        return;
-    }
-    if (options.allowUndefined && address === undefined) {
-        // @ts-ignore
-        defaultAddress = undefined; // TODO check if ts-ignore break things
-        return;
-    }
-    throw FundmeError(invalidDefaultAddress);
+  }
+
+  if (typeof address === "string") {
+    defaultAddress = address;
+    return;
+  }
+
+  if (hasAddress(address)) {
+    defaultAddress = getPointerAddress(address);
+    return;
+  }
+
+  if (options.allowUndefined && address === undefined) {
+    // @ts-ignore
+    defaultAddress = undefined; // TODO check if ts-ignore break things
+
+    return;
+  }
+
+  throw FundmeError(invalidDefaultAddress);
 }
 function getDefaultAddress() {
-    return defaultAddress;
+  return defaultAddress;
 }
 function defaultAddressMultiple(address) {
-    return isMultiplePointer(address) ? address : [address];
+  return isMultiplePointer(address) ? address : [address];
 }
-let currentFundType;
+var currentFundType;
 function setFundType(type) {
-    currentFundType = type;
-    return currentFundType;
+  currentFundType = type;
+  return currentFundType;
 }
-let currentPointer;
+var currentPointer;
 function setCurrentPointer(pointer) {
-    currentPointer = pointer;
+  currentPointer = pointer;
 }
 function getCurrentPointerAddress() {
-    // const forced = forceBrowser
-    if (isBrowser()) {
-        const metaTag = document.head.querySelectorAll('meta[name="monetization"]');
-        if (metaTag.length > 1) {
-            throw FundmeError(metaTagMultipleIsFound);
-        }
-        if (metaTag[0]) {
-            return metaTag[0].content;
-        }
-        throw FundmeError(metaTagNotFound);
+  // const forced = forceBrowser
+  if (isBrowser()) {
+    var metaTag = document.head.querySelectorAll('meta[name="monetization"]');
+
+    if (metaTag.length > 1) {
+      throw FundmeError(metaTagMultipleIsFound);
     }
-    else {
-        if (currentPointer)
-            return currentPointer.toString();
-        throw FundmeError(getCurrentPointerAddressMustClientSide);
+
+    if (metaTag[0]) {
+      return metaTag[0].content;
     }
+
+    throw FundmeError(metaTagNotFound);
+  } else {
+    if (currentPointer) return currentPointer.toString();
+    throw FundmeError(getCurrentPointerAddressMustClientSide);
+  }
 }
 function cleanSinglePointerSyntax(pointer) {
-    if (typeof pointer === "string") {
-        pointer = pointer.split("#")[0];
-    }
-    else {
-        throw FundmeError(canOnlyCleanStringCustomSyntax);
-    }
-    return pointer;
+  if (typeof pointer === "string") {
+    pointer = pointer.split("#")[0];
+  } else {
+    throw FundmeError(canOnlyCleanStringCustomSyntax);
+  }
+
+  return pointer;
 }
 function getCurrentPointerPool() {
-    let pointer = currentPointer;
-    return convertToPointerPool(pointer);
+  var pointer = currentPointer;
+  return convertToPointerPool(pointer);
 }
 function convertToPointerPool(pointer) {
-    if (!Array.isArray(pointer) && pointer !== undefined) {
-        pointer = [pointer];
-    }
-    return pointer || [];
+  if (!Array.isArray(pointer) && pointer !== undefined) {
+    pointer = [pointer];
+  }
+
+  return pointer || [];
+}
+function isNumberOnly(text) {
+  if (typeof text === "string") {
+    var regex = /^[0-9]*$/;
+    return regex.test(text);
+  }
+
+  return typeof text === "number";
 }
 
-function setPointerSingle(pointer, options = {}) {
-    pointer = cleanSinglePointerSyntax(pointer);
-    setCurrentPointer(pointer);
-    if (isBrowser(options)) {
-        return setWebMonetizationPointer(pointer);
-    }
-    return pointer;
+function setPointerSingle(pointer) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  pointer = cleanSinglePointerSyntax(pointer);
+  setCurrentPointer(pointer);
+
+  if (isBrowser(options)) {
+    return setWebMonetizationPointer(pointer);
+  }
+
+  return pointer;
 }
 
-const FUNDME_TEMPLATE_SELECTOR = "template[data-fund]";
-const FUNDME_CUSTOM_SYNTAX_SELECTOR = "template[fundme]";
-const FUNDME_JSON_SELECTOR = "script[fundme]";
-function setPointerFromTemplates(options = {}) {
-    const pointers = [
-        ...scrapeTemplate(),
-        ...scrapeJson(),
-        ...scrapeCustomSyntax(),
-    ];
-    if (pointers.length) {
-        setPointerMultiple(pointers, options);
-    }
-    else {
-        throw FundmeError(noTemplateFound);
-    }
-}
-// DON'T throw errors inside scrape functions if array is found to be empty
+var FUNDME_TEMPLATE_SELECTOR = "template[data-fund]";
+var FUNDME_CUSTOM_SYNTAX_SELECTOR = "template[fundme]";
+var FUNDME_JSON_SELECTOR = "script[fundme]";
+function setPointerFromTemplates() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var pointers = [].concat(_toConsumableArray(scrapeTemplate()), _toConsumableArray(scrapeJson()), _toConsumableArray(scrapeCustomSyntax()));
+
+  if (pointers.length) {
+    setPointerMultiple(pointers, options);
+  } else {
+    throw FundmeError(noTemplateFound);
+  }
+} // DON'T throw errors inside scrape functions if array is found to be empty
 // fund() already do that
+
 function scrapeJson() {
-    const scriptTags = document.body.querySelectorAll(FUNDME_JSON_SELECTOR);
-    let pointers = [];
-    if (scriptTags.length) {
-        scriptTags.forEach((json) => {
-            pointers = parseScriptJson(json);
-        });
-    }
-    return pointers;
+  var scriptTags = document.body.querySelectorAll(FUNDME_JSON_SELECTOR);
+  var pointers = [];
+
+  if (scriptTags.length) {
+    scriptTags.forEach(function (json) {
+      pointers = parseScriptJson(json);
+    });
+  }
+
+  return pointers;
 }
+
 function parseScriptJson(json) {
-    let pointers = [];
-    let parsed;
-    try {
-        parsed = JSON.parse(json.innerHTML);
-    }
-    catch (err) {
-        throw FundmeError(cannotParseScriptJson);
-    }
-    if (json.type !== "application/json") {
-        throw FundmeError(scriptFundmeIsNotApplicationJson);
-    }
-    if (Array.isArray(parsed)) {
-        pointers = createPool(parsed);
-    }
-    else if (typeof parsed === "string") {
-        pointers = createPool([parsed]);
-    }
-    else {
-        throw FundmeError(jsonTemplateIsInvalid);
-    }
-    return pointers;
+  var pointers = [];
+  var parsed;
+
+  try {
+    parsed = JSON.parse(json.innerHTML);
+  } catch (err) {
+    throw FundmeError(cannotParseScriptJson);
+  }
+
+  if (json.type !== "application/json") {
+    throw FundmeError(scriptFundmeIsNotApplicationJson);
+  }
+
+  if (Array.isArray(parsed)) {
+    pointers = createPool(parsed);
+  } else if (typeof parsed === "string") {
+    pointers = createPool([parsed]);
+  } else {
+    throw FundmeError(jsonTemplateIsInvalid);
+  }
+
+  return pointers;
 }
+
 function scrapeTemplate() {
-    const templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
-    let pointers = [];
-    if (templates.length) {
-        templates.forEach((template) => {
-            const pointer = parseTemplate(template);
-            pointers = [...pointers, pointer];
-        });
-    }
-    return pointers;
+  var templates = document.body.querySelectorAll(FUNDME_TEMPLATE_SELECTOR);
+  var pointers = [];
+
+  if (templates.length) {
+    templates.forEach(function (template) {
+      var pointer = parseTemplate(template);
+      pointers = [].concat(_toConsumableArray(pointers), [pointer]);
+    });
+  }
+
+  return pointers;
 }
 function parseTemplate(template) {
-    let address = template.dataset.fund;
-    let weight = template.dataset.fundWeight !== undefined
-        ? parseInt(template.dataset.fundWeight, 0)
-        : DEFAULT_WEIGHT;
-    if (!address) {
-        throw FundmeError(failParsingTemplate);
-    }
-    const pointer = checkWeight({
-        address,
-        weight,
-    });
-    return pointer;
+  var address = template.dataset.fund;
+  var weight = template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT;
+
+  if (!address) {
+    throw FundmeError(failParsingTemplate);
+  }
+
+  var pointer = checkWeight({
+    address: address,
+    weight: weight
+  });
+  return pointer;
 }
 function scrapeCustomSyntax() {
-    const templates = document.querySelectorAll(FUNDME_CUSTOM_SYNTAX_SELECTOR);
-    let pointers = [];
-    if (templates.length) {
-        templates.forEach((template) => {
-            pointers = [...pointers, ...parseCustomSyntax(template)];
-        });
-    }
-    return pointers;
+  var templates = document.querySelectorAll(FUNDME_CUSTOM_SYNTAX_SELECTOR);
+  var pointers = [];
+
+  if (templates.length) {
+    templates.forEach(function (template) {
+      pointers = [].concat(_toConsumableArray(pointers), _toConsumableArray(parseCustomSyntax(template)));
+    });
+  }
+
+  return pointers;
 }
 function parseCustomSyntax(template) {
-    let pointers = [];
-    const temp = template.innerHTML;
-    temp.split(";").forEach((str) => {
-        const strippedString = str.replace(/(^\s+|\s+$)/g, "");
-        if (strippedString) {
-            pointers = [...pointers, convertToPointer(strippedString)];
-        }
-    });
-    return pointers;
+  var pointers = [];
+  var temp = template.innerHTML;
+  temp.split(";").forEach(function (str) {
+    var strippedString = str.replace(/(^\s+|\s+$)/g, "");
+
+    if (strippedString) {
+      pointers = [].concat(_toConsumableArray(pointers), [convertToPointer(strippedString)]);
+    }
+  });
+  return pointers;
 }
 
-function clientSideFund(pointer, options = {}) {
-    if (pointer === undefined) {
-        setPointerFromTemplates();
-        return setFundType(FundType.isFromTemplate);
-    }
-    if (typeof pointer === "string") {
-        if (pointer === "default") {
-            if (getDefaultAddress() !== undefined) {
-                if (typeof getDefaultAddress() === "string") {
-                    setPointerSingle(getDefaultAddress().toString(), options);
-                }
-                else {
-                    setPointerMultiple(defaultAddressMultiple(getDefaultAddress()), options);
-                }
-                return setFundType(FundType.isDefault);
-            }
-            else {
-                throw FundmeError(defaultAddressNotFound);
-            }
+function clientSideFund(pointer) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (pointer === undefined) {
+    setPointerFromTemplates();
+    return setFundType(FundType.isFromTemplate);
+  }
+
+  if (typeof pointer === "string") {
+    if (pointer === "default") {
+      if (getDefaultAddress() !== undefined) {
+        if (typeof getDefaultAddress() === "string") {
+          setPointerSingle(getDefaultAddress().toString(), options);
+        } else {
+          setPointerMultiple(defaultAddressMultiple(getDefaultAddress()), options);
         }
-        setPointerSingle(pointer, options);
-        return setFundType(FundType.isSingle);
+
+        return setFundType(FundType.isDefault);
+      } else {
+        throw FundmeError(defaultAddressNotFound);
+      }
     }
-    if (isMultiplePointer(pointer)) {
-        setPointerMultiple(pointer, options);
-        return setFundType(FundType.isMultiple);
-    }
-    throw FundmeError(invalidAddress);
+
+    setPointerSingle(pointer, options);
+    return setFundType(FundType.isSingle);
+  }
+
+  if (isMultiplePointer(pointer)) {
+    setPointerMultiple(pointer, options);
+    return setFundType(FundType.isMultiple);
+  }
+
+  throw FundmeError(invalidAddress);
 }
-let forceBrowser = false;
-const isNodeEnv = require !== undefined && module !== undefined;
-const isBrowser = (options = {}) => {
-    if (options.force === "server")
-        return false;
-    const forced = forceBrowser;
-    forceBrowser = false;
-    return !isNodeEnv || forced || options.force === "client";
+var forceBrowser = false;
+var isNodeEnv = require !== undefined && module !== undefined;
+var isBrowser = function isBrowser() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  if (options.force === "server") return false;
+  var forced = forceBrowser;
+  forceBrowser = false;
+  return !isNodeEnv || forced || options.force === "client";
 };
 
 function serverSideFund(pointer) {
-    if (pointer === undefined)
-        throw FundmeError(noUndefinedFundOnServerSide);
-    if (typeof pointer === "string") {
-        return setPointerSingle(pointer).toString();
-    }
-    if (isMultiplePointer(pointer)) {
-        return setPointerMultiple(pointer).toString();
-    }
-    throw FundmeError(invalidFundmeServerSide);
+  if (pointer === undefined) throw FundmeError(noUndefinedFundOnServerSide);
+
+  if (typeof pointer === "string") {
+    return setPointerSingle(pointer).toString();
+  }
+
+  if (isMultiplePointer(pointer)) {
+    return setPointerMultiple(pointer).toString();
+  }
+
+  throw FundmeError(invalidFundmeServerSide);
 }
 
 var FundType;
+
 (function (FundType) {
-    FundType["isSingle"] = "single";
-    FundType["isMultiple"] = "multiple";
-    FundType["isDefault"] = "default";
-    FundType["isFromTemplate"] = "template";
-    FundType["isUndefined"] = "undefined";
+  FundType["isSingle"] = "single";
+  FundType["isMultiple"] = "multiple";
+  FundType["isDefault"] = "default";
+  FundType["isFromTemplate"] = "template";
+  FundType["isUndefined"] = "undefined";
 })(FundType || (FundType = {}));
-function fund(pointer, options = {}) {
-    if (isBrowser(options)) {
-        return clientSideFund(pointer, options);
+
+function fund(pointer) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (isBrowser(options)) {
+    return clientSideFund(pointer, options);
+  } else {
+    if (pointer === undefined) {
+      throw FundmeError(noUndefinedFundOnServerSide);
+    } else {
+      return serverSideFund(pointer);
     }
-    else {
-        if (pointer === undefined) {
-            throw FundmeError(noUndefinedFundOnServerSide);
-        }
-        else {
-            return serverSideFund(pointer);
-        }
-    }
+  }
 }
 
 exports.fund = fund;

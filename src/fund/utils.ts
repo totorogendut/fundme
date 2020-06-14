@@ -60,7 +60,7 @@ export function getPoolWeightSum(pointers: WMPointer[]): number {
 
 export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
   for (const pointer in pointers) {
-    const weight: weight = pointers[pointer].weight!; // TODO - safecheck null assertion
+    const weight: weight = pointers[pointer].weight ?? DEFAULT_WEIGHT; // TODO - safecheck null assertion
 
     if (typeof weight !== "number") throw FundmeError(getWinningPointerMustBeANumber);
 

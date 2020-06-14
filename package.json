@@ -2,10 +2,16 @@
   "name": "fundme",
   "version": "0.1.1",
   "description": "A simple but powerful client-side library to manage monetization on the web.",
-  "main": "./dist/fundme-cjs.js",
-  "module": "./dist/fundme.mjs",
   "dependencies": {},
   "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-typescript": "^7.10.1",
+    "@rollup/plugin-babel": "^5.0.3",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.1",
     "@testing-library/jest-dom": "^5.3.0",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.5",
@@ -28,15 +34,17 @@
   },
   "scripts": {
     "version": "npm run build",
-    "build": "del dist /Q && rollup -c && npm run compress-iife && npm run create-compat && npm run create-cjs-compat && npm run compress-amd",
     "pre-commit": "npm run build && git add .",
-    "compress-amd": "uglifyjs --compress --mangle -o dist/fundme-amd.min.js dist/fundme-amd.js",
-    "compress-iife": "uglifyjs --compress --mangle -o dist/fundme-iife.min.js dist/fundme-iife.js",
-    "create-cjs-compat": "babel dist/fundme-cjs.js | uglifyjs --compress --mangle > dist/fundme-cjs-compat.min.js",
-    "create-compat": "babel dist/fundme-iife.js | uglifyjs --compress --mangle > dist/fundme-iife-compat.min.js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "rollup -c",
     "test": "jest --coverage --verbose",
-    "format": "prettier --write src/**/*.{ts,js,md}"
+    "format": "prettier --write src/**/*.{ts,js,md}",
+    "build": "npm run build:js"
   },
+  "main": "dist/fundme.cjs.js",
+  "module": "dist/fundme.esm.js",
+  "browser": "dist/fundme.iife.js",
+  "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/ProgNovel/fundme.git"
