@@ -3,6 +3,7 @@
 ## unreleased
 
 - FEATURE: first glimpse of relative weight is now live!
+- Removing rollup typescript plugin and use Babel instead, allowing to use upcoming modern javascript feature (such as nullish coalescing, etc).
 
 ## 0.1.1
 
