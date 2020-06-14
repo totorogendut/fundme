@@ -9,5 +9,8 @@ module.exports = {
     'ts-jest': {
       diagnostics: false
     }
-  }
+  },
+  collectCoverageFrom: [
+    "src/**/{!(errors|mod),}.ts"
+  ]
 }
