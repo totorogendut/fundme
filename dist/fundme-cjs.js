@@ -73,8 +73,8 @@ var relativeWeightMustEndsWithPercentage = "relative weights must end with chara
 var invalidRelativeWeight = function invalidRelativeWeight(address) {
   return "relative weight for payment pointer ".concat(address, " must be integer or float.");
 };
-var invalidWeight = function invalidWeight(address) {
-  return "weight for payment pointer ".concat(address, " is invalid.");
+var invalidWeight = function invalidWeight(address, weight) {
+  return "weight for payment pointer ".concat(address, "#").concat(weight, " is invalid.");
 };
 /*****************************
  *                           *
@@ -94,26 +94,22 @@ function clear() {
   relativeWeightPointers = [];
   fixedWeightPointers = [];
   totalRelativeChance = 0;
+  pointerPoolSum = 0;
 }
 
 function calculateRelativeWeight(pool) {
   clear();
   pointerPoolSum = getPoolWeightSum(pool);
   var relativeWeightPointers;
-
-  try {
-    relativeWeightPointers = pool.filter(filterRelativeWeight);
-  } catch (err) {
-    throw err;
-  }
-
+  relativeWeightPointers = pool.filter(filterRelativeWeight);
   if (!fixedWeightPointers.length) throw FundmeError(paymentPointersMustHaveAtLeastOneFixedPointer);
-  var newFixedPointers = normalizeFixedPointers(fixedWeightPointers, totalRelativeChance);
-  var newRelativePointers = normalizeRelativePointers(relativeWeightPointers);
-  return [].concat(_toConsumableArray(newFixedPointers), _toConsumableArray(newRelativePointers));
+  return [].concat(_toConsumableArray(normalizeFixedPointers(fixedWeightPointers, totalRelativeChance)), _toConsumableArray(normalizeRelativePointers(relativeWeightPointers, pointerPoolSum)));
 }
 
 function filterRelativeWeight(pointer) {
+  var _pointer$address, _pointer$address2;
+
+  if (pointer.weight === undefined) throw FundmeError(invalidWeight((_pointer$address = pointer.address) !== null && _pointer$address !== void 0 ? _pointer$address : pointer, ""));
   var weight = pointer.weight;
 
   if (typeof weight === "string" && weight.endsWith("%")) {
@@ -125,21 +121,26 @@ function filterRelativeWeight(pointer) {
 
     registerRelativeWeight(pointer);
     return true;
-  } else {
-    if (typeof JSON.parse(weight) !== "number") {
-      throw FundmeError(invalidWeight(pointer.address));
-    }
+  }
 
+  if (isNumberOnly(weight)) {
     registerFixedWeight(pointer);
     return false;
   }
+
+  throw FundmeError(invalidWeight((_pointer$address2 = pointer.address) !== null && _pointer$address2 !== void 0 ? _pointer$address2 : pointer, weight));
 }
 
 function registerRelativeWeight(pointer) {
+  console.warn("registering", pointer);
   pointer.weight = getWeight(pointer);
   relativeWeightPointers.push(pointer);
 }
 function registerFixedWeight(pointer) {
+  if (typeof pointer.weight === "string") {
+    pointer.weight = parseFloat(pointer.weight);
+  }
+
   fixedWeightPointers.push(pointer);
 }
 
@@ -161,6 +162,7 @@ function normalizeFixedPointers(pool, chance) {
 }
 
 function normalizeRelativePointers(pool, sum) {
+  if (pool.length) console.warn("Normalizing with total", sum, pool);
   return pool.map(function (pointer) {
     return pointer;
   });
@@ -170,15 +172,18 @@ function getWeight(pointer) {
   var chance;
 
   if (typeof pointer === "string") {
+    var weight = pointer.split("#")[1];
+
     if (pointer.endsWith("%")) {
-      var weight = pointer.split("#")[1];
       chance = parseFloat(weight) / 100;
     } else {
       throw FundmeError(relativeWeightMustEndsWithPercentage);
     }
   } else {
     if (!pointer.weight) {
-      throw FundmeError(weightForRelativePointerNotFound(pointer.address || pointer));
+      var _pointer$address3;
+
+      throw FundmeError(weightForRelativePointerNotFound((_pointer$address3 = pointer.address) !== null && _pointer$address3 !== void 0 ? _pointer$address3 : pointer));
     }
 
     if (typeof pointer.weight === "string") pointer.weight = parseFloat(pointer.weight);
@@ -250,12 +255,11 @@ function convertToPointer(str) {
 
   if (split.length > 1) {
     address = split[0];
-
-    if (split[1].endsWith("%")) {
-      weight = split[1];
-    } else {
-      weight = parseInt(split[1], 10);
-    }
+    weight = split[1]; // if (split[1].endsWith("%")) {
+    //   weight = split[1];
+    // } else {
+    //   weight = parseInt(split[1], 10);
+    // }
   }
 
   var pointer = {
@@ -290,10 +294,13 @@ function createWebMonetizationTag(address) {
 }
 function getPoolWeightSum(pointers) {
   var weights = pointers.map(function (pointer) {
-    return pointer.weight; // TODO - safecheck null assertion
+    var _pointer$weight;
+
+    return (_pointer$weight = pointer.weight) !== null && _pointer$weight !== void 0 ? _pointer$weight : DEFAULT_WEIGHT; // TODO - safecheck null assertion
   });
   return Object.values(weights).reduce(function (sum, weight) {
-    if (typeof weight === "number") {
+    if (isNumberOnly(weight)) {
+      if (typeof weight === "string") weight = parseFloat(weight);
       return sum + weight;
     } else {
       return sum;
