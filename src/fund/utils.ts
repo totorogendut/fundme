@@ -46,11 +46,12 @@ export function createWebMonetizationTag(address: string): HTMLMetaElement {
 
 export function getPoolWeightSum(pointers: WMPointer[]): number {
   const weights: weight[] = pointers.map((pointer) => {
-    return pointer.weight!; // TODO - safecheck null assertion
+    return pointer.weight ?? DEFAULT_WEIGHT; // TODO - safecheck null assertion
   });
 
   return Object.values(weights).reduce((sum: number, weight: weight): number => {
-    if (typeof weight === "number") {
+    if (isNumberOnly(weight)) {
+      if (typeof weight === "string") weight = parseFloat(weight);
       return sum + weight;
     } else {
       return sum;

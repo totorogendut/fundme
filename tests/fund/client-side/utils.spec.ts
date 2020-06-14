@@ -1,4 +1,9 @@
-import { isMultiplePointer, getPoolWeightSum, getWinningPointer } from "../../../src/fund/utils";
+import {
+  isMultiplePointer,
+  getPoolWeightSum,
+  getWinningPointer,
+  isNumberOnly,
+} from "../../../src/fund/utils";
 import { getCurrentPointerAddress } from "../../../src/fund/mod";
 import { forceFundmeOnBrowser } from "../../../src/fund/fund-browser";
 import { metaTagNotFound, FundmeError } from "../../../src/fund/errors";
@@ -65,5 +70,15 @@ describe("test getCurrentPointerAddress() when there's no meta tag", () => {
   test("throw not found", () => {
     forceFundmeOnBrowser();
     expect(() => getCurrentPointerAddress()).toThrowError(FundmeError(metaTagNotFound));
+  });
+});
+
+describe("ensure logic filters work as expected", () => {
+  test("testing isNumberOnly()", () => {
+    expect(isNumberOnly("55")).toBeTruthy();
+    expect(isNumberOnly(44)).toBeTruthy();
+    expect(isNumberOnly({})).toBeFalsy();
+    expect(isNumberOnly(["testing"])).toBeFalsy();
+    expect(isNumberOnly("4423sd2")).toBeFalsy();
   });
 });

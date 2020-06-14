@@ -104,25 +104,28 @@ describe("calculating relative weight", () => {
   });
 
   test("throw if invalid relative weight", () => {
+    const error1 = "442dddd@";
+    const error2 = "s4";
     const invalidPointerPool1 = [
-      "$wallet.example.com/example-1#55dddd4@",
+      "$wallet.example.com/example-1#" + error1,
       "$wallet.example.com/example-2#60",
     ];
 
     expect(() => {
-      calculateRelativeWeight(createPool(invalidPointerPool1));
+      const test = calculateRelativeWeight(createPool(invalidPointerPool1));
+      console.log(test);
     }).toThrowError(
       // one
-      FundmeError(invalidWeight("$wallet.example.com/example-1")),
+      FundmeError(invalidWeight("$wallet.example.com/example-1", error1)),
     );
 
     const invalidPointerPool2 = [
-      "$wallet.example.com/example-1#s4",
+      "$wallet.example.com/example-1#" + error2,
       "$wallet.example.com/example-2#60",
     ];
     expect(() => calculateRelativeWeight(createPool(invalidPointerPool2))).toThrowError(
       // two
-      FundmeError(invalidWeight("$wallet.example.com/example-1")),
+      FundmeError(invalidWeight("$wallet.example.com/example-1", error2)),
     );
 
     const invalidPointerPool3 = [

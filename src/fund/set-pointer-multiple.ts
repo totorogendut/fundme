@@ -82,11 +82,12 @@ export function convertToPointer(str: string): WMPointer {
 
   if (split.length > 1) {
     address = split[0];
-    if (split[1].endsWith("%")) {
-      weight = split[1];
-    } else {
-      weight = parseInt(split[1], 10);
-    }
+    weight = split[1];
+    // if (split[1].endsWith("%")) {
+    //   weight = split[1];
+    // } else {
+    //   weight = parseInt(split[1], 10);
+    // }
   }
 
   const pointer: WMPointer = {

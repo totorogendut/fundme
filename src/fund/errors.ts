@@ -56,8 +56,8 @@ export const relativeWeightMustEndsWithPercentage = "relative weights must end w
 export const invalidRelativeWeight = (address: string) => {
   return `relative weight for payment pointer ${address} must be integer or float.`;
 };
-export const invalidWeight = (address: string) => {
-  return `weight for payment pointer ${address} is invalid.`;
+export const invalidWeight = (address: string, weight: string | number | undefined) => {
+  return `weight for payment pointer ${address}#${weight} is invalid.`;
 };
 
 /*****************************
