@@ -14,6 +14,10 @@ export function weightIsNotANumber(str: string) {
 }
 export const invalidAddress = "invalid Web Monetization pointer address is given.";
 
+// multiple pointers
+export const getWinningPointerMustBeANumber =
+  "all pointers' weight during calculating a winning pointer must have type of number.";
+
 // default address
 export const defaultAddressNotFound =
   "default address not found. Use setDefaultAddress(str: string) to set it first.";
@@ -39,6 +43,22 @@ export const cannotParseScriptJson =
 export const jsonTemplateIsInvalid = "found <script fundme> but it's not valid.";
 export const scriptFundmeIsNotApplicationJson =
   'found <script fundme> but its type is not "application/json"';
+
+// relative weight
+export const paymentPointersMustHaveAtLeastOneFixedPointer =
+  "revenue sharing payment pointers must have at least one payment address pointer with fixed weight.";
+export const relativeWeightChanceError =
+  "error when calculating total relative weight chance. Make sure it's a float between 0~1.0.";
+export const weightForRelativePointerNotFound = (address: string | WMPointer) => {
+  return `payment pointer weights not found for ${address}`;
+};
+export const relativeWeightMustEndsWithPercentage = "relative weights must end with character %.";
+export const invalidRelativeWeight = (address: string) => {
+  return `relative weight for payment pointer ${address} must be integer or float.`;
+};
+export const invalidWeight = (address: string) => {
+  return `weight for payment pointer ${address} is invalid.`;
+};
 
 /*****************************
  *                           *

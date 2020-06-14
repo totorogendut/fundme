@@ -9,6 +9,7 @@ import {
   canOnlyCleanStringCustomSyntax,
   defaultAddressArrayCannotBeEmpty,
   invalidDefaultAddress,
+  getWinningPointerMustBeANumber,
 } from "./errors";
 
 export function isMultiplePointer(s: any): boolean {
@@ -44,15 +45,25 @@ export function createWebMonetizationTag(address: string): HTMLMetaElement {
 }
 
 export function getPoolWeightSum(pointers: WMPointer[]): number {
-  const weights: number[] = pointers.map((pointer) => {
+  const weights: weight[] = pointers.map((pointer) => {
     return pointer.weight!; // TODO - safecheck null assertion
   });
-  return Object.values(weights).reduce((sum: number, weight: number): number => sum + weight, 0);
+
+  return Object.values(weights).reduce((sum: number, weight: weight): number => {
+    if (typeof weight === "number") {
+      return sum + weight;
+    } else {
+      return sum;
+    }
+  }, 0);
 }
 
 export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
   for (const pointer in pointers) {
-    const weight: number = pointers[pointer].weight!; // TODO - safecheck null assertion
+    const weight: weight = pointers[pointer].weight!; // TODO - safecheck null assertion
+
+    if (typeof weight !== "number") throw FundmeError(getWinningPointerMustBeANumber);
+
     if ((choice -= weight) <= 0) {
       return pointers[pointer];
     }
@@ -164,4 +175,14 @@ export function convertToPointerPool(pointer: WMAddress): Array<string | WMPoint
   }
 
   return pointer || [];
+}
+
+export function isNumberOnly(text: unknown): boolean {
+  if (typeof text === "string") {
+    const regex = /^[0-9]*$/;
+
+    return regex.test(text);
+  }
+
+  return typeof text === "number";
 }

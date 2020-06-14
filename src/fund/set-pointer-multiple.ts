@@ -17,10 +17,12 @@ export function setPointerMultiple(
   pointers: (string | WMPointer)[],
   options: fundOptions = {},
 ): returnValidPointer {
-  const pool = createPool(pointers);
+  let pool: WMPointer[] = createPool(pointers);
+  pool = calculateRelativeWeight(pool);
   const pickedPointer = pickPointer(pool);
   const pointerAddress = getPointerAddress(pickedPointer);
   setCurrentPointer(pool);
+
   if (isBrowser(options)) {
     return setWebMonetizationPointer(pointerAddress);
   }
@@ -75,13 +77,13 @@ export function getChoice(sum: number): number {
 
 export function convertToPointer(str: string): WMPointer {
   let address: string = str;
-  let weight!: number;
+  let weight!: weight;
   const split: string[] = str.split("#");
 
   if (split.length > 1) {
     address = split[0];
     if (split[1].endsWith("%")) {
-      calculateRelativeWeight(split[1], getCurrentPointerPool());
+      weight = split[1];
     } else {
       weight = parseInt(split[1], 10);
     }

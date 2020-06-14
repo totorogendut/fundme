@@ -1,5 +1,9 @@
 # Releases
 
+## unreleased
+
+- FEATURE: first glimpse of relative weight is now live!
+
 ## 0.1.1
 
 - FEATURE: Server-side fund() now live.

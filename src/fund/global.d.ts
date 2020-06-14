@@ -1,10 +1,12 @@
 type WMAddress = string | Array<string | WMPointer> | undefined;
 type returnValidPointer = string | HTMLMetaElement;
 type defaultAddress = string | WMPointer | (string | WMPointer)[];
+type address = string;
+type weight = number | string;
 
 interface WMPointer {
   address: string;
-  weight?: number;
+  weight?: weight;
 }
 
 interface fundOptions {
