@@ -182,7 +182,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 - [ ] Add bias system.
 - [x] Make some config to let Fundme.js operate in Server-Side.
 - [x] A way to get relative chances for contributors' addresses (something like CSS relative unit).
-- [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid
+- [ ] RegEx safety net to warn website owners if one or more Web Monetization API pointer addresses are invalid or not following best practices.
 - [ ] Simpler and more intuitive implementation that will goes nicely with current API standard.
 - [ ] Make a JAMstack website to host documentation.
 - [ ] Early and basic asynchronous ads support (like amp-ads).
