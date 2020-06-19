@@ -1,4 +1,9 @@
-import { calculateRelativeWeight } from "../../../src/fund/relative-weight";
+import {
+  calculateRelativeWeight,
+  mockVariables,
+  clear,
+  getWeight,
+} from "../../../src/fund/relative-weight";
 import {
   relativeWeightMustEndsWithPercentage,
   invalidWeight,
@@ -96,37 +101,6 @@ describe("calculating relative weight", () => {
     expect(calculateRelativeWeight(createPool(mockPointerPool2))).toEqual(resultPointerPool2);
   });
 
-  describe("ensure relative weight on HTML template is working", () => {
-    test("with custom syntax", () => {
-      document.body.innerHTML = `
-      <template fundme>
-        $wallet.example.com/testing-one#40;
-        $wallet.example.com/testing-two#60;
-        $wallet.example.com/testing-three#50%;
-      </template>
-      `;
-      forceFundmeOnBrowser();
-      fund();
-      const expectedPool = [
-        {
-          address: "$wallet.example.com/testing-one",
-          weight: 20,
-        },
-        {
-          address: "$wallet.example.com/testing-two",
-          weight: 30,
-        },
-        {
-          address: "$wallet.example.com/testing-three",
-          weight: 50,
-        },
-      ];
-
-      expect(getCurrentPointerPool()).toEqual(expectedPool);
-      document.body.innerHTML = "";
-    });
-  });
-
   test("throw if no fixed pointers found", () => {
     const noFixedPointers = [
       "$wallet.example/no-fixed-weight#10%",
@@ -171,5 +145,137 @@ describe("calculating relative weight", () => {
       // three
       FundmeError(invalidRelativeWeight("$wallet.example.com/example-1")),
     );
+  });
+});
+
+describe("ensure relative weight on HTML template is working", () => {
+  test("with custom syntax", () => {
+    document.body.innerHTML = `
+    <template fundme>
+      $wallet.example.com/testing-one#40;
+      $wallet.example.com/testing-two#60;
+      $wallet.example.com/testing-three#50%;
+    </template>
+    `;
+    forceFundmeOnBrowser();
+    fund();
+    const expectedPool = [
+      {
+        address: "$wallet.example.com/testing-one",
+        weight: 20,
+      },
+      {
+        address: "$wallet.example.com/testing-two",
+        weight: 30,
+      },
+      {
+        address: "$wallet.example.com/testing-three",
+        weight: 50,
+      },
+    ];
+
+    expect(getCurrentPointerPool()).toEqual(expectedPool);
+    document.body.innerHTML = "";
+  });
+  test("with template", () => {
+    document.body.innerHTML = `
+    <template data-fund="$wallet.example.com/testing-one" data-fund-weight="40"></template>
+    <template data-fund="$wallet.example.com/testing-two" data-fund-weight="60"></template>
+    <template data-fund="$wallet.example.com/testing-three" data-fund-weight="50%"></template>
+    `;
+    forceFundmeOnBrowser();
+    fund();
+    const expectedPool = [
+      {
+        address: "$wallet.example.com/testing-one",
+        weight: 20,
+      },
+      {
+        address: "$wallet.example.com/testing-two",
+        weight: 30,
+      },
+      {
+        address: "$wallet.example.com/testing-three",
+        weight: 50,
+      },
+    ];
+
+    expect(getCurrentPointerPool()).toEqual(expectedPool);
+    document.body.innerHTML = "";
+  });
+  test("with json template", () => {
+    document.body.innerHTML = `
+      <script fundme type="application/json">
+      [
+        "$wallet.example.com/testing-one#40",
+        "$wallet.example.com/testing-two#60",
+        "$wallet.example.com/testing-three#50%"
+      ]
+      </script>
+    `;
+    forceFundmeOnBrowser();
+    fund();
+    const expectedPool = [
+      {
+        address: "$wallet.example.com/testing-one",
+        weight: 20,
+      },
+      {
+        address: "$wallet.example.com/testing-two",
+        weight: 30,
+      },
+      {
+        address: "$wallet.example.com/testing-three",
+        weight: 50,
+      },
+    ];
+
+    expect(getCurrentPointerPool()).toEqual(expectedPool);
+    document.body.innerHTML = "";
+  });
+
+  test("with basic multiple pointers fund()", () => {
+    forceFundmeOnBrowser();
+    fund([
+      "$wallet.example.com/testing-one#40",
+      "$wallet.example.com/testing-two#60",
+      "$wallet.example.com/testing-three#50%",
+    ]);
+    const expectedPool = [
+      {
+        address: "$wallet.example.com/testing-one",
+        weight: 20,
+      },
+      {
+        address: "$wallet.example.com/testing-two",
+        weight: 30,
+      },
+      {
+        address: "$wallet.example.com/testing-three",
+        weight: 50,
+      },
+    ];
+
+    expect(getCurrentPointerPool()).toEqual(expectedPool);
+  });
+});
+
+describe("mock relative weight", () => {
+  test("mock clear() function", () => {
+    const mock = {
+      relativeWeightPointers: [{ address: "test", weight: 1 }],
+      fixedWeightPointers: [{ address: "test", weight: 1 }],
+      totalRelativeChance: 44,
+      pointerPoolSum: 55,
+    };
+    const mockVar = mockVariables();
+    expect(mockVar).toEqual(mock);
+
+    expect(clear()).toEqual({
+      relativeWeightPointers: [],
+      fixedWeightPointers: [],
+      totalRelativeChance: 0,
+      pointerPoolSum: 0,
+    });
   });
 });

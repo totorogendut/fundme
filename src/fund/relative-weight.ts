@@ -15,11 +15,18 @@ let fixedWeightPointers: Array<WMPointer> = [];
 let totalRelativeChance = 0;
 let pointerPoolSum = 0;
 
-function clear() {
+export function clear() {
   relativeWeightPointers = [];
   fixedWeightPointers = [];
   totalRelativeChance = 0;
   pointerPoolSum = 0;
+
+  return {
+    relativeWeightPointers,
+    fixedWeightPointers,
+    totalRelativeChance,
+    pointerPoolSum,
+  };
 }
 
 export function calculateRelativeWeight(pool: WMPointer[]): WMPointer[] {
@@ -58,7 +65,7 @@ function filterRelativeWeight(pointer: WMPointer) {
 }
 
 export function registerRelativeWeight(pointer: WMPointer) {
-  console.warn("registering", pointer);
+  // console.warn("registering", pointer);
   pointer.weight = getWeight(pointer);
   relativeWeightPointers.push(pointer);
 }
@@ -90,13 +97,13 @@ function normalizeFixedPointers(pool: WMPointer[], chance: number): WMPointer[] 
 }
 
 function normalizeRelativePointers(pool: WMPointer[], sum: number): WMPointer[] {
-  if (pool.length) console.warn("Normalizing with total", sum, pool);
+  // if (pool.length) console.warn("Normalizing with total", sum, pool);
   return pool.map((pointer) => {
     return pointer;
   });
 }
 
-function getWeight(pointer: string | WMPointer): number {
+export function getWeight(pointer: string | WMPointer): number {
   let chance;
 
   if (typeof pointer === "string") {
@@ -117,4 +124,18 @@ function getWeight(pointer: string | WMPointer): number {
   totalRelativeChance += chance;
 
   return pointerPoolSum * chance; // TODO - add % unit to calculate weight
+}
+
+export function mockVariables() {
+  relativeWeightPointers = [{ address: "test", weight: 1 }];
+  fixedWeightPointers = [{ address: "test", weight: 1 }];
+  totalRelativeChance = 44;
+  pointerPoolSum = 55;
+
+  return {
+    relativeWeightPointers,
+    fixedWeightPointers,
+    totalRelativeChance,
+    pointerPoolSum,
+  };
 }
