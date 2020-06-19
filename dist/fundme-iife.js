@@ -88,21 +88,25 @@ var fundme = (function (exports) {
   var fixedWeightPointers = [];
   var totalRelativeChance = 0;
   var pointerPoolSum = 0;
-
   function clear() {
     relativeWeightPointers = [];
     fixedWeightPointers = [];
     totalRelativeChance = 0;
     pointerPoolSum = 0;
+    return {
+      relativeWeightPointers: relativeWeightPointers,
+      fixedWeightPointers: fixedWeightPointers,
+      totalRelativeChance: totalRelativeChance,
+      pointerPoolSum: pointerPoolSum
+    };
   }
-
   function calculateRelativeWeight(pool) {
     clear();
     pointerPoolSum = getPoolWeightSum(pool);
     var relativeWeightPointers;
     relativeWeightPointers = pool.filter(filterRelativeWeight);
     if (!fixedWeightPointers.length) throw FundmeError(paymentPointersMustHaveAtLeastOneFixedPointer);
-    return [].concat(_toConsumableArray(normalizeFixedPointers(fixedWeightPointers, totalRelativeChance)), _toConsumableArray(normalizeRelativePointers(relativeWeightPointers, pointerPoolSum)));
+    return [].concat(_toConsumableArray(normalizeFixedPointers(fixedWeightPointers, totalRelativeChance)), _toConsumableArray(normalizeRelativePointers(relativeWeightPointers)));
   }
 
   function filterRelativeWeight(pointer) {
@@ -131,7 +135,7 @@ var fundme = (function (exports) {
   }
 
   function registerRelativeWeight(pointer) {
-    console.warn("registering", pointer);
+    // console.warn("registering", pointer);
     pointer.weight = getWeight(pointer);
     relativeWeightPointers.push(pointer);
   }
@@ -161,7 +165,7 @@ var fundme = (function (exports) {
   }
 
   function normalizeRelativePointers(pool, sum) {
-    if (pool.length) console.warn("Normalizing with total", sum, pool);
+    // if (pool.length) console.warn("Normalizing with total", sum, pool);
     return pool.map(function (pointer) {
       return pointer;
     });
@@ -505,8 +509,10 @@ var fundme = (function (exports) {
     return pointers;
   }
   function parseTemplate(template) {
+    var _template$dataset$fun;
+
     var address = template.dataset.fund;
-    var weight = template.dataset.fundWeight !== undefined ? parseInt(template.dataset.fundWeight, 0) : DEFAULT_WEIGHT;
+    var weight = (_template$dataset$fun = template.dataset.fundWeight) !== null && _template$dataset$fun !== void 0 ? _template$dataset$fun : DEFAULT_WEIGHT;
 
     if (!address) {
       throw FundmeError(failParsingTemplate);

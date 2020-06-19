@@ -1,6 +1,6 @@
 # Releases
 
-## unreleased
+## 0.1.2
 
 - FEATURE: basic calculation of relative weight is now live!
 - Removing rollup typescript plugin and use Babel instead, allowing to use upcoming modern javascript feature (such as nullish coalescing, etc).
