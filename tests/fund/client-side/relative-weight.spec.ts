@@ -7,6 +7,10 @@ import {
   paymentPointersMustHaveAtLeastOneFixedPointer,
 } from "../../../src/fund/errors";
 import { createPool } from "../../../src/fund/set-pointer-multiple";
+import { toBeInTheDocument, toHaveAttribute } from "@testing-library/jest-dom/matchers";
+import { fund, getCurrentPointerPool } from "../../../src/fund/mod";
+import { forceFundmeOnBrowser } from "../../../src/fund/fund-browser";
+expect.extend({ toBeInTheDocument, toHaveAttribute });
 
 describe("calculating relative weight", () => {
   test("ensure calculating relative weight doesn't have unwanted side effects", () => {
@@ -90,6 +94,37 @@ describe("calculating relative weight", () => {
 
     expect(calculateRelativeWeight(createPool(mockPointerPool))).toEqual(resultPointerPool);
     expect(calculateRelativeWeight(createPool(mockPointerPool2))).toEqual(resultPointerPool2);
+  });
+
+  describe("ensure relative weight on HTML template is working", () => {
+    test("with custom syntax", () => {
+      document.body.innerHTML = `
+      <template fundme>
+        $wallet.example.com/testing-one#40;
+        $wallet.example.com/testing-two#60;
+        $wallet.example.com/testing-three#50%;
+      </template>
+      `;
+      forceFundmeOnBrowser();
+      fund();
+      const expectedPool = [
+        {
+          address: "$wallet.example.com/testing-one",
+          weight: 20,
+        },
+        {
+          address: "$wallet.example.com/testing-two",
+          weight: 30,
+        },
+        {
+          address: "$wallet.example.com/testing-three",
+          weight: 50,
+        },
+      ];
+
+      expect(getCurrentPointerPool()).toEqual(expectedPool);
+      document.body.innerHTML = "";
+    });
   });
 
   test("throw if no fixed pointers found", () => {
