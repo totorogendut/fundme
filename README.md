@@ -174,9 +174,9 @@ NOTE: all payment pointer has to be separated by semicolons (like CSS or JavaScr
 
 As of Fundme.js 0.1.2, you can use fixed percentage based weight to calculate revenue sharing between a few parties.
 
-One example of this is how a blogging platform provides a revenue sharing scheme for authors and their contributors (editors, proofreaders, etc), but it wants 20% of total revenue brought by Web Monetization API. One obvious way to do it is to roll 20% chance for platform's payment pointer before the actual revenue sharing happens; but what happens when the platform want to introduce other parties that also would get fixed chance for the revenue sharing, say, for affiliate referrers?
+One example of this is how a blogging platform provides a revenue sharing scheme for authors and their contributors (editors, proofreaders, etc), but it wants 20% of total revenue brought by Web Monetization API. The obvious way to do it is to roll 20% chance for platform's payment pointer before the actual revenue sharing happens; but what happens when the platform want to introduce other parties that also would get fixed chance for the revenue sharing, say, for affiliate referrers?
 
-Fundme.js provide a simple way to do it:
+Fundme.js provides a simple way to do it:
 
 ```html
 <template fundme>
