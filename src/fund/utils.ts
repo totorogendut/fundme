@@ -74,10 +74,10 @@ export function getWinningPointer(pointers: WMPointer[], choice: number): WMPoin
   return { address: "" }; // Is this even necessary?
 }
 
-export function hasAddress(o: any): boolean {
-  if (!o) return false;
+export function hasAddress(obj: any): boolean {
+  if (!obj) return false;
 
-  return Object.keys(o).some((str) => str === "address");
+  return Object.keys(obj).some((str) => str === "address");
 }
 
 let defaultAddress: defaultAddress;

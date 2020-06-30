@@ -65,7 +65,6 @@ function filterRelativeWeight(pointer: WMPointer) {
 }
 
 export function registerRelativeWeight(pointer: WMPointer) {
-  // console.warn("registering", pointer);
   pointer.weight = getWeight(pointer);
   relativeWeightPointers.push(pointer);
 }
@@ -84,7 +83,7 @@ function normalizeFixedPointers(pool: WMPointer[], chance: number): WMPointer[] 
 
   return pool.map((pointer) => {
     let weight: number;
-    if (typeof pointer.weight! === "string") {
+    if (typeof pointer.weight === "string") {
       weight = parseFloat(pointer.weight!);
     } else {
       weight = pointer.weight!;
@@ -97,7 +96,6 @@ function normalizeFixedPointers(pool: WMPointer[], chance: number): WMPointer[] 
 }
 
 function normalizeRelativePointers(pool: WMPointer[], sum: number): WMPointer[] {
-  // if (pool.length) console.warn("Normalizing with total", sum, pool);
   return pool.map((pointer) => {
     return pointer;
   });

@@ -52,16 +52,16 @@ export function createPool(pointers: Array<string | WMPointer>): WMPointer[] {
   });
 }
 
+// TODO update checkWeight to use relative weight instead
 export function checkWeight(pointer: WMPointer): WMPointer {
   if (pointer.weight === undefined || pointer.weight === NaN) {
-    console.warn(weightIsNotANumber(pointer.address));
+    // if (window) console.warn(weightIsNotANumber(pointer.address));
     pointer.weight = DEFAULT_WEIGHT;
   }
 
   return pointer;
 }
 
-// TODO getting pointer from pool
 export function pickPointer(pointers: WMPointer[]): WMPointer {
   const sum = getPoolWeightSum(pointers);
   let choice: number = getChoice(sum);
@@ -83,11 +83,6 @@ export function convertToPointer(str: string): WMPointer {
   if (split.length > 1) {
     address = split[0];
     weight = split[1];
-    // if (split[1].endsWith("%")) {
-    //   weight = split[1];
-    // } else {
-    //   weight = parseInt(split[1], 10);
-    // }
   }
 
   const pointer: WMPointer = {
