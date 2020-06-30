@@ -197,7 +197,7 @@ Fundme.js provide a simple way to do it:
 </script>
 ```
 
-In the example above, there are six different contributors (including the author) directly involved in working in one content. Notice that payment pointer for platform and referrer both have `%` following the weight of their shares; both of them will take 30% (20% for platform and 10% for referrer) of Web Moneziation revenue while giving the rest of 70% shares to six contributors. 
+In the example above, there are six different contributors (including the author) directly involved in working in one content. Notice that payment pointer for `$wallet.example.com/platform` and `$wallet.example.com/affiliate-referrer` both have `%` following the weight of their shares; what will happen is both of them will take 30% (20% for platform and 10% for referrer) of Web Monezitation revenue while split the rest of 70% shares to six contributors. 
 
 ## What is this, really (?)
 
