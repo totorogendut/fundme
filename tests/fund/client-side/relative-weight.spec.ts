@@ -209,7 +209,9 @@ describe("ensure relative weight on HTML template is working", () => {
       [
         "$wallet.example.com/testing-one#40",
         "$wallet.example.com/testing-two#60",
-        "$wallet.example.com/testing-three#50%"
+        "$wallet.example.com/testing-three#30%",
+        "$wallet.example.com/testing-four#15%",
+        "$wallet.example.com/testing-five#5%"
       ]
       </script>
     `;
@@ -226,7 +228,15 @@ describe("ensure relative weight on HTML template is working", () => {
       },
       {
         address: "$wallet.example.com/testing-three",
-        weight: 50,
+        weight: 30,
+      },
+      {
+        address: "$wallet.example.com/testing-four",
+        weight: 15,
+      },
+      {
+        address: "$wallet.example.com/testing-five",
+        weight: 5,
       },
     ];
 

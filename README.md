@@ -1,6 +1,6 @@
 # Fundme.js
 
-A simple but powerful client-side library to manage monetization on the web.
+A simple but powerful client-side library to manage monetization on the web. Think of jQuery of monetization of the web.
 
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master) ![GitHub top language](https://img.shields.io/github/languages/top/prognovel/fundme) ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/fundme) ![npm](https://img.shields.io/npm/v/fundme) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/fundme)
@@ -170,6 +170,35 @@ NOTE: all payment pointer has to be separated by semicolons (like CSS or JavaScr
 </script>
 ```
 
+#### Relative weight revenue sharing
+
+As of Fundme.js 0.1.2, you can use fixed percentage based weight to calculate revenue sharing between a few party.
+
+One example of this is how a blogging platform provides a revenue sharing scheme for authors and their contributors (editors, proofreaders, etc), but it wants 20% of total revenue brought by Web Monetization API. One obvious way to do it is to roll 20% chance for platform's payment pointer before the actual revenue sharing happens; but what happens when the platform want to introduce other parties that also would get fixed chance for the revenue sharing, say, for affiliate referrers?
+
+Fundme.js provide a simple way to do it:
+
+```html
+<template fundme>
+  $wallet.example.com/author#10; 
+  $wallet.example.com/editor-one#6;
+  $wallet.example.com/editor-two#6;
+  $wallet.example.com/editor-three#6;
+  $wallet.example.com/proofreader#4;
+  $wallet.example.com/quality-checker#2;
+  $wallet.example.com/platform#20%;
+  $wallet.example.com/affiliate-referrer#10%;
+</template>
+
+<script type="module">
+  import { fund } from '/dist/fundme.mjs'
+
+  fund()
+</script>
+```
+
+In the example above, there are six different contributors (including the author) directly involved in working in one content. Notice that payment pointer for platform and referrer both have `%` following the weight of their shares; both of them will take 30% (20% for platform and 10% for referrer) of Web Moneziation revenue while giving the rest of 70% shares to six contributors. 
+
 ## What is this, really (?)
 
 Fundme.js is a whole tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
@@ -178,6 +207,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ## Short-term goal
 
+- [ ] NEW: Advanced relative weight and nested payment pointer pools.
 - [ ] NEW: make basic client-side affiliate referral system.
 - [ ] Add bias system.
 - [x] Make some config to let Fundme.js operate in Server-Side.
