@@ -4,10 +4,9 @@ import {
   getPoolWeightSum,
   setCurrentPointer,
   hasAddress,
-  getCurrentPointerPool,
 } from "./utils";
 import { calculateRelativeWeight } from "./relative-weight";
-import { addressNotFound, addressIsNotAString, weightIsNotANumber, FundmeError } from "./errors";
+import { addressNotFound, addressIsNotAString, FundmeError } from "./errors";
 import { isBrowser } from "./fund-browser";
 
 export const DEFAULT_WEIGHT: number = 5;

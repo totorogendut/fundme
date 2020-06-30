@@ -1,5 +1,4 @@
 import { getPoolWeightSum, isNumberOnly } from "./utils";
-import { createPool, DEFAULT_WEIGHT } from "./set-pointer-multiple";
 import {
   FundmeError,
   relativeWeightMustEndsWithPercentage,

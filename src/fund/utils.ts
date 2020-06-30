@@ -1,4 +1,4 @@
-import { createPool, getPointerAddress, checkWeight, DEFAULT_WEIGHT } from "./set-pointer-multiple";
+import { createPool, getPointerAddress, DEFAULT_WEIGHT } from "./set-pointer-multiple";
 import { isBrowser } from "./fund-browser";
 import { FundType } from "./fund";
 import {

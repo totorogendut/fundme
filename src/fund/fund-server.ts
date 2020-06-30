@@ -1,4 +1,4 @@
-import { isMultiplePointer, setCurrentPointer } from "./utils";
+import { isMultiplePointer } from "./utils";
 import { setPointerMultiple } from "./set-pointer-multiple";
 import { FundmeError, invalidFundmeServerSide, noUndefinedFundOnServerSide } from "./errors";
 import { setPointerSingle } from "./set-pointer-single";
