@@ -38,7 +38,7 @@ fund('$wallet.example.com/some-guy-funding-address')
 Fundme.js is designed to be fully tree-shakeable library thus it has quite a weird way to use in the browser than normal library. It needs to use IIFE (Immediately Invoked Function Expression) to get exported function that normally use in brackets when importing it with ES Module.
 
 ```html
-<script src="/dist/fundme-iife.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fundme/dist/fundme-iife.js"></script>
 <script>
   fundme.fund('$wallet.example.com/my-address')
 </script>
