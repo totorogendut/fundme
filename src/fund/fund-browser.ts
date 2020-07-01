@@ -47,5 +47,5 @@ export const isBrowser = (options: fundOptions = {}): boolean => {
   const forced = forceBrowser;
   forceBrowser = false;
 
-  return browser() || forced || options.force === "client";
+  return browser || forced || options.force === "client";
 };

@@ -633,7 +633,7 @@ var fundme = (function (exports) {
     if (options.force === "server") return false;
     var forced = forceBrowser;
     forceBrowser = false;
-    return index.isBrowser() || forced || options.force === "client";
+    return index.isBrowser || forced || options.force === "client";
   };
 
   function serverSideFund(pointer) {
