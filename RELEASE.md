@@ -1,5 +1,9 @@
 # Releases
 
+## 0.1.3
+
+- Fix: critical error when using ES Modules version.
+
 ## 0.1.2
 
 - FEATURE: basic calculation of relative weight is now live!

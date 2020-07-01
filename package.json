@@ -39,9 +39,9 @@
     "format": "prettier --write src/**/*.{ts,js,md}",
     "build": "npm run build:js"
   },
-  "main": "dist/fundme.cjs.js",
-  "module": "dist/fundme.esm.js",
-  "browser": "dist/fundme.iife.js",
+  "main": "dist/fundme-cjs.js",
+  "module": "dist/fundme.mjs",
+  "browser": "dist/fundme-iife.js",
   "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",

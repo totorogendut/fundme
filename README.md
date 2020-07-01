@@ -13,13 +13,19 @@ npm i fundme --save
 
 _This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import._
 
+## What is this, really (?)
+
+Fundme.js is a tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
+
+Currently it is still rather new and only support Web Monetization API, along with revenue share with [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
+
 ### Get Started with Web Monetization API
 
 Web Monetization API is a new web standard being developed to provide better payment alternative for publishers and creators other than ads. Learn more about it on [https://www.webmonetization.org](https://www.webmonetization.org).
 
 #### Using Fundme.js in Client-Side with bundler; webpack, rollup, parcel, etc
 
-Example with ES Modules
+Example with ES Modules:
 
 ```js
 import { fund } from 'fundme'
@@ -35,6 +41,16 @@ Fundme.js is designed to be fully tree-shakeable library thus it has quite a wei
 <script src="/dist/fundme-iife.min.js"></script>
 <script>
   fundme.fund('$wallet.example.com/my-address')
+</script>
+```
+
+or with Browser native ES modules:
+
+```html
+<script type="module">
+  import { fund } from 'https://cdn.pika.dev/fundme/dist/fundme.mjs'
+
+  fund('$wallet.example.com/my-address')
 </script>
 ```
 
@@ -198,12 +214,6 @@ Fundme.js provides a simple way to do it:
 ```
 
 In the example above, there are six different contributors (including the author) directly involved in working in one content. Notice that payment pointer for `$wallet.example.com/platform` and `$wallet.example.com/affiliate-referrer` both have `%` following the weight of their shares; what will happen is both of them will take 30% (20% for platform and 10% for referrer) of Web Monezitation revenue while split the rest of 70% shares to six contributors. 
-
-## What is this, really (?)
-
-Fundme.js is a whole tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
-
-Currently it is still rather new and only support Web Monetization API, along with revenue share with [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
 
 ## Short-term goal
 

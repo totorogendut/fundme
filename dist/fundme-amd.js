@@ -39,9 +39,6 @@ define(['exports'], function (exports) { 'use strict';
   var addressNotFound = "address not found.";
   var addressIsNotAString = "address must be a string.";
   var getCurrentPointerAddressMustClientSide = "can't use getCurrentPointerAddress() server-side.";
-  function weightIsNotANumber(str) {
-    return "".concat(str, " has weight that is not a number. It has been set to ").concat(DEFAULT_WEIGHT, " (default).");
-  }
   var invalidAddress = "invalid Web Monetization pointer address is given."; // multiple pointers
 
   var getWinningPointerMustBeANumber = "all pointers' weight during calculating a winning pointer must have type of number."; // default address
@@ -134,7 +131,6 @@ define(['exports'], function (exports) { 'use strict';
   }
 
   function registerRelativeWeight(pointer) {
-    // console.warn("registering", pointer);
     pointer.weight = getWeight(pointer);
     relativeWeightPointers.push(pointer);
   }
@@ -164,7 +160,6 @@ define(['exports'], function (exports) { 'use strict';
   }
 
   function normalizeRelativePointers(pool, sum) {
-    // if (pool.length) console.warn("Normalizing with total", sum, pool);
     return pool.map(function (pointer) {
       return pointer;
     });
@@ -194,7 +189,7 @@ define(['exports'], function (exports) { 'use strict';
 
     totalRelativeChance += chance;
     return pointerPoolSum * chance; // TODO - add % unit to calculate weight
-  }
+  } // Jest related functions
 
   var DEFAULT_WEIGHT = 5; // TODO check pointer.address with RegEx
 
@@ -231,16 +226,16 @@ define(['exports'], function (exports) { 'use strict';
       wmPointer = checkWeight(pointer);
       return wmPointer;
     });
-  }
+  } // TODO update checkWeight to use relative weight instead
+
   function checkWeight(pointer) {
     if (pointer.weight === undefined || pointer.weight === NaN) {
-      console.warn(weightIsNotANumber(pointer.address));
+      // if (window) console.warn(weightIsNotANumber(pointer.address));
       pointer.weight = DEFAULT_WEIGHT;
     }
 
     return pointer;
-  } // TODO getting pointer from pool
-
+  }
   function pickPointer(pointers) {
     var sum = getPoolWeightSum(pointers);
     var choice = getChoice(sum);
@@ -257,11 +252,7 @@ define(['exports'], function (exports) { 'use strict';
 
     if (split.length > 1) {
       address = split[0];
-      weight = split[1]; // if (split[1].endsWith("%")) {
-      //   weight = split[1];
-      // } else {
-      //   weight = parseInt(split[1], 10);
-      // }
+      weight = split[1];
     }
 
     var pointer = {
@@ -328,9 +319,9 @@ define(['exports'], function (exports) { 'use strict';
       address: ""
     }; // Is this even necessary?
   }
-  function hasAddress(o) {
-    if (!o) return false;
-    return Object.keys(o).some(function (str) {
+  function hasAddress(obj) {
+    if (!obj) return false;
+    return Object.keys(obj).some(function (str) {
       return str === "address";
     });
   }

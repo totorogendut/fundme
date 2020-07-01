@@ -123,6 +123,7 @@ export function getWeight(pointer: string | WMPointer): number {
   return pointerPoolSum * chance; // TODO - add % unit to calculate weight
 }
 
+// Jest related functions
 export function mockVariables() {
   relativeWeightPointers = [{ address: "test", weight: 1 }];
   fixedWeightPointers = [{ address: "test", weight: 1 }];
