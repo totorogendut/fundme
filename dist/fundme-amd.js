@@ -627,12 +627,12 @@ define(['exports'], function (exports) { 'use strict';
     throw FundmeError(invalidAddress);
   }
   var forceBrowser = false;
-  var isBrowser = function isBrowser$1() {
+  var isBrowser = function isBrowser() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     if (options.force === "server") return false;
     var forced = forceBrowser;
     forceBrowser = false;
-    return index.isBrowser || forced || options.force === "client";
+    return !index.isNode || forced || options.force === "client";
   };
 
   function serverSideFund(pointer) {
