@@ -5,25 +5,25 @@ A simple but powerful client-side library to manage monetization on the web. Thi
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master) ![GitHub top language](https://img.shields.io/github/languages/top/prognovel/fundme) ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/fundme) ![npm](https://img.shields.io/npm/v/fundme) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/fundme)
 
-## Dig in
-
-```shell
-npm i fundme --save
-```
-
-_This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import._
-
 ## What is this, really (?)
 
 Fundme.js is a tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
 
 Currently it is still rather new and only support Web Monetization API, along with revenue share with [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method.
 
+***
+
+_This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import._
+
 ### Get Started with Web Monetization API
 
 Web Monetization API is a new web standard being developed to provide better payment alternative for publishers and creators other than ads. Learn more about it on [https://www.webmonetization.org](https://www.webmonetization.org).
 
 #### Using Fundme.js in Client-Side with bundler; webpack, rollup, parcel, etc
+
+```shell
+npm i fundme --save
+```
 
 Example with ES Modules:
 
@@ -38,7 +38,7 @@ fund('$wallet.example.com/some-guy-funding-address')
 Fundme.js is designed to be fully tree-shakeable library thus it has quite a weird way to use in the browser than normal library. It needs to use IIFE (Immediately Invoked Function Expression) to get exported function that normally use in brackets when importing it with ES Module.
 
 ```html
-<script src="/dist/fundme-iife.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fundme/dist/fundme-iife.js"></script>
 <script>
   fundme.fund('$wallet.example.com/my-address')
 </script>
