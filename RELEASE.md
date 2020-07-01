@@ -1,5 +1,9 @@
 # Releases
 
+## 0.1.4
+
+- Hotfix: fix require undefined error on browser.
+
 ## 0.1.3
 
 - Fix: critical error when using ES Modules version.

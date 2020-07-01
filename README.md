@@ -48,7 +48,7 @@ or with Browser native ES modules:
 
 ```html
 <script type="module">
-  import { fund } from 'https://cdn.pika.dev/fundme/dist/fundme.mjs'
+  import { fund } from 'https://cdn.pika.dev/fundme'
 
   fund('$wallet.example.com/my-address')
 </script>
