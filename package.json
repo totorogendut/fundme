@@ -2,7 +2,9 @@
   "name": "fundme",
   "version": "0.1.3",
   "description": "A simple but powerful client-side library to manage monetization on the web.",
-  "dependencies": {},
+  "dependencies": {
+    "browser-or-node": "^1.3.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",

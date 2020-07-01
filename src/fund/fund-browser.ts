@@ -4,6 +4,7 @@ import { setPointerFromTemplates } from "./set-pointer-template";
 import { setPointerMultiple } from "./set-pointer-multiple";
 import { defaultAddressNotFound, invalidAddress, FundmeError } from "./errors";
 import { FundType } from "./fund";
+import { isBrowser as browser } from "browser-or-node";
 
 export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
   if (pointer === undefined) {
@@ -41,12 +42,10 @@ export function forceFundmeOnBrowser() {
   forceBrowser = true;
 }
 
-const isNodeEnv = require !== undefined && module !== undefined;
-
 export const isBrowser = (options: fundOptions = {}): boolean => {
   if (options.force === "server") return false;
   const forced = forceBrowser;
   forceBrowser = false;
 
-  return !isNodeEnv || forced || options.force === "client";
+  return browser() || forced || options.force === "client";
 };

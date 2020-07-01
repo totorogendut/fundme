@@ -537,6 +537,59 @@ function parseCustomSyntax(template) {
   return pointers;
 }
 
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, basedir, module) {
+	return module = {
+	  path: basedir,
+	  exports: {},
+	  require: function (path, base) {
+      return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+    }
+	}, fn(module, module.exports), module.exports;
+}
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+}
+
+var lib = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/* global window self */
+
+var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+
+/* eslint-disable no-restricted-globals */
+var isWebWorker = (typeof self === 'undefined' ? 'undefined' : _typeof(self)) === 'object' && self.constructor && self.constructor.name === 'DedicatedWorkerGlobalScope';
+/* eslint-enable no-restricted-globals */
+
+var isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+
+/**
+ * @see https://github.com/jsdom/jsdom/releases/tag/12.0.0
+ * @see https://github.com/jsdom/jsdom/issues/1537
+ */
+/* eslint-disable no-undef */
+var isJsDom = function isJsDom() {
+  return typeof window !== 'undefined' && window.name === 'nodejs' || navigator.userAgent.includes('Node.js') || navigator.userAgent.includes('jsdom');
+};
+
+exports.isBrowser = isBrowser;
+exports.isWebWorker = isWebWorker;
+exports.isNode = isNode;
+exports.isJsDom = isJsDom;
+});
+
+var index = /*@__PURE__*/unwrapExports(lib);
+
 function clientSideFund(pointer) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -572,13 +625,12 @@ function clientSideFund(pointer) {
   throw FundmeError(invalidAddress);
 }
 var forceBrowser = false;
-var isNodeEnv = require !== undefined && module !== undefined;
-var isBrowser = function isBrowser() {
+var isBrowser = function isBrowser$1() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   if (options.force === "server") return false;
   var forced = forceBrowser;
   forceBrowser = false;
-  return !isNodeEnv || forced || options.force === "client";
+  return index.isBrowser() || forced || options.force === "client";
 };
 
 function serverSideFund(pointer) {
