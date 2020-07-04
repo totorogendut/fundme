@@ -8,6 +8,7 @@ import {
   relativeWeightChanceError,
   weightForRelativePointerNotFound,
 } from "./errors";
+import { DEFAULT_WEIGHT } from "./set-pointer-multiple";
 
 let relativeWeightPointers: Array<WMPointer> = [];
 let fixedWeightPointers: Array<WMPointer> = [];
@@ -34,6 +35,7 @@ export function calculateRelativeWeight(pool: WMPointer[]): WMPointer[] {
   let relativeWeightPointers;
 
   relativeWeightPointers = pool.filter(filterRelativeWeight);
+  // console.log(relativeWeightPointers);
   if (!fixedWeightPointers.length) throw FundmeError(paymentPointersMustHaveAtLeastOneFixedPointer);
 
   return [
@@ -42,10 +44,11 @@ export function calculateRelativeWeight(pool: WMPointer[]): WMPointer[] {
   ];
 }
 
-function filterRelativeWeight(pointer: WMPointer) {
-  if (pointer.weight === undefined)
-    throw FundmeError(invalidWeight(pointer.address ?? pointer, ""));
+export function filterRelativeWeight(pointer: WMPointer): boolean {
+  if (pointer.weight === undefined) return false;
+
   let weight = pointer.weight;
+
   if (typeof weight === "string" && weight.endsWith("%")) {
     const convertedWeight = weight.slice(0, -1);
     if (!isNumberOnly(convertedWeight)) {
@@ -76,25 +79,27 @@ export function registerFixedWeight(pointer: WMPointer) {
   fixedWeightPointers.push(pointer);
 }
 
-function normalizeFixedPointers(pool: WMPointer[], chance: number): WMPointer[] {
+export function normalizeFixedPointers(pool: WMPointer[], chance: number): WMPointer[] {
   if (chance > 1 || chance === NaN) throw FundmeError(relativeWeightChanceError);
   chance = 1 - chance;
+  // decrease all fixed pointer weights
+  // based on total relative chance registered
 
   return pool.map((pointer) => {
     let weight: number;
     if (typeof pointer.weight === "string") {
       weight = parseFloat(pointer.weight!);
     } else {
-      weight = pointer.weight!;
+      weight = pointer.weight ?? DEFAULT_WEIGHT;
     }
 
-    pointer.weight! = weight * chance;
+    pointer.weight = weight * chance;
 
     return pointer;
   });
 }
 
-function normalizeRelativePointers(pool: WMPointer[], sum: number): WMPointer[] {
+export function normalizeRelativePointers(pool: WMPointer[], sum: number): WMPointer[] {
   return pool.map((pointer) => {
     return pointer;
   });

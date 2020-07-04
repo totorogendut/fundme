@@ -3,6 +3,9 @@ import {
   mockVariables,
   clear,
   getWeight,
+  filterRelativeWeight,
+  normalizeFixedPointers,
+  normalizeRelativePointers,
 } from "../../../src/fund/relative-weight";
 import {
   relativeWeightMustEndsWithPercentage,
@@ -10,6 +13,8 @@ import {
   invalidRelativeWeight,
   FundmeError,
   paymentPointersMustHaveAtLeastOneFixedPointer,
+  relativeWeightChanceError,
+  weightForRelativePointerNotFound,
 } from "../../../src/fund/errors";
 import { createPool } from "../../../src/fund/set-pointer-multiple";
 import { toBeInTheDocument, toHaveAttribute } from "@testing-library/jest-dom/matchers";
@@ -40,8 +45,8 @@ describe("calculating relative weight", () => {
 
   test("inserting relative weight to fixed payment pointers", () => {
     const mockPointerPool = [
-      "$wallet.example.com/example-1#40",
-      "$wallet.example.com/example-2#60",
+      "$wallet.example.com/example-1#32",
+      "$wallet.example.com/example-2#112",
       "$wallet.example.com/example-relative-weight#50%",
     ];
 
@@ -67,15 +72,15 @@ describe("calculating relative weight", () => {
     const resultPointerPool = [
       {
         address: "$wallet.example.com/example-1",
-        weight: 20,
+        weight: 16,
       },
       {
         address: "$wallet.example.com/example-2",
-        weight: 30,
+        weight: 56,
       },
       {
         address: "$wallet.example.com/example-relative-weight",
-        weight: 50,
+        weight: 72,
       },
     ];
     const resultPointerPool2 = [
@@ -267,6 +272,83 @@ describe("ensure relative weight on HTML template is working", () => {
     ];
 
     expect(getCurrentPointerPool()).toEqual(expectedPool);
+  });
+});
+
+describe("filtering relative weight payment pointers pool", () => {
+  test("ensure filter relative weight works as expected", () => {
+    const mock = [
+      {
+        address: "$wallet.address/test1",
+        weight: "30%",
+      },
+      {
+        address: "$wallet.address/test2",
+        weight: "15%",
+      },
+      {
+        address: "$wallet.address/test3",
+        weight: "30",
+      },
+      {
+        address: "$wallet.address/test4",
+        weight: 30,
+      },
+    ];
+
+    // filteredMock resulted in integer instead of string with %
+    // I don't know why this happens, but it works the way it is
+    const filteredMock = [
+      {
+        address: "$wallet.address/test1",
+        weight: 30,
+      },
+      {
+        address: "$wallet.address/test2",
+        weight: 15,
+      },
+    ];
+    expect(mock.filter(filterRelativeWeight)).toEqual(filteredMock);
+  });
+});
+
+describe("normalize payment pointers", () => {
+  test("fixed payment pointers normalized", () => {
+    const mock = [
+      {
+        address: "$wallet.example.com/test-1",
+        weight: "40",
+      },
+      {
+        address: "$wallet.example.com/test-2",
+        weight: 60,
+      },
+    ];
+    const resultMock = [
+      {
+        address: "$wallet.example.com/test-1",
+        weight: 30,
+      },
+      {
+        address: "$wallet.example.com/test-2",
+        weight: 45,
+      },
+    ];
+    expect(normalizeFixedPointers(mock, 0.25)).toEqual(resultMock);
+  });
+  test("throw if normalize'd pointers chance more than 100%", () => {
+    expect(() => normalizeFixedPointers([], 1.5)).toThrowError(
+      FundmeError(relativeWeightChanceError),
+    );
+  });
+});
+
+describe("relative weight getWeight() function", () => {
+  test("throw error if no weight found", () => {
+    const pointer = { address: "$wallet.address.com/test" };
+    expect(() => getWeight(pointer)).toThrowError(
+      FundmeError(weightForRelativePointerNotFound(pointer.address)),
+    );
   });
 });
 
