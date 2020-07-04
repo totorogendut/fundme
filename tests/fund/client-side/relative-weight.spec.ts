@@ -344,6 +344,21 @@ describe("normalize payment pointers", () => {
 });
 
 describe("relative weight getWeight() function", () => {
+  test("basic relative getWeight()", () => {
+    const mockVariableTotalWeight = 55;
+    const percentWeight = 10;
+    const pointer = `$wallet.example.com/test#${percentWeight}%`;
+    mockVariables();
+    expect(getWeight(pointer)).toBe(mockVariableTotalWeight / percentWeight);
+  });
+
+  test("throw if relative weight not end with %", () => {
+    const pointer = "$wallet.example.com/test#11";
+    expect(() => getWeight(pointer)).toThrowError(
+      FundmeError(relativeWeightMustEndsWithPercentage),
+    );
+  });
+
   test("throw error if no weight found", () => {
     const pointer = { address: "$wallet.address.com/test" };
     expect(() => getWeight(pointer)).toThrowError(
