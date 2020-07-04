@@ -1,11 +1,11 @@
-# Fundme.js
+# 💸 Fundme.js 💸
 
 A simple but powerful client-side library to manage monetization on the web. Think of jQuery of monetization of the web.
 
 ![Build](https://github.com/ProgNovel/fundme/workflows/Build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ProgNovel/fundme/badge.svg?branch=master)](https://coveralls.io/github/ProgNovel/fundme?branch=master) ![GitHub top language](https://img.shields.io/github/languages/top/prognovel/fundme) ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/fundme) ![npm](https://img.shields.io/npm/v/fundme) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/fundme)
 
-## What is this, really (?)
+## ✨ What is this, really (?)
 
 Fundme.js is a tree-shakable library to manage monetization on the web. It will include common solutions for cookie-aware ads, cookie prompt, some components to integrate print-on-demand merchandise, and last but not least, the new and shiny [Web Monetization API](https://www.webmonetization.org).
 
@@ -13,7 +13,7 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ***
 
-_This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import._
+_⚠️ This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import. ⚠️_
 
 ### Get Started with Web Monetization API
 
@@ -75,7 +75,7 @@ const randomPointer = fund([
 
 **WIP** - Server-Side Fundme.js is in the roadmap for short-term goal.
 
-### Advanced Monetization - Revenue Share Among Contributors
+### 💵 💴 Advanced Monetization - Revenue Share Among Contributors 💶 💷
 
 Web Monetization API can only stream one pointer address due to performance issue, but you can split revenue using [Probabilitic Revenue Sharing](https://coil.com/p/sharafian/Probabilistic-Revenue-Sharing/8aQDSPsw) method that relies on chance whoever gets picked among contributors.
 
@@ -186,7 +186,7 @@ NOTE: all payment pointer has to be separated by semicolons (like CSS or JavaScr
 </script>
 ```
 
-#### Relative weight revenue sharing
+#### Relative weight revenue sharing 🆕
 
 As of Fundme.js 0.1.2, you can use fixed percentage based weight to calculate revenue sharing between a few parties.
 
@@ -215,7 +215,7 @@ Fundme.js provides a simple way to do it:
 
 In the example above, there are six different contributors (including the author) directly involved in working in one content. Notice that payment pointer for `$wallet.example.com/platform` and `$wallet.example.com/affiliate-referrer` both have `%` following the weight of their shares; what will happen is both of them will take 30% (20% for platform and 10% for referrer) of Web Monezitation revenue while split the rest of 70% shares to six contributors. 
 
-## Short-term goal
+## 🧙‍ Short-term goal
 
 - [ ] NEW: Advanced relative weight and nested payment pointer pools.
 - [ ] NEW: make basic client-side affiliate referral system.
@@ -230,7 +230,7 @@ In the example above, there are six different contributors (including the author
 - [ ] Web components / Stencil to provide basic `VIP only content` for Web Monetization subscribers.
 - [ ] More robust API! Better tests!
 
-## Long term goal
+## 🧙‍ Long term goal
 
 I'm planning to make fundme.js a modular library to manage lots of kind monetization that can be imported invidually with ES Module, but still can get along nicely with each other to provide good experience for the users.
 
@@ -238,6 +238,6 @@ For example, webmonetization.org/ads has a tutorial to hide ads for Coil subscri
 
 In additionally, integrating broad monetizations like affiliation marketing or print-on-demand is in future roadmap for fundme.js. This library actually is one of core features I'm using on my ProgNovel project, and future plans/features might change as I discover more during my development of ProgNovel.
 
-## Disclaimer
+## ⚠️ Disclaimer
 
 Fundme.js is still in early phase development and thus API might change a lot! Not ready for production. Use scripts from `dist` folder in the repo if you want to play with it locally.
