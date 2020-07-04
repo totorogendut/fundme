@@ -59,7 +59,7 @@ export function getPoolWeightSum(pointers: WMPointer[]): number {
   }, 0);
 }
 
-export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
+export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer | undefined {
   for (const pointer in pointers) {
     const weight: weight = pointers[pointer].weight ?? DEFAULT_WEIGHT; // TODO - safecheck null assertion
 
@@ -69,9 +69,6 @@ export function getWinningPointer(pointers: WMPointer[], choice: number): WMPoin
       return pointers[pointer];
     }
   }
-
-  console.error("GET WINNING POOL LEAKED!");
-  return { address: "" }; // Is this even necessary?
 }
 
 export function hasAddress(obj: any): boolean {
