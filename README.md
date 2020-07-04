@@ -13,7 +13,9 @@ Currently it is still rather new and only support Web Monetization API, along wi
 
 ***
 
-_⚠️ This library is still work in progress and an experimental project, not ready for production! Tested and worked using Webpack with ES Module import. ⚠️_
+
+> _⚠️ This library is still work in progress and an experimental project, not ready for production! ⚠️_
+
 
 ### Get Started with Web Monetization API
 
