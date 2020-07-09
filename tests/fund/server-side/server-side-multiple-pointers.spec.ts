@@ -19,6 +19,8 @@ describe("multiple pointer server side", () => {
 
   test("server-side fund() can't scrape from templates", () => {
     expect(() => fund()).toThrowError(FundmeError(noUndefinedFundOnServerSide));
+    expect(() => fund(undefined)).toThrowError(FundmeError(noUndefinedFundOnServerSide));
+    expect(() => fund(null)).toThrowError(FundmeError(noUndefinedFundOnServerSide));
   });
 
   test("server-side fund() no invalid parameters", () => {

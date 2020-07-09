@@ -3,10 +3,15 @@ import {
   getPoolWeightSum,
   getWinningPointer,
   isNumberOnly,
+  convertToPointerPool,
 } from "../../../src/fund/utils";
 import { getCurrentPointerAddress } from "../../../src/fund/mod";
 import { forceFundmeOnBrowser } from "../../../src/fund/fund-browser";
-import { metaTagNotFound, FundmeError } from "../../../src/fund/errors";
+import {
+  metaTagNotFound,
+  FundmeError,
+  getWinningPointerMustBeANumber,
+} from "../../../src/fund/errors";
 
 //@ts-ignore
 import { toBeInTheDocument, toHaveAttribute } from "@testing-library/jest-dom/matchers";
@@ -44,25 +49,61 @@ describe("check multiple pointers correctly", () => {
 describe("ensure pickPointer() is robust", () => {
   const myPointers = [
     {
-      address: "coolguy",
-      weight: 33,
+      address: "$wallet.example.com/first-pointer",
+      weight: 48,
     },
     {
-      address: "someother guy",
+      address: "$wallet.example.com/winning-pointer",
       weight: 22,
     },
     {
-      address: "is doesn't matter",
+      address: "$wallet.example.com/not-winning-pointer",
       weight: 45,
+    },
+    {
+      address: "$wallet.example.com/pointer-with-default-weight",
     },
   ];
   const choice = 50;
   test("get correct sum for pool weight", () => {
-    expect(getPoolWeightSum(myPointers)).toBe(100);
+    expect(getPoolWeightSum(myPointers)).toBe(120);
   });
 
   test("pick correct winning pointer from pool", () => {
-    expect(getWinningPointer(myPointers, choice).address).toBe("someother guy");
+    expect(getWinningPointer(myPointers, choice).address).toBe(
+      "$wallet.example.com/winning-pointer",
+    );
+  });
+
+  describe("pickPointer() add default weight", () => {
+    const noWeightPointer = [
+      {
+        address: "$wallet.example.com/zero-weight-address",
+        weight: 0,
+      },
+      {
+        address: "$wallet.example.com/undefined-weight-address",
+      },
+    ];
+    expect(getWinningPointer(noWeightPointer, 4).address).toBe(
+      "$wallet.example.com/undefined-weight-address",
+    );
+  });
+
+  test("getWinningPointer returns first item in pool if choice greater than pool's weight", () => {
+    expect(getWinningPointer(myPointers, 1000).address).toBe("$wallet.example.com/first-pointer");
+  });
+
+  test("winning pointer's weight must be a number", () => {
+    const invalidPointer = [
+      {
+        address: "$wallet.example/test-invalid",
+        weight: true,
+      },
+    ];
+    expect(() => getWinningPointer(invalidPointer, 11)).toThrow(
+      FundmeError(getWinningPointerMustBeANumber),
+    );
   });
 });
 
@@ -80,5 +121,11 @@ describe("ensure logic filters work as expected", () => {
     expect(isNumberOnly({})).toBeFalsy();
     expect(isNumberOnly(["testing"])).toBeFalsy();
     expect(isNumberOnly("4423sd2")).toBeFalsy();
+  });
+});
+
+describe("convert multiple pointer pool", () => {
+  test("undefined parameter returns an empty array", () => {
+    expect(convertToPointerPool(undefined)).toEqual([]);
   });
 });

@@ -2,7 +2,7 @@ import {
   calculateRelativeWeight,
   mockVariables,
   clear,
-  getWeight,
+  getRelativeWeight,
   filterRelativeWeight,
   normalizeFixedPointers,
   normalizeRelativePointers,
@@ -309,6 +309,7 @@ describe("filtering relative weight payment pointers pool", () => {
       },
     ];
     expect(mock.filter(filterRelativeWeight)).toEqual(filteredMock);
+    expect(filterRelativeWeight({ address: "$wallet.address.com/testing" })).toBeFalsy();
   });
 });
 
@@ -323,6 +324,9 @@ describe("normalize payment pointers", () => {
         address: "$wallet.example.com/test-2",
         weight: 60,
       },
+      {
+        address: "$wallet.example.com/test-3",
+      },
     ];
     const resultMock = [
       {
@@ -332,6 +336,10 @@ describe("normalize payment pointers", () => {
       {
         address: "$wallet.example.com/test-2",
         weight: 45,
+      },
+      {
+        address: "$wallet.example.com/test-3",
+        weight: 3.75,
       },
     ];
     expect(normalizeFixedPointers(mock, 0.25)).toEqual(resultMock);
@@ -344,24 +352,56 @@ describe("normalize payment pointers", () => {
 });
 
 describe("relative weight getWeight() function", () => {
+  const mockVariableTotalWeight = 55;
   test("basic relative getWeight()", () => {
-    const mockVariableTotalWeight = 55;
     const percentWeight = 10;
     const pointer = `$wallet.example.com/test#${percentWeight}%`;
     mockVariables();
-    expect(getWeight(pointer)).toBe(mockVariableTotalWeight / percentWeight);
+    expect(getRelativeWeight(pointer)).toBe(mockVariableTotalWeight / percentWeight);
+  });
+
+  test("getWeight() with object pointer", () => {
+    const pointer = {
+      address: "$wallet.example.com/testing",
+      weight: "10%",
+    };
+    mockVariables();
+    expect(getRelativeWeight(pointer)).toBe(5.5);
   });
 
   test("throw if relative weight not end with %", () => {
     const pointer = "$wallet.example.com/test#11";
-    expect(() => getWeight(pointer)).toThrowError(
+    expect(() => getRelativeWeight(pointer)).toThrowError(
       FundmeError(relativeWeightMustEndsWithPercentage),
+    );
+  });
+  test("throw if relative weight not end with %", () => {
+    const pointer = {
+      address: "$wallet.example.com/test",
+      weight: "11",
+    };
+    expect(() => getRelativeWeight(pointer)).toThrowError(
+      FundmeError(relativeWeightMustEndsWithPercentage),
+    );
+  });
+
+  test("throw if getWeight() recieves no weight pointer", () => {
+    const pointer = { address: "$wallet.example.com/test" };
+    expect(() => getRelativeWeight(pointer)).toThrowError(
+      FundmeError(weightForRelativePointerNotFound(pointer.address)),
+    );
+  });
+
+  test("throw if getWeight() recieves invalid weight", () => {
+    const pointer = { address: "$wallet.example.com/test", weight: true };
+    expect(() => getRelativeWeight(pointer)).toThrowError(
+      FundmeError(invalidRelativeWeight(pointer.address)),
     );
   });
 
   test("throw error if no weight found", () => {
     const pointer = { address: "$wallet.address.com/test" };
-    expect(() => getWeight(pointer)).toThrowError(
+    expect(() => getRelativeWeight(pointer)).toThrowError(
       FundmeError(weightForRelativePointerNotFound(pointer.address)),
     );
   });

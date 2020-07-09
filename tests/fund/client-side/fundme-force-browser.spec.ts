@@ -1,8 +1,10 @@
 import { fund } from "../../../src/fund/mod";
-import { isBrowser } from "../../../src/fund/fund-browser";
+import { isBrowser, forceFundmeOnBrowser, clientSideFund } from "../../../src/fund/fund-browser";
 
 //@ts-ignore
 import { toBeInTheDocument, toHaveAttribute } from "@testing-library/jest-dom/matchers";
+import { FundType } from "../../../src/fund/fund";
+import { FundmeError, invalidFundmeServerSide } from "../../../src/fund/errors";
 
 expect.extend({ toBeInTheDocument, toHaveAttribute });
 
@@ -43,5 +45,14 @@ describe("test isBrowser()", () => {
   });
   test("without forcing in node environment", () => {
     expect(isBrowser()).toBeFalsy();
+  });
+  test("throw error if forcing client and server in conflict", () => {
+    const pointer = "$wallet.example.com/test1";
+
+    expect(() => {
+      clientSideFund(pointer, {
+        force: "server",
+      });
+    }).toThrowError(FundmeError(invalidFundmeServerSide));
   });
 });

@@ -11,15 +11,17 @@ describe("correctly fund() argument", () => {
   });
 
   test("get multiple pointer if parameter is an array", () => {
-    forceFundmeOnBrowser();
-    const myFundingType = fund([
-      "test",
-      "address2",
-      {
-        address: "Wooooww",
-        weight: 4,
-      },
-    ]);
+    const myFundingType = fund(
+      [
+        "test",
+        "address2",
+        {
+          address: "Wooooww",
+          weight: 4,
+        },
+      ],
+      { force: "client" },
+    );
 
     expect(myFundingType).toBe("multiple");
   });

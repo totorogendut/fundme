@@ -2,14 +2,22 @@ import { isMultiplePointer, setFundType, getDefaultAddress, defaultAddressMultip
 import { setPointerSingle } from "./set-pointer-single";
 import { setPointerFromTemplates } from "./set-pointer-template";
 import { setPointerMultiple } from "./set-pointer-multiple";
-import { defaultAddressNotFound, invalidAddress, FundmeError } from "./errors";
+import {
+  defaultAddressNotFound,
+  invalidAddress,
+  FundmeError,
+  invalidFundmeServerSide,
+} from "./errors";
 import { FundType } from "./fund";
-import { isNode } from "browser-or-node";
 
-export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): FundType {
-  if (pointer === undefined) {
+export function clientSideFund(pointer?: WMAddress, options?: fundOptions): FundType {
+  if (pointer === undefined || pointer === null) {
     setPointerFromTemplates();
     return setFundType(FundType.isFromTemplate);
+  }
+
+  if (options && options.force === "server") {
+    throw FundmeError(invalidFundmeServerSide);
   }
 
   if (typeof pointer === "string") {
@@ -38,9 +46,12 @@ export function clientSideFund(pointer?: WMAddress, options: fundOptions = {}): 
 }
 
 let forceBrowser: boolean = false;
-export function forceFundmeOnBrowser() {
-  forceBrowser = true;
+export function forceFundmeOnBrowser(force: boolean = true) {
+  forceBrowser = force;
 }
+
+const isNode =
+  typeof process !== "undefined" && process.versions != null && process.versions.node != null;
 
 export const isBrowser = (options: fundOptions = {}): boolean => {
   if (options.force === "server") return false;

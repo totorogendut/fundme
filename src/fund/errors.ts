@@ -66,4 +66,4 @@ export const invalidWeight = (address: string, weight: string | number | undefin
  *                           *
  *****************************/
 export const noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
-export const invalidFundmeServerSide = "invalid fundme parameters on the server-side.";
+export const invalidFundmeServerSide = "invalid fundme on the server-side.";

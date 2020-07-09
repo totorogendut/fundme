@@ -63,11 +63,11 @@ export function filterRelativeWeight(pointer: WMPointer): boolean {
     return false;
   }
 
-  throw FundmeError(invalidWeight(pointer.address ?? pointer, weight));
+  throw FundmeError(invalidWeight(pointer.address, weight));
 }
 
 export function registerRelativeWeight(pointer: WMPointer) {
-  pointer.weight = getWeight(pointer);
+  pointer.weight = getRelativeWeight(pointer);
   relativeWeightPointers.push(pointer);
 }
 
@@ -105,7 +105,7 @@ export function normalizeRelativePointers(pool: WMPointer[], sum: number): WMPoi
   });
 }
 
-export function getWeight(pointer: string | WMPointer): number {
+export function getRelativeWeight(pointer: string | WMPointer): number {
   let chance;
 
   if (typeof pointer === "string") {
@@ -117,9 +117,16 @@ export function getWeight(pointer: string | WMPointer): number {
     }
   } else {
     if (!pointer.weight) {
-      throw FundmeError(weightForRelativePointerNotFound(pointer.address ?? pointer));
+      throw FundmeError(weightForRelativePointerNotFound(pointer.address));
     }
-    if (typeof pointer.weight === "string") pointer.weight = parseFloat(pointer.weight);
+
+    if (typeof pointer.weight === "string") {
+      if (!pointer.weight.endsWith("%")) throw FundmeError(relativeWeightMustEndsWithPercentage);
+      pointer.weight = parseFloat(pointer.weight);
+    } else {
+      throw FundmeError(invalidRelativeWeight(pointer.address));
+    }
+
     chance = pointer.weight / 100;
   }
 

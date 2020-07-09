@@ -59,7 +59,7 @@ export function getPoolWeightSum(pointers: WMPointer[]): number {
   }, 0);
 }
 
-export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer | undefined {
+export function getWinningPointer(pointers: WMPointer[], choice: number): WMPointer {
   for (const pointer in pointers) {
     const weight: weight = pointers[pointer].weight ?? DEFAULT_WEIGHT; // TODO - safecheck null assertion
 
@@ -69,6 +69,10 @@ export function getWinningPointer(pointers: WMPointer[], choice: number): WMPoin
       return pointers[pointer];
     }
   }
+
+  // Decide if this will be the default behavior later
+  // in case unexpected case where choice is greater than all pointers' weight
+  return pointers[0];
 }
 
 export function hasAddress(obj: any): boolean {

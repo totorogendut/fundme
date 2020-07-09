@@ -14,7 +14,7 @@ interface fundOptions {
   maxPool?: number;
   default?: boolean;
   affiliateId?: string;
-  affiliateEntry?: boolean;
+  isAffiliateEntry?: boolean;
 }
 
 interface defaultAddressOptions {

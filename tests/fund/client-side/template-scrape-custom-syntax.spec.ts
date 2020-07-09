@@ -44,7 +44,7 @@ describe("parsing custom syntax", () => {
       </template>
     `;
     forceFundmeOnBrowser();
-    fund();
+    fund(null);
     const expectedPool = [
       {
         address: "$wallet.example.com/testing-one",
