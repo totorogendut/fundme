@@ -1,5 +1,14 @@
 # Releases
 
+## Unreleased
+
+- Bump dependencies
+- Install dependabot
+
+## 0.1.5
+
+- Hotfix: fix nodejs env check error (now for real)
+
 ## 0.1.4
 
 - Hotfix: fix require undefined error on browser.
