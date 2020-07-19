@@ -1,9 +1,10 @@
 # Releases
 
-## Unreleased
+## 0.1.6
 
 - Bump dependencies
 - Install dependabot
+- tests: improve to 100% coverage
 
 ## 0.1.5
 
