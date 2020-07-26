@@ -47,10 +47,20 @@ var fundme = (function (exports, util) {
   const noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
   const invalidFundmeServerSide = 'invalid fundme on the server-side.';
 
+<<<<<<< HEAD
   let relativeWeightPointers = [];
   let fixedWeightPointers = [];
   let totalRelativeChance = 0;
   let pointerPoolSum = 0;
+=======
+  var noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
+  var invalidFundmeServerSide = "invalid fundme parameters on the server-side.";
+
+  var relativeWeightPointers = [];
+  var fixedWeightPointers = [];
+  var totalRelativeChance = 0;
+  var pointerPoolSum = 0;
+>>>>>>> parent of fd157ad... migrate babel -> swc
   function clear() {
       relativeWeightPointers = [];
       fixedWeightPointers = [];
@@ -64,6 +74,7 @@ var fundme = (function (exports, util) {
       };
   }
   function calculateRelativeWeight(pool) {
+<<<<<<< HEAD
       clear();
       pointerPoolSum = getPoolWeightSum(pool);
       let relativeWeightPointers1;
@@ -74,8 +85,18 @@ var fundme = (function (exports, util) {
           ...normalizeFixedPointers(fixedWeightPointers, totalRelativeChance),
           ...normalizeRelativePointers(relativeWeightPointers1), 
       ];
+=======
+    clear();
+    pointerPoolSum = getPoolWeightSum(pool);
+    var relativeWeightPointers;
+    relativeWeightPointers = pool.filter(filterRelativeWeight);
+    if (!fixedWeightPointers.length) throw FundmeError(paymentPointersMustHaveAtLeastOneFixedPointer);
+    return [].concat(_toConsumableArray(normalizeFixedPointers(fixedWeightPointers, totalRelativeChance)), _toConsumableArray(normalizeRelativePointers(relativeWeightPointers)));
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
+
   function filterRelativeWeight(pointer) {
+<<<<<<< HEAD
       if (pointer.weight === undefined) return false;
       let weight = pointer.weight;
       if (typeof weight === 'string' && weight.endsWith('%')) {
@@ -91,10 +112,40 @@ var fundme = (function (exports, util) {
           return false;
       }
       throw FundmeError(invalidWeight(pointer.address, weight));
+=======
+    var _pointer$address, _pointer$address2;
+
+    if (pointer.weight === undefined) throw FundmeError(invalidWeight((_pointer$address = pointer.address) !== null && _pointer$address !== void 0 ? _pointer$address : pointer, ""));
+    var weight = pointer.weight;
+
+    if (typeof weight === "string" && weight.endsWith("%")) {
+      var convertedWeight = weight.slice(0, -1);
+
+      if (!isNumberOnly(convertedWeight)) {
+        throw FundmeError(invalidRelativeWeight(pointer.address));
+      }
+
+      registerRelativeWeight(pointer);
+      return true;
+    }
+
+    if (isNumberOnly(weight)) {
+      registerFixedWeight(pointer);
+      return false;
+    }
+
+    throw FundmeError(invalidWeight((_pointer$address2 = pointer.address) !== null && _pointer$address2 !== void 0 ? _pointer$address2 : pointer, weight));
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
+
   function registerRelativeWeight(pointer) {
+<<<<<<< HEAD
       pointer.weight = getRelativeWeight(pointer);
       relativeWeightPointers.push(pointer);
+=======
+    pointer.weight = getWeight(pointer);
+    relativeWeightPointers.push(pointer);
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
   function registerFixedWeight(pointer) {
       if (typeof pointer.weight === 'string') {
@@ -102,7 +153,9 @@ var fundme = (function (exports, util) {
       }
       fixedWeightPointers.push(pointer);
   }
+
   function normalizeFixedPointers(pool, chance) {
+<<<<<<< HEAD
       if (chance > 1 || chance === NaN) throw FundmeError(relativeWeightChanceError);
       chance = 1 - chance;
       // decrease all fixed pointer weights
@@ -118,12 +171,30 @@ var fundme = (function (exports, util) {
           pointer.weight = weight * chance;
           return pointer;
       });
+=======
+    if (chance > 1 || chance === NaN) throw FundmeError(relativeWeightChanceError);
+    chance = 1 - chance;
+    return pool.map(function (pointer) {
+      var weight;
+
+      if (typeof pointer.weight === "string") {
+        weight = parseFloat(pointer.weight);
+      } else {
+        weight = pointer.weight;
+      }
+
+      pointer.weight = weight * chance;
+      return pointer;
+    });
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
+
   function normalizeRelativePointers(pool, sum) {
       return pool.map((pointer)=>{
           return pointer;
       });
   }
+<<<<<<< HEAD
   function getRelativeWeight(pointer) {
       let chance;
       if (typeof pointer === 'string') {
@@ -162,6 +233,50 @@ var fundme = (function (exports, util) {
           return setWebMonetizationPointer(pointerAddress);
       }
       return pointerAddress;
+=======
+
+  function getWeight(pointer) {
+    var chance;
+
+    if (typeof pointer === "string") {
+      var weight = pointer.split("#")[1];
+
+      if (pointer.endsWith("%")) {
+        chance = parseFloat(weight) / 100;
+      } else {
+        throw FundmeError(relativeWeightMustEndsWithPercentage);
+      }
+    } else {
+      if (!pointer.weight) {
+        var _pointer$address3;
+
+        throw FundmeError(weightForRelativePointerNotFound((_pointer$address3 = pointer.address) !== null && _pointer$address3 !== void 0 ? _pointer$address3 : pointer));
+      }
+
+      if (typeof pointer.weight === "string") pointer.weight = parseFloat(pointer.weight);
+      chance = pointer.weight / 100;
+    }
+
+    totalRelativeChance += chance;
+    return pointerPoolSum * chance; // TODO - add % unit to calculate weight
+  } // Jest related functions
+
+  var DEFAULT_WEIGHT = 5; // TODO check pointer.address with RegEx
+
+  function setPointerMultiple(pointers) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var pool = createPool(pointers);
+    pool = calculateRelativeWeight(pool);
+    var pickedPointer = pickPointer(pool);
+    var pointerAddress = getPointerAddress(pickedPointer);
+    setCurrentPointer(pool);
+
+    if (isBrowser(options)) {
+      return setWebMonetizationPointer(pointerAddress);
+    }
+
+    return pointerAddress;
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
   function getPointerAddress(pointer) {
       const address = pointer.address;
@@ -258,9 +373,18 @@ var fundme = (function (exports, util) {
               return pointers[pointer];
           }
       }
+<<<<<<< HEAD
       // Decide if this will be the default behavior later
       // in case unexpected case where choice is greater than all pointers' weight
       return pointers[0];
+=======
+    }
+
+    console.error("GET WINNING POOL LEAKED!");
+    return {
+      address: ""
+    }; // Is this even necessary?
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
   function hasAddress(obj) {
       if (!obj) return false;
@@ -469,6 +593,7 @@ var fundme = (function (exports, util) {
       return pointers;
   }
 
+<<<<<<< HEAD
   function clientSideFund(pointer, options) {
       if (pointer === undefined || pointer === null) {
           setPointerFromTemplates();
@@ -489,10 +614,81 @@ var fundme = (function (exports, util) {
               } else {
                   throw FundmeError(defaultAddressNotFound);
               }
+=======
+  function unwrapExports (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
+
+  function createCommonjsModule(fn, basedir, module) {
+  	return module = {
+  	  path: basedir,
+  	  exports: {},
+  	  require: function (path, base) {
+        return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+      }
+  	}, fn(module, module.exports), module.exports;
+  }
+
+  function commonjsRequire () {
+  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+  }
+
+  var lib = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+  /* global window self */
+
+  var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+
+  /* eslint-disable no-restricted-globals */
+  var isWebWorker = (typeof self === 'undefined' ? 'undefined' : _typeof(self)) === 'object' && self.constructor && self.constructor.name === 'DedicatedWorkerGlobalScope';
+  /* eslint-enable no-restricted-globals */
+
+  var isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+
+  /**
+   * @see https://github.com/jsdom/jsdom/releases/tag/12.0.0
+   * @see https://github.com/jsdom/jsdom/issues/1537
+   */
+  /* eslint-disable no-undef */
+  var isJsDom = function isJsDom() {
+    return typeof window !== 'undefined' && window.name === 'nodejs' || navigator.userAgent.includes('Node.js') || navigator.userAgent.includes('jsdom');
+  };
+
+  exports.isBrowser = isBrowser;
+  exports.isWebWorker = isWebWorker;
+  exports.isNode = isNode;
+  exports.isJsDom = isJsDom;
+  });
+
+  var index = /*@__PURE__*/unwrapExports(lib);
+
+  function clientSideFund(pointer) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    if (pointer === undefined) {
+      setPointerFromTemplates();
+      return setFundType(FundType.isFromTemplate);
+    }
+
+    if (typeof pointer === "string") {
+      if (pointer === "default") {
+        if (getDefaultAddress() !== undefined) {
+          if (typeof getDefaultAddress() === "string") {
+            setPointerSingle(getDefaultAddress().toString(), options);
+          } else {
+            setPointerMultiple(defaultAddressMultiple(getDefaultAddress()), options);
+>>>>>>> parent of fd157ad... migrate babel -> swc
           }
           setPointerSingle(pointer, options);
           return setFundType(FundType.isSingle);
       }
+<<<<<<< HEAD
       if (isMultiplePointer(pointer)) {
           setPointerMultiple(pointer, options);
           return setFundType(FundType.isMultiple);
@@ -518,6 +714,41 @@ var fundme = (function (exports, util) {
           return setPointerMultiple(pointer).toString();
       }
       throw FundmeError(invalidFundmeServerSide);
+=======
+
+      setPointerSingle(pointer, options);
+      return setFundType(FundType.isSingle);
+    }
+
+    if (isMultiplePointer(pointer)) {
+      setPointerMultiple(pointer, options);
+      return setFundType(FundType.isMultiple);
+    }
+
+    throw FundmeError(invalidAddress);
+  }
+  var forceBrowser = false;
+  var isBrowser = function isBrowser() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    if (options.force === "server") return false;
+    var forced = forceBrowser;
+    forceBrowser = false;
+    return !index.isNode || forced || options.force === "client";
+  };
+
+  function serverSideFund(pointer) {
+    if (pointer === undefined) throw FundmeError(noUndefinedFundOnServerSide);
+
+    if (typeof pointer === "string") {
+      return setPointerSingle(pointer).toString();
+    }
+
+    if (isMultiplePointer(pointer)) {
+      return setPointerMultiple(pointer).toString();
+    }
+
+    throw FundmeError(invalidFundmeServerSide);
+>>>>>>> parent of fd157ad... migrate babel -> swc
   }
 
   var FundType;
