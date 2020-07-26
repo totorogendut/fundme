@@ -78,7 +78,7 @@ define(['exports'], function (exports) { 'use strict';
    *****************************/
 
   var noUndefinedFundOnServerSide = "can't use fund() with empty parameters in server side.";
-  var invalidFundmeServerSide = "invalid fundme parameters on the server-side.";
+  var invalidFundmeServerSide = "invalid fundme on the server-side.";
 
   var relativeWeightPointers = [];
   var fixedWeightPointers = [];
@@ -100,15 +100,13 @@ define(['exports'], function (exports) { 'use strict';
     clear();
     pointerPoolSum = getPoolWeightSum(pool);
     var relativeWeightPointers;
-    relativeWeightPointers = pool.filter(filterRelativeWeight);
+    relativeWeightPointers = pool.filter(filterRelativeWeight); // console.log(relativeWeightPointers);
+
     if (!fixedWeightPointers.length) throw FundmeError(paymentPointersMustHaveAtLeastOneFixedPointer);
     return [].concat(_toConsumableArray(normalizeFixedPointers(fixedWeightPointers, totalRelativeChance)), _toConsumableArray(normalizeRelativePointers(relativeWeightPointers)));
   }
-
   function filterRelativeWeight(pointer) {
-    var _pointer$address, _pointer$address2;
-
-    if (pointer.weight === undefined) throw FundmeError(invalidWeight((_pointer$address = pointer.address) !== null && _pointer$address !== void 0 ? _pointer$address : pointer, ""));
+    if (pointer.weight === undefined) return false;
     var weight = pointer.weight;
 
     if (typeof weight === "string" && weight.endsWith("%")) {
@@ -127,11 +125,10 @@ define(['exports'], function (exports) { 'use strict';
       return false;
     }
 
-    throw FundmeError(invalidWeight((_pointer$address2 = pointer.address) !== null && _pointer$address2 !== void 0 ? _pointer$address2 : pointer, weight));
+    throw FundmeError(invalidWeight(pointer.address, weight));
   }
-
   function registerRelativeWeight(pointer) {
-    pointer.weight = getWeight(pointer);
+    pointer.weight = getRelativeWeight(pointer);
     relativeWeightPointers.push(pointer);
   }
   function registerFixedWeight(pointer) {
@@ -141,31 +138,32 @@ define(['exports'], function (exports) { 'use strict';
 
     fixedWeightPointers.push(pointer);
   }
-
   function normalizeFixedPointers(pool, chance) {
     if (chance > 1 || chance === NaN) throw FundmeError(relativeWeightChanceError);
-    chance = 1 - chance;
+    chance = 1 - chance; // decrease all fixed pointer weights
+    // based on total relative chance registered
+
     return pool.map(function (pointer) {
       var weight;
 
       if (typeof pointer.weight === "string") {
         weight = parseFloat(pointer.weight);
       } else {
-        weight = pointer.weight;
+        var _pointer$weight;
+
+        weight = (_pointer$weight = pointer.weight) !== null && _pointer$weight !== void 0 ? _pointer$weight : DEFAULT_WEIGHT;
       }
 
       pointer.weight = weight * chance;
       return pointer;
     });
   }
-
   function normalizeRelativePointers(pool, sum) {
     return pool.map(function (pointer) {
       return pointer;
     });
   }
-
-  function getWeight(pointer) {
+  function getRelativeWeight(pointer) {
     var chance;
 
     if (typeof pointer === "string") {
@@ -178,12 +176,16 @@ define(['exports'], function (exports) { 'use strict';
       }
     } else {
       if (!pointer.weight) {
-        var _pointer$address3;
-
-        throw FundmeError(weightForRelativePointerNotFound((_pointer$address3 = pointer.address) !== null && _pointer$address3 !== void 0 ? _pointer$address3 : pointer));
+        throw FundmeError(weightForRelativePointerNotFound(pointer.address));
       }
 
-      if (typeof pointer.weight === "string") pointer.weight = parseFloat(pointer.weight);
+      if (typeof pointer.weight === "string") {
+        if (!pointer.weight.endsWith("%")) throw FundmeError(relativeWeightMustEndsWithPercentage);
+        pointer.weight = parseFloat(pointer.weight);
+      } else {
+        throw FundmeError(invalidRelativeWeight(pointer.address));
+      }
+
       chance = pointer.weight / 100;
     }
 
@@ -312,12 +314,11 @@ define(['exports'], function (exports) { 'use strict';
       if ((choice -= _weight) <= 0) {
         return pointers[pointer];
       }
-    }
+    } // Decide if this will be the default behavior later
+    // in case unexpected case where choice is greater than all pointers' weight
 
-    console.error("GET WINNING POOL LEAKED!");
-    return {
-      address: ""
-    }; // Is this even necessary?
+
+    return pointers[0];
   }
   function hasAddress(obj) {
     if (!obj) return false;
@@ -539,65 +540,14 @@ define(['exports'], function (exports) { 'use strict';
     return pointers;
   }
 
-  function unwrapExports (x) {
-  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
-
-  function createCommonjsModule(fn, basedir, module) {
-  	return module = {
-  	  path: basedir,
-  	  exports: {},
-  	  require: function (path, base) {
-        return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-      }
-  	}, fn(module, module.exports), module.exports;
-  }
-
-  function commonjsRequire () {
-  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-  }
-
-  var lib = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-  /* global window self */
-
-  var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
-
-  /* eslint-disable no-restricted-globals */
-  var isWebWorker = (typeof self === 'undefined' ? 'undefined' : _typeof(self)) === 'object' && self.constructor && self.constructor.name === 'DedicatedWorkerGlobalScope';
-  /* eslint-enable no-restricted-globals */
-
-  var isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
-
-  /**
-   * @see https://github.com/jsdom/jsdom/releases/tag/12.0.0
-   * @see https://github.com/jsdom/jsdom/issues/1537
-   */
-  /* eslint-disable no-undef */
-  var isJsDom = function isJsDom() {
-    return typeof window !== 'undefined' && window.name === 'nodejs' || navigator.userAgent.includes('Node.js') || navigator.userAgent.includes('jsdom');
-  };
-
-  exports.isBrowser = isBrowser;
-  exports.isWebWorker = isWebWorker;
-  exports.isNode = isNode;
-  exports.isJsDom = isJsDom;
-  });
-
-  var index = /*@__PURE__*/unwrapExports(lib);
-
-  function clientSideFund(pointer) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    if (pointer === undefined) {
+  function clientSideFund(pointer, options) {
+    if (pointer === undefined || pointer === null) {
       setPointerFromTemplates();
       return setFundType(FundType.isFromTemplate);
+    }
+
+    if (options && options.force === "server") {
+      throw FundmeError(invalidFundmeServerSide);
     }
 
     if (typeof pointer === "string") {
@@ -627,16 +577,17 @@ define(['exports'], function (exports) { 'use strict';
     throw FundmeError(invalidAddress);
   }
   var forceBrowser = false;
+  var isNode = typeof process !== "undefined" && process.versions != null && process.versions.node != null;
   var isBrowser = function isBrowser() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     if (options.force === "server") return false;
     var forced = forceBrowser;
     forceBrowser = false;
-    return !index.isNode || forced || options.force === "client";
+    return !isNode || forced || options.force === "client";
   };
 
   function serverSideFund(pointer) {
-    if (pointer === undefined) throw FundmeError(noUndefinedFundOnServerSide);
+    if (pointer === null || pointer === undefined) throw FundmeError(noUndefinedFundOnServerSide);
 
     if (typeof pointer === "string") {
       return setPointerSingle(pointer).toString();
