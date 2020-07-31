@@ -60,6 +60,9 @@ export const invalidWeight = (address: string, weight: string | number | undefin
   return `weight for payment pointer ${address}#${weight} is invalid.`;
 };
 
+// split fund
+export const splitFundError = `must set web monetization pointer address with fund() before split.`;
+
 /*****************************
  *                           *
  *  Server-side fund()       *
