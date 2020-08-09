@@ -3,6 +3,7 @@
 ## 0.1.7
 
 - FEATURE: new feature splitFund(amount) can return an array of parameter's fraction based on established fundme pointer pool.
+- rename package entry .ts file `fundme.ts` -> `index.ts`.
 
 ## 0.1.6
 

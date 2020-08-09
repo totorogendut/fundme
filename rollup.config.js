@@ -7,7 +7,7 @@ const extensions = [
 ];
 
 export default {
-  input: 'fundme.ts',
+  input: 'index.ts',
   external: [],
   plugins: [
     resolve({ extensions }),
