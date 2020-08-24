@@ -45,6 +45,7 @@
   "module": "dist/fundme.mjs",
   "browser": "dist/fundme-iife.js",
   "types": "dist/types/index.d.ts",
+  "homepage": "https://prognovel.gitbook.io/fundme",
   "repository": {
     "type": "git",
     "url": "https://github.com/ProgNovel/fundme.git"

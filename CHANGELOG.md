@@ -1,5 +1,9 @@
 # Releases
 
+## 0.1.8
+
+- New site added to package.json.
+
 ## 0.1.7
 
 - FEATURE: new feature splitFund(amount) can return an array of parameter's fraction based on established fundme pointer pool.
